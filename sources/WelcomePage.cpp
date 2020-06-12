@@ -23,16 +23,16 @@ void WelcomePage::show() {
 
         LoginPage *loginPage = NULL;
 
-        if (choice == "A" || choice == "a") {
+        if (choice == "A") {
             Administration admin(this->system);
             admin.show();
-        } else if (choice == "L" || choice == "l") {
+        } else if (choice == "L") {
             loginPage = new LoginPage(this->system, false);
-        } else if (choice == "S" || choice == "s") {
+        } else if (choice == "S") {
             loginPage = new LoginPage(this->system, true);
-        } else if (choice == "C" || choice == "c") {
+        } else if (choice == "C") {
             run = false;
-        } else if (choice == "Q" || choice == "q") {
+        } else if (choice == "Q") {
             ui::quit();
         }
 

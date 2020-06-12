@@ -614,42 +614,42 @@ void Administration::show() {
 
         string choice = ui::getChoice();
 
-        if (choice == "C" || choice == "c") {
+        if (choice == "C") {
             while (true) {
                 cout << "Create (C)ourse, (M)odule, (S)tudent, (L)ecturer" << endl;
 
                 string choice1 = ui::getChoice();
 
-                if (choice1 == "C" || choice1 == "c") {
+                if (choice1 == "C") {
                     createCourse();
                     break;
-                } else if (choice1 == "M" || choice1 == "m") {
+                } else if (choice1 == "M") {
                     createModule();
                     break;
-                } else if (choice1 == "S" || choice1 == "s") {
+                } else if (choice1 == "S") {
                     createStudent();
                     break;
-                } else if (choice1 == "L" || choice1 == "l") {
+                } else if (choice1 == "L") {
                     createLecturer();
                     break;
                 }
             }
-        } else if (choice == "R" || choice == "r") {
+        } else if (choice == "R") {
             while (true) {
                 cout << "Remove (C)ourse, (M)odule, (S)tudent, (L)ecturer" << endl;
 
                 string choice1 = ui::getChoice();
 
-                if (choice1 == "C" || choice1 == "c") {
+                if (choice1 == "C") {
                     removeCourse();
                     break;
-                } else if (choice1 == "M" || choice1 == "m") {
+                } else if (choice1 == "M") {
                     removeModule();
                     break;
-                } else if (choice1 == "S" || choice1 == "s") {
+                } else if (choice1 == "S") {
                     removeStudent();
                     break;
-                } else if (choice1 == "L" || choice1 == "l") {
+                } else if (choice1 == "L") {
                     removeLecturer();
                     break;
                 }
@@ -660,17 +660,17 @@ void Administration::show() {
 
                 string choice1 = ui::getChoice();
 
-                if (choice1 == "L" || choice1 == "l") {
+                if (choice1 == "L") {
                     resetLecturerPassword();
                     break;
-                } else if (choice1 == "S" || choice1 == "s") {
+                } else if (choice1 == "S") {
                     resetStudentPassword();
                     break;
                 }
             }
-        } else if (choice == "L" || choice == "l") {
+        } else if (choice == "L") {
             run = false;
-        } else if (choice == "Q" || choice == "q") {
+        } else if (choice == "Q") {
             ui::quit();
         }
     }

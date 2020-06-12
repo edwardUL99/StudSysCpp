@@ -24,6 +24,7 @@ class Course;
 class Module;
 class Exam;
 class ExamQuestion;
+class ExamAnswer;
 class ExamGrade;
 class ModuleGrade;
 class LecturerAccount;
@@ -44,6 +45,13 @@ private:
     void clearTable(Tables table);
     std::vector<ExamQuestion> getAllExamQuestions(int examID);
     void setLastExamID();
+    //following private methods throw their exceptions to their public callers
+    //private add methods for answers and questions
+    bool add(const ExamAnswer &answer);
+    bool add(const ExamQuestion &question);
+    //private update methods to update questions and answers (these do not throw keymismatch since keys are what will be updated)
+    bool update(const ExamAnswer &oldAnswer, const ExamAnswer &newAnswer);
+    bool update(const ExamQuestion &oldQuestion, const ExamQuestion &newQuestion);
 
 public:
     //with remove methods figure out what to do if a foreign key constraint prevents it
@@ -76,7 +84,8 @@ public:
     bool update(int id, const Student &updatedStudent);
     bool update(std::string id, const Course &updatedCourse);
     bool update(std::string code, const Module &updatedModule);
-    bool update(int id, const Exam &updatedExam);
+    //must ensure that each question of the exam, it's answer count is >= what it was before and same with question counts
+    bool update(const Exam &oldExam, const Exam &updatedExam);
     bool update(const Student &student, const Exam &exam, const ExamGrade &updatedExamGrade);
     bool update(const Lecturer &lecturer, const LecturerAccount &updatedLecturerAccount);
     bool update(const Student &student, const StudentAccount &updatedStudentAccount);

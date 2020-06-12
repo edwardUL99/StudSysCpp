@@ -274,9 +274,9 @@ bool StudentSystem::removeExam(const Exam &exam) {
     return false;
 }
 
-bool StudentSystem::updateExam(int id, const Exam &updatedExam) {
+bool StudentSystem::updateExam(const Exam &oldExam, const Exam &updatedExam) {
     try {
-        return this->database.update(id, updatedExam);
+        return this->database.update(oldExam, updatedExam);
     } catch (KeyMismatch &m) {
         throw m;
     }

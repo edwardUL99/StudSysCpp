@@ -10,6 +10,7 @@
 #include "headers/LecturerAccount.h"
 #include "headers/StudentAccount.h"
 #include "headers/KeyMismatch.h"
+#include "headers/ExamAnswer.h"
 #include <string>
 #include <iostream>
 #include <fstream>
@@ -475,6 +476,31 @@ bool DatabaseManager::update(string code, const Module &updatedModule)
     }
 }
 
+bool DatabaseManager::add(const ExamAnswer &answer) {
+    try {
+        string query = "INSERT INTO exam_answers (exam, question, answer) VALUES (" + std::to_string(answer.getExamID()) + ", '" + answer.getQuestion() + "', '" + answer.getAnswer() + "');";
+        return this->stmt->execute(query);
+    } catch (SQLException &e) {
+        throw e;
+    }
+}
+
+bool DatabaseManager::add(const ExamQuestion &question) {
+    try {
+        string query = "INSERT INTO exam_questions (exam, question, answer_key, numberOfAnswers) VALUES (" + std::to_string(question.getExamID()) + ", '" + question.getQuestion() + "', '" + question.getKey().getAnswer() + "', " + std::to_string(question.getNumberOfAnswers()) + ");";
+        bool added = this->stmt->execute(query);
+
+        for (const ExamAnswer &examAnswer : question.getPossibleAnswers())
+        {
+            added = added && add(examAnswer);
+        }
+
+        return added;
+    } catch (SQLException &e) {
+        throw e;
+    }
+}
+
 //CHECK SCHEMA TO SEE IF THE TABLES WORK I.E CLEAR EVERY TABLE AND REIMPORT TO CHECK FOR SYNTAX ERRORS
 //this may not work, you'll have to edit getExam too but remove may be fine because you have cascades
 bool DatabaseManager::add(const Exam &exam)
@@ -487,20 +513,7 @@ bool DatabaseManager::add(const Exam &exam)
 
         for (const ExamQuestion &examQuestion : exam.getQuestions())
         {
-            string key = examQuestion.getKey().getAnswer();
-            string question = examQuestion.getQuestion();
-
-            query = "INSERT INTO exam_answer_keys (answer) VALUES ('" + key + "');";
-            this->stmt->execute(query);
-
-            query = "INSERT INTO exam_questions (exam, question, answer_key, numberOfAnswers) VALUES (" + std::to_string(exam.getID()) + ", '" + question + "', '" + key + "', " + std::to_string(examQuestion.getNumberOfAnswers()) + ");";
-            this->stmt->execute(query);
-
-            for (const ExamAnswer &examAnswer : examQuestion.getPossibleAnswers())
-            {
-                query = "INSERT INTO exam_answers (exam, question, answer) VALUES (" + std::to_string(exam.getID()) + ", '" + question + "', '" + examAnswer.getAnswer() + "');";
-                this->stmt->execute(query);
-            }
+            add(examQuestion);
         }
         return true;
     }
@@ -532,10 +545,10 @@ vector<ExamQuestion> DatabaseManager::getAllExamQuestions(int examID)
         {
             string answer = res1->getString("answer");
 
-            answers.push_back(ExamAnswer(answer));
+            answers.push_back(ExamAnswer(examID, question, answer));
         }
 
-        ExamQuestion examQuestion(question, ExamAnswer(answer_key, true), answers, numberOfAnswers);
+        ExamQuestion examQuestion(examID, question, ExamAnswer(examID, question, answer_key, true), answers, numberOfAnswers);
         questions.push_back(examQuestion);
 
         delete res1;
@@ -601,19 +614,61 @@ bool DatabaseManager::remove(const Exam &exam)
 
     bool deleted = this->stmt->executeUpdate("DELETE FROM exams WHERE module = " + module + " AND " + "name = " + name + " AND " + "numberOfQuestions = " + numQuestions + " AND " + "weightPerQuestion = " + weight + " AND " + "totalWeight = " + totalW + ";") != 0;
 
-    //clean up answer keys
-
-    for (const ExamQuestion &question : exam.getQuestions()) {
-        string key = "'" + question.getKey().getAnswer() + "'";
-
-        deleted = deleted && this->stmt->executeUpdate("DELETE FROM exam_answer_keys WHERE answer = " + key + ";") != 0;
-    }
-
     return deleted;
 }
 
-bool DatabaseManager::update(int id, const Exam &updatedExam)
+//this may not be correct
+bool DatabaseManager::update(const ExamAnswer &oldAnswer, const ExamAnswer &newAnswer) {
+    string oid = std::to_string(oldAnswer.getExamID());
+    string nid = std::to_string(newAnswer.getExamID());
+
+    string query = "UPDATE exam_answers SET answer = '" + newAnswer.getAnswer() 
+                  + "', WHERE exam = " + oid
+                  + " AND question = '" + oldAnswer.getQuestion()
+                  + "' AND answer = '" + oldAnswer.getAnswer()
+                  + "';";
+
+    return executeUpdate(query) != 0;
+}
+
+bool DatabaseManager::update(const ExamQuestion &oldQuestion, const ExamQuestion &newQuestion) {
+    string oid = std::to_string(oldQuestion.getExamID());
+    string nid = std::to_string(newQuestion.getExamID());
+    bool updated = true;
+
+    string query = "UPDATE exam_questions SET exam = " + nid
+                  + ", question = '" + newQuestion.getQuestion()
+                  + "', answer_key = '" + newQuestion.getKey().getAnswer()
+                  + "', numberOfAnswers = " + std::to_string(newQuestion.getNumberOfAnswers())
+                  + " WHERE exam = " + oid + " AND question = '" + oldQuestion.getQuestion() + "';";
+
+    updated = updated && executeUpdate(query) != 0;
+
+    vector<ExamAnswer> oldAnswers = oldQuestion.getPossibleAnswers();
+    vector<ExamAnswer> newAnswers = newQuestion.getPossibleAnswers();
+
+    int osize = oldAnswers.size(), nsize = newAnswers.size();
+
+    if (osize <= nsize) {
+        int index = 0;
+
+        for (int i = 0; i < osize; i++, index++) {
+            updated = updated && update(oldAnswers[i], newAnswers[i]);
+        }
+
+        for (int i = index; i < nsize; i++) {
+            updated = updated && add(newAnswers[i]);
+        }
+    } else if (nsize < osize) {
+        throw "Answer count sizes not equal, thrown from private ExamQuestion update";
+    }
+
+    return updated;
+}
+
+bool DatabaseManager::update(const Exam &oldExam, const Exam &updatedExam)
 {
+    int id = oldExam.getID();
     int id1 = updatedExam.getID();
 
     if (id != id1)
@@ -631,8 +686,24 @@ bool DatabaseManager::update(int id, const Exam &updatedExam)
 
             updated = updated && executeUpdate(query) != 0; 
 
-            //update answer key
-            //updates may need a new data entry altogether 
+            vector<ExamQuestion> oldQuestions = oldExam.getQuestions();
+            vector<ExamQuestion> newQuestions = updatedExam.getQuestions();
+
+            int osize = oldQuestions.size(), nsize = newQuestions.size();
+
+            if (osize <= nsize) {
+                int index = 0;
+                for (int i = 0; i < osize; i++, index++) {
+                    update(oldQuestions[i], newQuestions[i]);
+                }
+
+                for (int i = index; i < nsize; i++) {
+                    add(newQuestions[i]);
+                }
+            } else {
+                throw "Size differences between number of exam questions between old and updated exam";
+            }
+
         }
 
         return updated;

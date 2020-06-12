@@ -53,7 +53,7 @@ void AccountSettingsPage::changeName()
 
         string choice = ui::getChoice();
 
-        if (choice == "Y" || choice == "y")
+        if (choice == "Y")
         {
             account.setName(name);
             boost::optional<LecturerAccount> lectAcc = accToLectAcc();
@@ -75,7 +75,7 @@ void AccountSettingsPage::changeName()
             cout << "Your name has been updated successfully" << endl;
             break;
         }
-        else if (choice == "N" || choice == "n")
+        else if (choice == "N")
         {
             cout << "Aborting changes..." << endl;
             break;
@@ -123,7 +123,7 @@ void AccountSettingsPage::changePassword()
 
             string choice = ui::getChoice();
 
-            if (choice == "Y" || choice == "y")
+            if (choice == "Y")
             {
                 account.setPassword(newPass);
                 boost::optional<LecturerAccount> lectAcc = accToLectAcc();
@@ -146,7 +146,7 @@ void AccountSettingsPage::changePassword()
 
                 break;
             }
-            else if (choice == "N" || choice == "n")
+            else if (choice == "N")
             {
                 cout << "Aborting changes..." << endl;
                 break;
@@ -166,13 +166,13 @@ void AccountSettingsPage::show() {
 
         string choice = ui::getChoice();
 
-        if (choice == "N" || choice == "n") {
+        if (choice == "N") {
             changeName();
-        } else if (choice == "P" || choice == "p") {
+        } else if (choice == "P") {
             changePassword();
-        } else if (choice == "C" || choice == "c") {
+        } else if (choice == "C") {
             run = false;
-        } else if (choice == "Q" || choice == "q") {
+        } else if (choice == "Q") {
             ui::quit();
         }
     }

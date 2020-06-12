@@ -38,7 +38,7 @@ void LoginPage::show() {
 
         string choice = ui::getChoice();
 
-        if (choice == "E" || choice == "e") {
+        if (choice == "E") {
             string email = "";
             
             do {
@@ -47,7 +47,7 @@ void LoginPage::show() {
             } while (email == "");
 
             this->email = email;
-        } else if (choice == "P" || choice == "p") {
+        } else if (choice == "P") {
             string password = "";
 
             do {
@@ -65,7 +65,7 @@ void LoginPage::show() {
             } while (password == "");
 
             this->password = password;
-        } else if (choice == "S" || choice == "s") {
+        } else if (choice == "S") {
             int id = this->student ? this->system.getStudentID(email): this->system.getLecturerID(email);
 
             bool submit = false;
@@ -97,12 +97,12 @@ void LoginPage::show() {
                 run = false; //bring up next page here, if email matches password, the program returns from login page and the caller of login->show should check if (login.login()) should proceed to page after
                 cout << "You have been logged in successfully\n" << endl;
             } else if (exists) cout << "The password does not match the account identified by the e-mail " << email << endl;
-        } else if (choice == "F" || choice == "f") {
+        } else if (choice == "F") {
             cout << "Please contact the Information Technology Student Centre to reset your password" << endl;
-        } else if (choice == "C" || choice == "c") {
+        } else if (choice == "C") {
             this->loginSuccessful = false;
             run = false;
-        } else if (choice == "Q" || choice == "q") {
+        } else if (choice == "Q") {
             ui::quit();
         }
     }

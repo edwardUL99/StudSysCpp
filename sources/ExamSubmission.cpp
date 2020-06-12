@@ -6,7 +6,7 @@ using std::map;
 
 ExamSubmission::ExamSubmission(const Student &student, const Exam &exam) : student(student), exam(exam) {
     for (const ExamQuestion &question : exam.getQuestions()) {
-        this->submitted.emplace(question, ExamAnswer()); //calls default constructor for ExamAnswer (the answer is "Not answered") and asigns it to this question
+        this->submitted.emplace(question, ExamAnswer(exam.getID(), question.getQuestion())); //calls default constructor for ExamAnswer (the answer is "Not answered") and asigns it to this question
     }
 }
 

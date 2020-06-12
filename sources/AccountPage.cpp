@@ -25,16 +25,16 @@ void AccountPage::show() {
 
         string choice = ui::getChoice();
 
-        if (choice == "V" || choice == "v") {
+        if (choice == "V") {
             //show module choice page here
             cout << "Not implemented" << endl;
-        } else if (choice == "S" || choice == "s") {
+        } else if (choice == "S") {
             AccountSettingsPage settings(system, account);
             settings.show();
-        } else if (choice == "L" || choice == "l") {
+        } else if (choice == "L") {
             cout << "Logging out..." << endl;
             run = false;
-        } else if (choice == "Q" || choice == "q") {
+        } else if (choice == "Q") {
             ui::quit();
         }
     }

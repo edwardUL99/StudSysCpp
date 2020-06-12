@@ -2,6 +2,7 @@
 #include <iostream>
 #include <termios.h>
 #include <unistd.h>
+#include <cstring>
 
 using std::cin;
 using std::string;
@@ -24,6 +25,8 @@ string ui::getChoice()
             choice = choice.substr(0, 1);
         }
     }
+
+    choice[0] = toupper(choice[0]);
 
     return choice;
 }

@@ -7,7 +7,7 @@ namespace ui
 {
 
     /**
- * Gets user choice from stdin (cin), trims it to 1 letter and returns it
+ * Gets user choice from stdin (cin), trims it to 1 letter, capitalises it and returns it
  * E.g. if the options were (L)ecturer, (S)tudent
  * And user typed L, it would return L,
  * if typed (L), would trim parentheses and return L

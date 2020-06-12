@@ -65,12 +65,6 @@ CREATE TABLE IF NOT EXISTS exams (
 		ON UPDATE CASCADE 
 );
 
-/*You mightn't need this table if its just answer, you could just have it in exam_questions not as foreign key*/
-CREATE TABLE IF NOT EXISTS exam_answer_keys (
-	answer VARCHAR(50),
-	PRIMARY KEY(answer)
-);
-
 CREATE TABLE IF NOT EXISTS exam_questions (
 	exam INTEGER NOT NULL,
 	question VARCHAR(255),
@@ -78,9 +72,6 @@ CREATE TABLE IF NOT EXISTS exam_questions (
 	numberOfAnswers INTEGER,
 	PRIMARY KEY (exam, question),
 	FOREIGN KEY (exam) REFERENCES exams(id)
-		ON DELETE CASCADE 
-		ON UPDATE CASCADE,
-	FOREIGN KEY (answer_key) REFERENCES exam_answer_keys(answer)
 		ON DELETE CASCADE 
 		ON UPDATE CASCADE
 );

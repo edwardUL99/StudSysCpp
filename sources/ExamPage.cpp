@@ -56,7 +56,7 @@ void ExamPage::show() {
 
         string choice = ui::getChoice();
 
-        if ((choice == "A" || choice == "a") && answerable) {
+        if (choice == "A" && answerable) {
             displayQuestion(*qIterator);
             if (qIterator != questions.end()) {
                 qIterator++;
@@ -65,45 +65,45 @@ void ExamPage::show() {
                     answerable = false;
                 }
             }
-        } else if ((choice == "N" || choice == "n") && answerable) {
+        } else if (choice == "N" && answerable) {
             if (qIterator != questions.end()) {
                 qIterator++;
                 cout << "Next question--->" << endl;
             } else {
                 cout << "You are on the last question" << endl;
             }
-        } else if ((choice == "P" || choice == "p") && answerable && allowReverse) {
+        } else if (choice == "P" && answerable && allowReverse) {
             if (qIterator != questions.begin()) {
                 qIterator--;
                 cout << "<---Previous question" << endl;
             } else {
                 cout << "You are on the first question" << endl;
             }
-        } else if (choice == "S" || choice == "s") {
+        } else if (choice == "S") {
             while (true) {
                 cout << "Are you sure you want to submit the exam? You will not be able to go back and change answers. (Y/N)" << endl;
 
                 string choice = ui::getChoice();
 
-                 if (choice == "Y" || choice == "y") {
+                 if (choice == "Y") {
                     ExamGrade grade = this->answers.getExamGrade(); //calculate the exam grade 
                     
                     run = false;
                     break;
-                } else if (choice == "N" || choice == "n") {
+                } else if (choice == "N") {
                     break;
                 }
             }
-        } else if (choice == "C" || choice == "c") {
+        } else if (choice == "C") {
             while (true) {
                 cout << "Are you sure you want to cancel your exam and lose your progress? (Y/N)" << endl;
 
                 string choice = ui::getChoice();
 
-                if (choice == "Y" || choice == "y") {
+                if (choice == "Y") {
                     run = false;
                     break;
-                } else if (choice == "N" || choice == "n") {
+                } else if (choice == "N") {
                     break;
                 }
             }

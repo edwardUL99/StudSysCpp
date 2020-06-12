@@ -11,15 +11,20 @@
  */
 class ExamQuestion : public DatabaseItem {
     private:
+        int examID;
         std::string question;
         ExamAnswer key; //when doing UI and setting up an exam make sure you call ExamANswer("answer", true) to make it a key
         std::vector<ExamAnswer> possibleAnswers;
         int numberOfAnswers;
 
     public:
-        ExamQuestion(std::string question, ExamAnswer correctAnswer, std::vector<ExamAnswer> possibleAnswers = std::vector<ExamAnswer>(), int numberOfAnswers = 4);
+        ExamQuestion(int examID, std::string question, ExamAnswer correctAnswer, std::vector<ExamAnswer> possibleAnswers = std::vector<ExamAnswer>(), int numberOfAnswers = 4);
         
         virtual ~ExamQuestion() = default;
+
+        int getExamID() const;
+
+        void setExamID(int examID);
 
         std::string getQuestion() const;
 

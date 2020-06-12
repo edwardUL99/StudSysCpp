@@ -1,8 +1,16 @@
 #include "headers/ExamQuestion.h"
 #include "headers/NotAnswerKeyException.h"
 
-ExamQuestion::ExamQuestion(std::string question, ExamAnswer correctAnswer, std::vector<ExamAnswer> possibleAnswers, int numberOfAnswers) : question(question), possibleAnswers(possibleAnswers), numberOfAnswers(numberOfAnswers) {
+ExamQuestion::ExamQuestion(int examID, std::string question, ExamAnswer correctAnswer, std::vector<ExamAnswer> possibleAnswers, int numberOfAnswers) : examID(examID), question(question), key(correctAnswer), possibleAnswers(possibleAnswers), numberOfAnswers(numberOfAnswers) {
     setKey(correctAnswer);
+}
+
+int ExamQuestion::getExamID() const {
+    return examID;
+}
+
+void ExamQuestion::setExamID(int examID) {
+    this->examID = examID;
 }
 
 std::string ExamQuestion::getQuestion() const

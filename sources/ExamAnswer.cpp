@@ -2,11 +2,27 @@
 
 using std::string;
 
-ExamAnswer::ExamAnswer(string answer, bool key) : answer(answer), key(key) {}
+ExamAnswer::ExamAnswer(int examID, string question, string answer, bool key) : examID(examID), question(question), answer(answer), key(key) {}
 
-ExamAnswer::ExamAnswer(int answer, bool key) : answer(std::to_string(answer), key) {}
+ExamAnswer::ExamAnswer(int examID, string question, int answer, bool key) : ExamAnswer(examID, question, std::to_string(answer), key) {}
 
-ExamAnswer::ExamAnswer(float answer, bool key) : answer(std::to_string(answer), key) {}
+ExamAnswer::ExamAnswer(int examID, string question, float answer, bool key) : ExamAnswer(examID, question, std::to_string(answer), key) {}
+
+int ExamAnswer::getExamID() const {
+    return examID;
+}
+
+void ExamAnswer::setExamID(int examID) {
+    this->examID = examID;
+}
+
+string ExamAnswer::getQuestion() const {
+    return question;
+}
+
+void ExamAnswer::setQuestion(string question) {
+    this->question = question;
+}
 
 string ExamAnswer::getAnswer() const {
     return answer;

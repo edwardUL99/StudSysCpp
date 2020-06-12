@@ -54,7 +54,7 @@ class StudentSystem {
         bool addExam(const Exam &exam); //exam may need to change
         Exam getExam(int id);
         bool removeExam(const Exam &exam);
-        bool updateExam(int id, const Exam &updatedExam);
+        bool updateExam(const Exam &oldExam, const Exam &updatedExam);
         bool addExamGrade(const ExamGrade &examGrade);
         ExamGrade getExamGrade(const Student &student, const Exam &exam);
         bool removeExamGrade(const ExamGrade &examGrade);

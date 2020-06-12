@@ -10,15 +10,23 @@
  */
 class ExamAnswer : public DatabaseItem {
     private:
+        int examID;
+        std::string question;
         std::string answer;
         bool key;
 
     public:
-        ExamAnswer(std::string answer = "Not answered", bool key = false);
-        ExamAnswer(int answer, bool key = false);
-        ExamAnswer(float answer, bool key = false);
+        ExamAnswer(int examID, std::string question, std::string answer = "Not answered", bool key = false);
+        ExamAnswer(int examID, std::string question, int answer, bool key = false);
+        ExamAnswer(int examID, std::string question, float answer, bool key = false);
         
         virtual ~ExamAnswer() = default;
+
+        int getExamID() const;
+        void setExamID(int examID);
+
+        std::string getQuestion() const;
+        void setQuestion(std::string question);
 
         std::string getAnswer() const;
 
