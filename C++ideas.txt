@@ -1,0 +1,29 @@
+C++ idea to create a student record system kinds like sulis where if logged in as a tutor you can create assignments and submit scores for each student and logged in as a student can view these assignments etc. 
+
+Have grades for each student and ability to calculate total grades etc. 
+
+Manage all records for them etc.
+
+Have an ability for a tutor to create a quiz and give each question a key for the correct answer e.g multiple choice. Then when student takes it , it automatically corrects it, adds the result to their gradebook and submit the answers and scores to the lecturer responsibile like sulis exams
+
+A quiz class should hold all questions and answers, maybe a vector of Question objects and Question class could have the question and all possible choices plus correct one
+
+Have ability to go back/forward/view (un)answered questions maybe a timer too
+
+Maybe store quiz results and records in a database and have results folder with each folder holding different results for each student etc
+
+maybe use c++ and mysql with connectors, you learned mysql before it should be easy:
+	https://dev.mysql.com/doc/connector-cpp/8.0/en/
+	
+Have one class interface with this and have public methods as follows:
+	add/removeStudent(name, age), or by id as it could be a primary key
+	add/removeTutor (same as above)
+	add/remove/editStudentGrade(exam id, grade, other params etc.)
+	add/removeSubject/Course
+	add/removeAssignment/Quiz
+	getStudentMatching(params)
+	getGradesAndIds for exam
+	etc.
+	
+	more
+this interface would hide the code to execute queries etc
