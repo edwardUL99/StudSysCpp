@@ -29,6 +29,10 @@ void Exam::setID(int id) {
     this->id = id;
 }
 
+int Exam::getLastID() {
+    return last_id;
+}
+
 void Exam::setLastID(int last_id) {
     Exam::last_id = last_id;
 }

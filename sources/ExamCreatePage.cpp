@@ -6,6 +6,8 @@
 using std::vector;
 using std::string;
 
+//see github issues
+
 ExamCreatePage::ExamCreatePage(Module module, StudentSystem &system) : Page(system), module(module) {
     this->name = "";
     this->year = this->semester = this->numQuestions = 0;
@@ -22,7 +24,7 @@ void ExamCreatePage::edit() {
     bool numQuestChosen = false;
 
     while (run) {
-        cout << "Enter: (N)ame, (Y)ear, (S)emester, (N)umber Of Questions, (T)otal weight, (Q)uestions, (C)ancel, (D)one" << endl;
+        cout << "Enter: (N)ame, (Y)ear, (S)emester, Number (O)f Questions, (T)otal weight, (Q)uestions, (C)ancel, (D)one" << endl;
         
         string choice = ui::getChoice();
         
@@ -64,7 +66,7 @@ void ExamCreatePage::edit() {
             }
 
             this->semester = semester;
-        } else if (choice == "N") {
+        } else if (choice == "O") {
             cout << "Please enter the number of questions: " << endl;
 
             int numQuestions = ui::getInt();
@@ -99,12 +101,68 @@ void ExamCreatePage::edit() {
     }
 }
 
-vector<ExamAnswer> ExamCreatePage::createAnswers(ExamQuestion &question) {
+ExamAnswer ExamCreatePage::createAnswers(int examID, string question, int numberOfAnswers, vector<ExamAnswer> &answers) {
     //ui to create and return answers
+    answers.clear();
+
+    for (int i = 0; i < numberOfAnswers; i++) {
+        cout << "Enter answer " << i + 1 << ": " << endl;
+        string answer = ui::getString();
+
+        while (answer == "") {
+            cout << "Answer cannot be blank, please try again: " << endl;
+            answer = ui::getString();
+        }
+
+        answers.push_back(ExamAnswer(examID, question, answer));
+    }
+
+    cout << "Choose which answer is the correct answer (1-" << numberOfAnswers << "): " << endl;
+
+    int key = ui::getInt();
+
+    while (key < 1 || key > numberOfAnswers) {
+        cout << "Key must be between 1 and " << numberOfAnswers << ", please try again: " << endl;
+        key = ui::getInt();
+    }
+
+    ExamAnswer &akey = answers[key - 1];
+    akey.setKey(true);
+
+    return akey;
 }
 
 void ExamCreatePage::createQuestions() {
     //ui to create questions and answers and then populate the questions vector
+    int examID = Exam::getLastID(); //this will be the ID that will be used for this exam when it is created
+
+    for (int i = 0; i < numQuestions; i++) {
+        cout << "Please enter question " << i + 1 << ": " << endl;
+
+        string question = ui::getString();
+
+        while (question == "") {
+            cout << "Question cannot be blank, try again: " << endl;
+            question = ui::getString();
+        }
+
+        cout << "Please enter the number of answers for this question: " << endl;
+
+        int numAnswers = ui::getInt();
+
+        while (numAnswers < 2) {
+            cout << "You must have 2 or more answers, try again: " << endl;
+            numAnswers = ui::getInt();
+        }
+        
+        vector<ExamAnswer> answers;
+
+        cout << "Now you can choose the answers: " << endl;
+
+        ExamAnswer key = createAnswers(examID, question, numAnswers, answers);
+        
+        this->questions.push_back(ExamQuestion(examID, question, key, answers, numAnswers));
+    }
 } 
 
 void ExamCreatePage::submit() {

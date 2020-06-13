@@ -44,6 +44,10 @@ bool ExamAnswer::isKey() const {
     return key;
 }
 
+void ExamAnswer::setKey(bool key) {
+    this->key = key;
+}
+
 std::string ExamAnswer::getObjectType() const {
     return "ExamAnswer";
 }

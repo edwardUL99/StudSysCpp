@@ -42,6 +42,12 @@ std::vector<ExamAnswer> ExamQuestion::getPossibleAnswers() const
     return possibleAnswers;
 }
 
+void ExamQuestion::setPossibleAnswers(std::vector<ExamAnswer> &possibleAnswers) {
+    if (possibleAnswers.size() == numberOfAnswers) {
+        this->possibleAnswers = possibleAnswers;
+    } 
+}
+
 bool ExamQuestion::checkAnswer(const ExamAnswer &answer) const
 {
     return key == answer;

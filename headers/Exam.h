@@ -51,6 +51,7 @@ public:
     Exam(int id, Module module, std::string name, int year, int semester, int numberOfQuestions, float totalWeight, std::vector<ExamQuestion> questions = std::vector<ExamQuestion>());
     virtual ~Exam() = default;
     int getID() const;
+    static int getLastID();
     static void setLastID(int last_id);
     void setID(int id);
     Module getModule() const;

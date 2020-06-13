@@ -237,7 +237,7 @@ bool StudentSystem::addModule(const Module &module) {
 }
 
 Module StudentSystem::getModule(string code) {
-    boost::optional<Module> module;
+    boost::optional<Module> module = this->database.getModule(code);
 
     if (module.has_value()) {
         return module.get();

@@ -19,7 +19,7 @@ class ExamCreatePage : public Page {
         //edit methods here like change/add questions etc
 
         void edit();
-        std::vector<ExamAnswer> createAnswers(ExamQuestion &question);
+        ExamAnswer createAnswers(int examID, std::string question, int numberOfAnswers, std::vector<ExamAnswer> &answerVector); //returns the key
         void createQuestions();
         void submit();
 

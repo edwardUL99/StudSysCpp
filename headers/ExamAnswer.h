@@ -35,6 +35,7 @@ class ExamAnswer : public DatabaseItem {
         void setAnswer(float answer);
 
         bool isKey() const;
+        void setKey(bool key);
 
         virtual std::string getObjectType() const override;
         virtual Tables getTable() const override;
