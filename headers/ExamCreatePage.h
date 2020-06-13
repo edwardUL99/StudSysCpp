@@ -3,29 +3,30 @@
 
 #include "Exam.h"
 #include "Page.h"
+#include "Module.h"
 #include <string>
 #include <vector>
 
 class ExamCreatePage : public Page {
     private:
-        std::string moduleCode;
+        Module module;
         std::string name;
         int year;
         int semester;
         int numQuestions;
-        float weightPerQ;
         float totalWeight;
         std::vector<ExamQuestion> questions;
         //edit methods here like change/add questions etc
 
         void edit();
-        std::vector<ExamAnswer> createAnswers();
+        std::vector<ExamAnswer> createAnswers(ExamQuestion &question);
         void createQuestions();
+        void submit();
 
     public:
-        ExamCreatePage(StudentSystem &system);
+        ExamCreatePage(Module module, StudentSystem &system);
         virtual ~ExamCreatePage() = default;
-        Exam getCreatedExam() const;
+        bool checkPopulated() const;
         virtual void show() override;
 };
 
