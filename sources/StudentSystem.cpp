@@ -2,7 +2,7 @@
 #include "headers/DuplicateException.h"
 #include "headers/NotFoundException.h"
 #include "headers/KeyMismatch.h"
-#include <string>
+
 using std::string;
 
 StudentSystem::StudentSystem() {
@@ -20,6 +20,42 @@ void StudentSystem::restoreSystem() {
     this->examGrades = this->database.getAllExamGrades();
     this->lecturerAccounts = this->database.getAllLecturerAccounts();
     this->studentAccounts = this->database.getAllStudentAccounts();
+}
+
+string StudentSystem::recordLogin(const Account &account) {
+    string date = "FIRST_LOGIN";
+
+    ResultSet *res = NULL;
+
+    try {
+        const StudentAccount &student = dynamic_cast<const StudentAccount&>(account);
+        string id = std::to_string(student.getStudent().getID());
+
+        res = this->database.executeQuery("SELECT loginTime FROM student_logins WHERE loginTime >= ALL(SELECT loginTime FROM student_logins) AND id = " + id + ";");
+
+        if (res->next()) {
+            date = res->getString("loginTime");
+        }
+
+        this->database.execute("INSERT INTO student_logins (id) VALUES (" + id + ");");
+    } catch (std::bad_cast &b) {}
+
+    try {
+        const LecturerAccount &lecturer = dynamic_cast<const LecturerAccount&>(account);
+        string id = std::to_string(lecturer.getLecturer().getID());
+
+        res = this->database.executeQuery("SELECT loginTime FROM lecturer_logins WHERE loginTime >= ALL(SELECT loginTime FROM lecturer_logins) AND id = " + id + ";");
+
+        if (res->next()) {
+            date = res->getString("loginTime");
+        }
+
+        this->database.execute("INSERT INTO lecturer_logins (id) VALUES (" + id + ");");
+    } catch (std::bad_cast &b) {}
+
+    delete res;
+
+    return date;
 }
 
 bool StudentSystem::addLecturer(const Lecturer &lecturer) {

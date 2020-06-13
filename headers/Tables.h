@@ -20,6 +20,8 @@ enum Tables {
         MODULE_GRADES,
         LECTURER_ACCOUNTS,
         STUDENT_ACCOUNTS,
+        LECTURER_LOGINS,
+        STUDENT_LOGINS,
         MAX //used to "iterate" through Tables
 };
 

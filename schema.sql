@@ -132,4 +132,22 @@ CREATE TABLE IF NOT EXISTS student_accounts (
 		ON UPDATE CASCADE 
 );
 
+CREATE TABLE IF NOT EXISTS lecturer_logins (
+	id INTEGER,
+	loginTime DATETIME DEFAULT CURRENT_TIMESTAMP,
+	PRIMARY KEY (id, loginTime),
+	FOREIGN KEY (id) REFERENCES lecturer_accounts(id)
+		ON DELETE CASCADE
+		ON UPDATE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS student_logins (
+	id INTEGER,
+	loginTime DATETIME DEFAULT CURRENT_TIMESTAMP,
+	PRIMARY KEY (id, loginTime),
+	FOREIGN KEY (id) REFERENCES student_accounts(id)
+		ON DELETE CASCADE
+		ON UPDATE CASCADE
+);
+
 /*other tables below*/

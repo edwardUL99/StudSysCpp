@@ -48,6 +48,7 @@ DatabaseManager::DatabaseManager(string database, string url, string user, strin
 DatabaseManager::~DatabaseManager()
 {
     this->connection->close();
+    this->writeWarningsToLog();
     delete this->connection;
     delete this->stmt;
 }

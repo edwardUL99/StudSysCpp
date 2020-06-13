@@ -95,7 +95,15 @@ void LoginPage::show() {
             if (submit) {
                 this->loginSuccessful = true;
                 run = false; //bring up next page here, if email matches password, the program returns from login page and the caller of login->show should check if (login.login()) should proceed to page after
-                cout << "You have been logged in successfully\n" << endl;
+                cout << "You have been logged in successfully" << endl;
+
+                string date = this->student ? this->system.recordLogin(this->getStudentAccount()):this->system.recordLogin(this->getLecturerAccount());
+
+                if (date != "FIRST_LOGIN") {
+                    cout << "Last login for " << email << ": " << date << ". If the time is suspicious contact the ITT Support Centre immediately.\n" << endl;
+                } else {
+                    cout << "This is " + email + "'s first login\n" << endl;
+                }
             } else if (exists) cout << "The password does not match the account identified by the e-mail " << email << endl;
         } else if (choice == "F") {
             cout << "Please contact the Information Technology Student Centre to reset your password" << endl;
