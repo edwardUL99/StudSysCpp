@@ -5,6 +5,8 @@
 #include <cstring>
 
 using std::cin;
+using std::cout;
+using std::endl;
 using std::string;
 
 string ui::getChoice()
@@ -37,6 +39,19 @@ string ui::getString()
     getline(cin, ret);
 
     return ret;
+}
+
+string ui::getString(const std::function<bool(const string &)> &predicate, string retryMessage) {
+    string str = getString();
+
+    while (predicate(str)) {
+        if (retryMessage != "") {
+            cout << retryMessage << endl;
+            str = getString();
+        }
+    }
+
+    return str;
 }
 
 string ui::getSecureString()
