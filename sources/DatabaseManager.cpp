@@ -60,14 +60,14 @@ void DatabaseManager::setLastExamID()
     int id = 0;
     if (res->next())
     {
-        id = res->getInt("id");
+        id = res->getInt("id") + 1;
         if (id == 0)
             id = 1;
     } else {
         id = 1;
     }
 
-    Exam::setLastID(id + 1); //set the last id to use with new exams
+    Exam::setLastID(id); //set the last id to use with new exams
 }
 
 bool DatabaseManager::add(const Lecturer &lecturer)
@@ -77,7 +77,7 @@ bool DatabaseManager::add(const Lecturer &lecturer)
     try
     {
         this->stmt->execute(query);
-        return true;
+        return true; //if you reached this line execute ran without any exceptions, so lecturer was added successfully. This is the same with other add methods
     }
     catch (SQLException &e)
     {
@@ -484,7 +484,9 @@ bool DatabaseManager::update(string code, const Module &updatedModule)
 bool DatabaseManager::add(const ExamAnswer &answer) {
     try {
         string query = "INSERT INTO exam_answers (exam, question, answer) VALUES (" + std::to_string(answer.getExamID()) + ", '" + answer.getQuestion() + "', '" + answer.getAnswer() + "');";
-        return this->stmt->execute(query);
+        this->stmt->execute(query);
+        
+        return true;
     } catch (SQLException &e) {
         throw e;
     }
@@ -493,11 +495,13 @@ bool DatabaseManager::add(const ExamAnswer &answer) {
 bool DatabaseManager::add(const ExamQuestion &question) {
     try {
         string query = "INSERT INTO exam_questions (exam, question, answer_key, numberOfAnswers) VALUES (" + std::to_string(question.getExamID()) + ", '" + question.getQuestion() + "', '" + question.getKey().getAnswer() + "', " + std::to_string(question.getNumberOfAnswers()) + ");";
-        bool added = this->stmt->execute(query);
+        this->stmt->execute(query);
+        bool added = true; //if you reach this line, line above ran ssuccessfully
 
         for (const ExamAnswer &examAnswer : question.getPossibleAnswers())
-        {
-            added = added && add(examAnswer);
+        {   
+            bool answerAdded = add(examAnswer);
+            added = added && answerAdded;
         }
 
         return added;
@@ -510,17 +514,19 @@ bool DatabaseManager::add(const ExamQuestion &question) {
 //this may not work, you'll have to edit getExam too but remove may be fine because you have cascades
 bool DatabaseManager::add(const Exam &exam)
 {
-    string query = "INSERT INTO exams (module, name, year, semester, numberOfQuestions, weightPerQuestion, totalWeight) VALUES ('" + exam.getModule().getCode() + "', '" + exam.getName() + "', " + std::to_string(exam.getYear()) + ", " + std::to_string(exam.getSemester()) + ", " + std::to_string(exam.getNumberOfQuestions()) + ", " + std::to_string(exam.getWeightPerQuestion()) + ", " + std::to_string(exam.getTotalWeight()) + ");";
+    string query = "INSERT INTO exams (id, module, name, year, semester, numberOfQuestions, weightPerQuestion, totalWeight) VALUES (" + std::to_string(exam.getID()) + ", '" + exam.getModule().getCode() + "', '" + exam.getName() + "', " + std::to_string(exam.getYear()) + ", " + std::to_string(exam.getSemester()) + ", " + std::to_string(exam.getNumberOfQuestions()) + ", " + std::to_string(exam.getWeightPerQuestion()) + ", " + std::to_string(exam.getTotalWeight()) + ");";
 
     try
     {
         this->stmt->execute(query);
+        bool added = true;
 
         for (const ExamQuestion &examQuestion : exam.getQuestions())
         {
-            add(examQuestion);
+            bool questionAdded = add(examQuestion);
+            added = added && questionAdded;
         }
-        return true;
+        return added;
     }
     catch (SQLException &e)
     {
@@ -658,11 +664,13 @@ bool DatabaseManager::update(const ExamQuestion &oldQuestion, const ExamQuestion
         int index = 0;
 
         for (int i = 0; i < osize; i++, index++) {
-            updated = updated && update(oldAnswers[i], newAnswers[i]);
+            bool answersUpdated = update(oldAnswers[i], newAnswers[i]);
+            updated = updated && answersUpdated;
         }
 
         for (int i = index; i < nsize; i++) {
-            updated = updated && add(newAnswers[i]);
+            bool newAnswerAdded = add(newAnswers[i]);
+            updated = updated && newAnswerAdded;
         }
     } else if (nsize < osize) {
         throw "Answer count sizes not equal, thrown from private ExamQuestion update";

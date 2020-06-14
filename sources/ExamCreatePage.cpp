@@ -67,6 +67,26 @@ void ExamCreatePage::edit() {
 
             this->semester = semester;
         } else if (choice == "O") {
+            if (numQuestChosen) {
+                cout << "You have already chosen the number of questions, if you continue, any entered questions will be cleared." << endl;
+
+                bool dontContinue = false;
+
+                while (true) {
+                    cout << "Continue? (Y/N)" << endl;
+                    
+                    string choice = ui::getChoice();
+
+                    if (choice == "Y") {
+                        break;
+                    } else if (choice == "N") {
+                        dontContinue = true;
+                        break;
+                    }
+                }
+
+                if (dontContinue) continue;
+            }
             cout << "Please enter the number of questions: " << endl;
 
             int numQuestions = ui::getInt();

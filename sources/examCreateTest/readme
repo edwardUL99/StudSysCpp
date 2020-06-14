@@ -1,3 +1,0 @@
-When testing exam test move studsys from sources to root and move examTest to sources and compile with g++ *.cpp -l mysqlcppconn -o test
-
-see github issues
