@@ -1,7 +1,6 @@
 #ifndef ACCOUNT_H
 #define ACCOUNT_H
 
-#include "DatabaseItem.h"
 #include <string>
 
 class Account {
@@ -16,8 +15,8 @@ class Account {
         std::string getName() const; 
         void setName(std::string name);
         std::string getEmail() const;
-        virtual std::string getPassword() const;
-        virtual void setPassword(std::string pass);
+        std::string getPassword() const;
+        void setPassword(std::string pass);
 };
 
 #endif
