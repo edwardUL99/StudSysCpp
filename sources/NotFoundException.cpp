@@ -1,4 +1,5 @@
 #include "headers/NotFoundException.h"
+#include <iostream>
 
 using std::string;
 
@@ -7,6 +8,7 @@ NotFoundException::NotFoundException(string description) {
 }
 
 const char* NotFoundException::what() const throw() {
-    string s = description + " does not exist in the database";
+    static string s = description + " does not exist in the database";
+    std::cout << s << std::endl;
     return s.c_str();
 }

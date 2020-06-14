@@ -7,5 +7,6 @@ NotLoggedInException::NotLoggedInException(string message) {
 }
 
 const char* NotLoggedInException::what() const throw() {
-    return this->message.c_str();
+    static string s = this->message;
+    return s.c_str();
 }
