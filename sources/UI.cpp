@@ -47,8 +47,9 @@ string ui::getString(const std::function<bool(const string &)> &predicate, strin
     while (predicate(str)) {
         if (retryMessage != "") {
             cout << retryMessage << endl;
-            str = getString();
         }
+
+        str = getString();
     }
 
     return str;
