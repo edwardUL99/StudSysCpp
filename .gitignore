@@ -1,1 +1,5 @@
 *.o
+workspace.code-workspace
+studsys
+studsysdbadmin
+

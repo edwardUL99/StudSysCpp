@@ -33,6 +33,12 @@ class ExamQuestion : public DatabaseItem {
         bool addExamAnswer(const ExamAnswer &answer);
 
         std::vector<ExamAnswer> getPossibleAnswers() const;
+        /**
+         * Sets the possible answers for this question with the vector of answers provided
+         * Note that this method assumes that answers.size() matches numberOfAnswers
+         * There is no logic to check/handle the case where it does not match and therefore this is undefined behaviour and I cannot tell where/when this could cause problems, you've been warned!
+         */
+        void setPossibleAnswers(std::vector<ExamAnswer> &answers);
 
         /**
          * Checks if the answer given matches the correctAnswer

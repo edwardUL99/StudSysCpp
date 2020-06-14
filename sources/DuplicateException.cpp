@@ -5,6 +5,6 @@ DuplicateException::DuplicateException(std::string description) : entityDescript
 }
 
 const char *DuplicateException::what() const throw() {
-    std::string s = entityDescription + " already exists in the database";
+    static std::string s = entityDescription + " already exists in the database";
     return s.c_str();
 }

@@ -48,21 +48,26 @@ DatabaseManager::DatabaseManager(string database, string url, string user, strin
 DatabaseManager::~DatabaseManager()
 {
     this->connection->close();
+    this->writeWarningsToLog();
     delete this->connection;
     delete this->stmt;
 }
 
 void DatabaseManager::setLastExamID()
 {
-    ResultSet *res = executeQuery("SELECT AUTO_INCREMENT FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'student_sys' AND TABLE_NAME = 'exams';");
+    ResultSet *res = executeQuery("SELECT id FROM exams WHERE id >= ALL(SELECT id FROM exams);");
 
+    int id = 0;
     if (res->next())
     {
-        int id = res->getInt("AUTO_INCREMENT");
+        id = res->getInt("id");
         if (id == 0)
             id = 1;
-        Exam::setLastID(id); //set the last id to use with new exams
+    } else {
+        id = 1;
     }
+
+    Exam::setLastID(id + 1); //set the last id to use with new exams
 }
 
 bool DatabaseManager::add(const Lecturer &lecturer)
@@ -1089,7 +1094,7 @@ void DatabaseManager::writeWarningsToLog()
     tm *ltm = localtime(&now);
 
     stringstream s;
-    s << "./Logs/" << ltm->tm_mday << "_" << ltm->tm_mon + 1 << "_" << 1900 + ltm->tm_year << "_" << ltm->tm_hour << ":" << ltm->tm_min << ":" << ltm->tm_sec << "_Database_Warnings.log";
+    s << "../Logs/" << ltm->tm_mday << "_" << ltm->tm_mon + 1 << "_" << 1900 + ltm->tm_year << "_" << ltm->tm_hour << ":" << ltm->tm_min << ":" << ltm->tm_sec << "_Database_Warnings.log";
     string filename;
     s >> filename;
     ofstream writer;

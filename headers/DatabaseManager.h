@@ -31,8 +31,9 @@ class LecturerAccount;
 class StudentAccount;
 
 /**
- * The purpose of this class is to abstract out the database components and the database used from the rest of the system
+ * The purpose of this class is to abstract out most of the database components and the database used from the rest of the system
  * i.e. abstracting out the tasks for querying or inserting data into the database
+ *  Note, however methods for executing queries are still provided for any of the limited use cases
  */
 class DatabaseManager
 {
