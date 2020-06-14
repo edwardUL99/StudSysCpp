@@ -15,8 +15,8 @@ class StudentAccount: public DatabaseItem, public Account {
         StudentAccount(Student student, std::string pass);
         virtual ~StudentAccount() = default;
         Student getStudent() const;
-        virtual std::string getPassword() const;
-        virtual void setPassword(std::string pass);
+        std::string getPassword() const;
+        void setPassword(std::string pass);
         virtual std::string getObjectType() const override;
         virtual std::string getDescription() const override;
         virtual Tables getTable() const override;

@@ -15,8 +15,8 @@ class LecturerAccount : public DatabaseItem, public Account {
         LecturerAccount(Lecturer lecturer, std::string pass);
         virtual ~LecturerAccount() = default;
         Lecturer getLecturer() const;
-        virtual std::string getPassword() const;
-        virtual void setPassword(std::string pass);
+        std::string getPassword() const;
+        void setPassword(std::string pass);
         virtual std::string getObjectType() const override;
         virtual std::string getDescription() const override;
         virtual Tables getTable() const override;
