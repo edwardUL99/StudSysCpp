@@ -39,13 +39,7 @@ void AccountSettingsPage::changeName()
 {
     cout << "Enter the new name: " << endl;
 
-    string name = ui::getString();
-
-    while (name == "")
-    {
-        cout << "Name cannot be blank, please try again: " << endl;
-        name = ui::getString();
-    }
+    string name = ui::getString(ui::emptystrpred, ui::emptystrretrymsg);
 
     while (true)
     {

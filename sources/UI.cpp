@@ -51,7 +51,7 @@ string ui::getString(const std::function<bool(const string &)> &predicate, strin
 
         str = getString();
     }
-
+    
     return str;
 }
 
