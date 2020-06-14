@@ -1,10 +1,8 @@
 #ifndef ACCOUNT_H
 #define ACCOUNT_H
 
-#include "DatabaseItem.h"
 #include <string>
 
-//None of this is implemented yet, for now have separate methods for Lecturer and StudentAccounts
 class Account {
     protected:
         std::string name;
