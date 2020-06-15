@@ -49,6 +49,19 @@ CREATE TABLE IF NOT EXISTS modules (
 		ON UPDATE CASCADE
 );
 
+/*this is only a draft table*/
+CREATE TABLE IF NOT EXISTS student_registrations (
+	student INTEGER,
+	module CHAR(6),
+	PRIMARY KEY(student, module),
+	FOREIGN KEY (student) REFERENCES students(id)
+		ON DELETE CASCADE
+		ON UPDATE CASCADE,
+	FOREIGN KEY (module) REFERENCES modules(code)
+		ON DELETE CASCADE,
+		ON UPDATE CASCADE
+);
+
 CREATE TABLE IF NOT EXISTS exams (
 	id INTEGER NOT NULL,
 	module CHAR(6),
