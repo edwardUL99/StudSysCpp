@@ -50,50 +50,25 @@ bool Administration::login()
 void Administration::createCourse() {
     cout << "Please enter the course code: " << endl;
 
-    string code = ui::getString();
-
-    while (code.length() != 5) {
-        cout << "Course code must be 5 characters long, try again: " << endl;
-        code = ui::getString();
-    }
+    string code = ui::getString(ui::mcodepred, ui::mcoderetrymsg);
 
     cout << "Please enter the course type: " << endl;
 
-    string type = ui::getString();
-
-    while (type == "") {
-        cout << "The type cannot be blank, try again: " << endl;
-        type = ui::getString();
-    }
+    string type = ui::getString(ui::emptystrpred, ui::emptystrretrymsg);
 
     cout << "Please enter the name of the module: " << endl;
 
-    string name = ui::getString();
-
-    while (name == "") {
-        cout << "The name of the module must not be blank, try again: " << endl;
-        name = ui::getString();
-    }
+    string name = ui::getString(ui::emptystrpred, ui::emptystrretrymsg);
 
     cout << "Please enter the duration of the course in years: " << endl;
 
-    int duration = ui::getInt();
-
-    while (duration <= 0) {
-        cout << "Duration must be greater than 0, please try again: " << endl;
-        duration = ui::getInt();
-    }
+    int duration = ui::getInt(ui::intltezeropred, ui::ltezeroretrymsg);
 
     cout << "Please enter the course leader e-mail address: " << endl;
 
-    string email = ui::getString();
+    string email = ui::getString(ui::emptystrpred, ui::emptystrretrymsg);
 
-    while (email == "") {
-        cout << "The e-mail must not be blank, please try again: " << endl;
-        email = ui::getString();
-    }
-
-     try
+    try
     {
         Lecturer lecturer = system.getLecturer(system.getLecturerID(email));
         Course course(code, type, name, duration, lecturer);
@@ -121,12 +96,7 @@ void Administration::createCourse() {
 void Administration::removeCourse() {
     cout << "Please enter the course code to remove: " << endl;
 
-    string code = ui::getString();
-
-    while (code == "") {
-        cout << "The code cannot be empty, try again: " << endl;
-        code = ui::getString();
-    }
+    string code = ui::getString(ui::emptystrpred, ui::emptystrretrymsg);
 
     try
     {
@@ -151,43 +121,19 @@ void Administration::createModule()
 {
     cout << "Please enter the module code: " << endl;
 
-    string code = ui::getString();
-
-    while (code.length() != 6)
-    {
-        cout << "Module code must be 6 characters long, try again: " << endl;
-        code = ui::getString();
-    }
+    string code = ui::getString(ui::mcodepred, ui::mcoderetrymsg);
 
     cout << "Please enter the module name: " << endl;
 
-    string name = ui::getString();
-
-    while (name == "")
-    {
-        cout << "Name cannot be blank, try again: " << endl;
-        name = ui::getString();
-    }
+    string name = ui::getString(ui::emptystrpred, ui::emptystrretrymsg);
 
     cout << "Please enter the number of credits: " << endl;
 
-    int credits = ui::getInt();
-
-    while (credits <= 0)
-    {
-        cout << "Credits must be greater than 0, try again: " << endl;
-        credits = ui::getInt();
-    }
+    int credits = ui::getInt(ui::intltezeropred, ui::ltezeroretrymsg);
 
     cout << "Please enter the lecturer's e-mail address who's in charge of the module: " << endl;
 
-    string email = ui::getString();
-
-    while (email == "")
-    {
-        cout << "Email cannot be blank, try again: " << endl;
-        email = ui::getString();
-    }
+    string email = ui::getString(ui::emptystrpred, ui::emptystrretrymsg);
 
     try
     {
@@ -218,13 +164,7 @@ void Administration::removeModule()
 {
     cout << "Please enter the Module code to remove: " << endl;
 
-    string code = ui::getString();
-
-    while (code.length() != 6)
-    {
-        cout << "Module code must have 6 characters, try again: " << endl;
-        code = ui::getString();
-    }
+    string code = ui::getString(ui::mcodepred, ui::mcoderetrymsg);
 
     try
     {
@@ -249,44 +189,21 @@ void Administration::createStudent()
 {
     cout << "Please enter the student ID to be used for the new student: " << endl;
 
-    int id = ui::getInt();
-
-    while (id <= 0)
-    {
-        cout << "The ID must not be a negative number and must be greater than 0, try again: " << endl;
-        id = ui::getInt();
-    }
+    int id = ui::getInt(ui::intltezeropred, ui::ltezeroretrymsg);
 
     cout << "Please enter the Student's name: " << endl;
 
-    string name = ui::getString();
-
-    while (name == "")
-    {
-        cout << "The name must not be empty, please try again: " << endl;
-        name = ui::getString();
-    }
+    string name = ui::getString(ui::emptystrpred, ui::emptystrretrymsg);
 
     cout << "Please enter the Student's age: " << endl;
 
-    int age = ui::getInt();
-
-    while (age < 17)
-    {
-        cout << "The age of the student must be 17 or over, please try again: " << endl;
-        age = ui::getInt();
-    }
+    int age = ui::getInt([](const int &x) -> bool { return x < 17; }, "The age of the student must be 17 or over, please try again: ");
 
     string email = std::to_string(id) + "@student.mail.ie";
+
     cout << "Please enter the course code for which this Student will be enrolled in: " << endl;
 
-    string code = ui::getString();
-
-    while (code.length() != 5)
-    {
-        cout << "The course code must be 5 characters long, please try again: " << endl;
-        code = ui::getString();
-    }
+    string code = ui::getString(ui::ccodepred, ui::ccoderetrymsg);
 
     try
     {
@@ -295,19 +212,7 @@ void Administration::createStudent()
 
         cout << "Choose a password for this student: " << endl;
         
-        string password = ui::getSecureString();
-
-        while (password.length() < 8)
-        {
-            cout << "Password is too short, try again: " << endl;
-            password = ui::getSecureString();
-        }
-
-        while (password.length() > 16)
-        {
-            cout << "Password length is over 16 characters, try again:" << endl;
-            password = ui::getSecureString();
-        }
+        string password = ui::getSecureString(ui::passlengthpred, ui::passlengthretrymsg);
 
         StudentAccount account(student, password);
 
@@ -335,13 +240,7 @@ void Administration::removeStudent()
 {
     cout << "Please enter the student ID you wish to remove: " << endl;
 
-    int id = ui::getInt();
-
-    while (id <= 0)
-    {
-        cout << "The ID must not be a negative number and must be greater than 0, please try again" << endl;
-        id = ui::getInt();
-    }
+    int id = ui::getInt(ui::intltezeropred, ui::ltezeroretrymsg);
 
     try
     {
@@ -369,13 +268,7 @@ void Administration::resetStudentPassword()
 {
     cout << "Please enter the student ID for whom to reset the password: " << endl;
 
-    int id = ui::getInt();
-
-    while (id <= 0)
-    {
-        cout << "The ID must not be a negative number and must be greater than 0, please try again" << endl;
-        id = ui::getInt();
-    }
+    int id = ui::getInt(ui::intltezeropred, ui::ltezeroretrymsg);
 
     try
     {
@@ -385,19 +278,7 @@ void Administration::resetStudentPassword()
 
         cout << "Please enter the new password: " << endl;
 
-        string password = ui::getSecureString();
-
-        while (password.length() < 8)
-        {
-            cout << "Password is too short, try again: " << endl;
-            password = ui::getSecureString();
-        }
-
-        while (password.length() > 16)
-        {
-            cout << "Password length is over 16 characters, try again:" << endl;
-            password = ui::getSecureString();
-        }
+        string password = ui::getSecureString(ui::passlengthpred, ui::passlengthretrymsg);
 
         account.setPassword(password);
 
@@ -420,43 +301,19 @@ void Administration::createLecturer()
 {
     cout << "Please enter the lecturer ID to be used for the new lecturer: " << endl;
 
-    int id = ui::getInt();
-
-    while (id <= 0)
-    {
-        cout << "The ID must not be a negative number and must be greater than 0, try again: " << endl;
-        id = ui::getInt();
-    }
+    int id = ui::getInt(ui::intltezeropred, ui::ltezeroretrymsg);
 
     cout << "Please enter the Lecturer's first name: " << endl;
 
-    string fname = ui::getString();
-
-    while (fname == "")
-    {
-        cout << "The name must not be empty, please try again: " << endl;
-        fname = ui::getString();
-    }
+    string fname = ui::getString(ui::emptystrpred, ui::emptystrretrymsg);
 
     cout << "Please enter the Lecturer's second name: " << endl;
 
-    string sname = ui::getString();
-
-    while (sname == "")
-    {
-        cout << "The name must not be empty, please try again: " << endl;
-        sname = ui::getString();
-    }
+    string sname = ui::getString(ui::emptystrpred, ui::emptystrretrymsg);
 
     cout << "Please enter the Lecturer's age: " << endl;
 
-    int age = ui::getInt();
-
-    while (age < 24)
-    {
-        cout << "The age of the student must be 24 or over, please try again: " << endl;
-        age = ui::getInt();
-    }
+    int age = ui::getInt([](const int &x) -> bool { return x < 24; }, "The age of the lecturer must be 24 or over, please try again: ");
     
     string fnameLower = fname;
     fnameLower[0] = tolower(fname[0]);
@@ -466,13 +323,7 @@ void Administration::createLecturer()
     string email = fnameLower + "." + snameLower + "@staff.mail.ie";
     cout << "Please enter the department for which this Lecturer will teach in: " << endl;
 
-    string department = ui::getString();
-
-    while (department == "")
-    {
-        cout << "The department must not be blank, please try again: " << endl;
-        department = ui::getString();
-    }
+    string department = ui::getString(ui::emptystrpred, ui::emptystrretrymsg);
 
     try
     {
@@ -481,19 +332,7 @@ void Administration::createLecturer()
 
         cout << "Choose a password for this Lecturer: " << endl;
 
-        string password = ui::getSecureString();
-
-        while (password.length() < 8)
-        {
-            cout << "Password is too short, try again: " << endl;
-            password = ui::getSecureString();
-        }
-
-        while (password.length() > 16)
-        {
-            cout << "Password length is over 16 characters, try again:" << endl;
-            password = ui::getSecureString();
-        }
+        string password = ui::getSecureString(ui::passlengthpred, ui::passlengthretrymsg);
 
         LecturerAccount account(lecturer, password);
 
@@ -517,13 +356,7 @@ void Administration::removeLecturer()
 {
     cout << "Please enter the Lecturer ID you wish to remove: " << endl;
 
-    int id = ui::getInt();
-
-    while (id <= 0)
-    {
-        cout << "The ID must not be a negative number and must be greater than 0, please try again" << endl;
-        id = ui::getInt();
-    }
+    int id = ui::getInt(ui::intltezeropred, ui::ltezeroretrymsg);
 
     try
     {
@@ -552,13 +385,7 @@ void Administration::resetLecturerPassword()
 {
     cout << "Please enter the Lecturer ID for whom to reset the password: " << endl;
 
-    int id = ui::getInt();
-
-    while (id <= 0)
-    {
-        cout << "The ID must not be a negative number and must be greater than 0, please try again" << endl;
-        id = ui::getInt();
-    }
+    int id = ui::getInt(ui::intltezeropred, ui::ltezeroretrymsg);
 
     try
     {
@@ -568,19 +395,7 @@ void Administration::resetLecturerPassword()
 
         cout << "Please enter the new password: " << endl;
 
-        string password = ui::getSecureString();
-
-        while (password.length() < 8)
-        {
-            cout << "Password is too short, try again: " << endl;
-            password = ui::getSecureString();
-        }
-
-        while (password.length() > 16)
-        {
-            cout << "Password length is over 16 characters, try again:" << endl;
-            password = ui::getSecureString();
-        }
+        string password = ui::getSecureString(ui::passlengthpred, ui::passlengthretrymsg);
 
         account.setPassword(password);
 

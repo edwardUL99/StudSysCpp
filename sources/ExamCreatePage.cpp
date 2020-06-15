@@ -31,14 +31,7 @@ void ExamCreatePage::edit() {
         if (choice == "N") {
             cout << "Please enter the name of the exam: " << endl;
 
-            string name = ui::getString();
-
-            while (name == "") {
-                cout << "Name cannot be blank, try again" << endl;
-                name = ui::getString();
-            }
-
-            this->name = name;
+            this->name = ui::getString(ui::emptystrpred, ui::emptystrretrymsg);
         } else if (choice == "Y") {
             cout << "Please enter the year of the exam: " << endl;
 
@@ -58,12 +51,7 @@ void ExamCreatePage::edit() {
         } else if (choice == "S") {
             cout << "Please enter the semester(1-2): " << endl;
 
-            int semester = ui::getInt();
-
-            while (semester < 1 || semester > 2) {
-                cout << "The semester can only be 1 or 2, try again: " << endl;
-                semester = ui::getInt();
-            }
+            int semester = ui::getInt([](const int &x) -> bool { return x < 1 || x > 2; }, "The semester can only be 1 or 2, try again: ");
 
             this->semester = semester;
         } else if (choice == "O") {
@@ -127,24 +115,14 @@ ExamAnswer ExamCreatePage::createAnswers(int examID, string question, int number
 
     for (int i = 0; i < numberOfAnswers; i++) {
         cout << "Enter answer " << i + 1 << ": " << endl;
-        string answer = ui::getString();
-
-        while (answer == "") {
-            cout << "Answer cannot be blank, please try again: " << endl;
-            answer = ui::getString();
-        }
+        string answer = ui::getString(ui::emptystrpred, ui::emptystrretrymsg);
 
         answers.push_back(ExamAnswer(examID, question, answer));
     }
 
     cout << "Choose which answer is the correct answer (1-" << numberOfAnswers << "): " << endl;
 
-    int key = ui::getInt();
-
-    while (key < 1 || key > numberOfAnswers) {
-        cout << "Key must be between 1 and " << numberOfAnswers << ", please try again: " << endl;
-        key = ui::getInt();
-    }
+    int key = ui::getInt([numberOfAnswers](const int &x) -> bool { return x < 1 || x > numberOfAnswers; });
 
     ExamAnswer &akey = answers[key - 1];
     akey.setKey(true);
@@ -159,21 +137,11 @@ void ExamCreatePage::createQuestions() {
     for (int i = 0; i < numQuestions; i++) {
         cout << "Please enter question " << i + 1 << ": " << endl;
 
-        string question = ui::getString();
-
-        while (question == "") {
-            cout << "Question cannot be blank, try again: " << endl;
-            question = ui::getString();
-        }
+        string question = ui::getString(ui::emptystrpred, ui::emptystrretrymsg);
 
         cout << "Please enter the number of answers for this question: " << endl;
 
-        int numAnswers = ui::getInt();
-
-        while (numAnswers < 2) {
-            cout << "You must have 2 or more answers, try again: " << endl;
-            numAnswers = ui::getInt();
-        }
+        int numAnswers = ui::getInt([](const int &x) -> bool { return x < 2; }, "You must have 2 or more answers, try again: ");
         
         vector<ExamAnswer> answers;
 

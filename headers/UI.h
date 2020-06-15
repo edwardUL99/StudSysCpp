@@ -75,7 +75,7 @@ namespace ui
 
   /**
   * Gets a secure string and then uses the predicate function to loop around if it returns true when passed the string and optionally prints the retryMessage if provided
-  * @param predicate The predicate function. If it returns trie the function will requesr input until the predicate returns false
+  * @param predicate The predicate function. If it returns true the function will request input until the predicate returns false
   * @param retryMessage The optional message to prompt the user
   */
   std::string getSecureString(const std::function<bool(const std::string &)> &predicate, std::string retryMessage = "");
@@ -87,17 +87,43 @@ namespace ui
 
   const std::string passlengthretrymsg = "Please re-enter a password that is between 8 and 16 characters long: ";
 
-  //do the same here too
-
   /**
  * Gets integer from stdin
  */
   int getInt();
 
   /**
+   * Gets an int and uses the predicate to determine if it should try again
+   * @param predicate The predicate function. If it returns true the function will request input until the predicate returns false
+   * @param retryMessage The optional message to prompt the user
+   */
+  int getInt(const std::function<bool(const int &)> &predicate, const std::string retryMessage = "");
+
+
+  /**
+   * A predicate that can be used to retry input if the int input was <= 0
+   */
+  const std::function<bool(const int &)> intltezeropred = [](const int &x) -> bool { return x <= 0; };
+
+
+  /**
+   * A retry message to prompt user to re-enter an int > 0
+   */
+  const std::string ltezeroretrymsg = "Please re-enter a number that is greater than 0: ";
+
+  /**
  * Gets float from stdin
  */
   float getFloat();
+
+  /**
+   * Gets float and then uses predicate to decide if it needs to be re-entered
+   * @param predicate The predicate function. If it returns true the function will request input until the predicate returns false
+   * @param retryMessage The optional message to prompt the user
+  */
+  float getFloat(const std::function<bool(const float &)> &predicate, const std::string retryMessage = "");
+
+  const std::function<bool(const float &)> floatltezeropred = [](const float &x) -> bool { return x <= 0; };
 
   /**
  * Quits from the UI and ends the program

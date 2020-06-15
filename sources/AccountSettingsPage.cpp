@@ -81,13 +81,7 @@ void AccountSettingsPage::changePassword()
 {
     cout << "Please enter your current password to continue: " << endl;
 
-    string password = ui::getSecureString();
-
-    while (password.length() < 8 || password.length() > 16)
-    {
-        cout << "Password must be 8 or more characters and no longer than 16 characters, try again: " << endl;
-        password = ui::getSecureString();
-    }
+    string password = ui::getSecureString(ui::passlengthpred, ui::passlengthretrymsg);
 
     if (password != account.getPassword())
     {
@@ -97,18 +91,12 @@ void AccountSettingsPage::changePassword()
     {
         cout << "Enter the new password: " << endl;
 
-        string newPass = ui::getSecureString();
-
-        while (newPass.length() < 8 || password.length() > 16)
-        {
-            cout << "Password must be 8 or more characters and no longer than 16 characters, try again: " << endl;
-            newPass = ui::getSecureString();
-        }
+        string newPass = ui::getSecureString(ui::passlengthpred, ui::passlengthretrymsg);
 
         while (newPass == password)
         {
             cout << "The new password cannot be the same as the previous one, please try again: " << endl;
-            newPass = ui::getSecureString();
+            newPass = ui::getSecureString(ui::passlengthpred, ui::passlengthretrymsg);
         }
 
         while (true)

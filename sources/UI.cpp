@@ -94,12 +94,40 @@ int ui::getInt()
     return ret;
 }
 
+int ui::getInt(const std::function<bool(const int &)> &predicate, const string retryMessage) {
+    int num = getInt();
+
+    while (predicate(num)) {
+        if (retryMessage != "") {
+            cout << retryMessage << endl;
+        }
+
+        num = getInt();
+    }
+
+    return num;
+}
+
 float ui::getFloat()
 {
     float ret;
     cin >> ret;
     cin.ignore();
     return ret;
+}
+
+float ui::getFloat(const std::function<bool(const float &)> &predicate, const string retryMessage) {
+    float num = getInt();
+
+    while (predicate(num)) {
+        if (retryMessage != "") {
+            cout << retryMessage << endl;
+        }
+
+        num = getFloat();
+    }
+
+    return num;
 }
 
 void ui::quit() {
