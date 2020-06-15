@@ -54,7 +54,7 @@ namespace ui
   const std::string ccoderetrymsg = "Please re-enter a course code that is 5 characters long: ";
 
   /**
-   * An std::function object for checking if the string is empty 
+   * An std::function object for checking if the string is empty
    */
   const std::function<bool(const std::string &)> emptystrpred = [](const std::string &s) -> bool { return s == ""; };
 
@@ -72,6 +72,20 @@ namespace ui
  * Useful for inputting passwords
  */
   std::string getSecureString();
+
+  /**
+  * Gets a secure string and then uses the predicate function to loop around if it returns true when passed the string and optionally prints the retryMessage if provided
+  * @param predicate The predicate function. If it returns trie the function will requesr input until the predicate returns false
+  * @param retryMessage The optional message to prompt the user
+  */
+  std::string getSecureString(const std::function<bool(const std::string &)> &predicate, std::string retryMessage = "");
+
+  /*
+  * A default predicate which you can use to check if password length is between 8 and 16 characters
+  */
+  const std::function<bool(const std::string &)> passlengthpred = [](const std::string &s) -> bool { int length = s.length(); return length < 8 || length > 6; };
+
+  const std::string passlengthretrymsg = "Please re-enter a password that is between 8 and 16 characters long: ";
 
   //do the same here too
 

@@ -41,7 +41,7 @@ string ui::getString()
     return ret;
 }
 
-string ui::getString(const std::function<bool(const string &)> &predicate, string retryMessage) {
+string ui::getString(const std::function<bool(const string &)> &predicate, const string retryMessage) {
     string str = getString();
 
     while (predicate(str)) {
@@ -51,7 +51,7 @@ string ui::getString(const std::function<bool(const string &)> &predicate, strin
 
         str = getString();
     }
-    
+
     return str;
 }
 
@@ -70,6 +70,20 @@ string ui::getSecureString()
     tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
 
     return secure;
+}
+
+string ui::getSecureString(const std::function<bool(const string &)> &predicate, const string retryMessage) {
+  string pass = getSecureString();
+
+  while (predicate(pass)) {
+    if (retryMessage != "") {
+      cout << retryMessage << endl;
+    }
+
+    pass = getSecureString();
+  }
+
+  return pass;
 }
 
 int ui::getInt()
