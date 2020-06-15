@@ -197,7 +197,7 @@ void Administration::createStudent()
 
     cout << "Please enter the Student's age: " << endl;
 
-    int age = ui::getInt([](const int &x) -> bool { return x < 17; }, "The age of the student must be 17 or over, please try again: ");
+    int age = ui::getInt(Predicate<int>([](const int &x) -> bool { return x < 17; }), "The age of the student must be 17 or over, please try again: ");
 
     string email = std::to_string(id) + "@student.mail.ie";
 
@@ -313,7 +313,7 @@ void Administration::createLecturer()
 
     cout << "Please enter the Lecturer's age: " << endl;
 
-    int age = ui::getInt([](const int &x) -> bool { return x < 24; }, "The age of the lecturer must be 24 or over, please try again: ");
+    int age = ui::getInt(Predicate<int>([](const int &x) -> bool { return x < 24; }), "The age of the lecturer must be 24 or over, please try again: ");
     
     string fnameLower = fname;
     fnameLower[0] = tolower(fname[0]);

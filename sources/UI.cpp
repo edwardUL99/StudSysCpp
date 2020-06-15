@@ -41,7 +41,7 @@ string ui::getString()
     return ret;
 }
 
-string ui::getString(const std::function<bool(const string &)> &predicate, const string retryMessage) {
+string ui::getString(const Predicate<string> &predicate, const string retryMessage) {
     string str = getString();
 
     while (predicate(str)) {
@@ -72,7 +72,7 @@ string ui::getSecureString()
     return secure;
 }
 
-string ui::getSecureString(const std::function<bool(const string &)> &predicate, const string retryMessage) {
+string ui::getSecureString(const Predicate<string> &predicate, const string retryMessage) {
   string pass = getSecureString();
 
   while (predicate(pass)) {
@@ -94,7 +94,7 @@ int ui::getInt()
     return ret;
 }
 
-int ui::getInt(const std::function<bool(const int &)> &predicate, const string retryMessage) {
+int ui::getInt(const Predicate<int> &predicate, const string retryMessage) {
     int num = getInt();
 
     while (predicate(num)) {
@@ -116,7 +116,7 @@ float ui::getFloat()
     return ret;
 }
 
-float ui::getFloat(const std::function<bool(const float &)> &predicate, const string retryMessage) {
+float ui::getFloat(const Predicate<float> &predicate, const string retryMessage) {
     float num = getInt();
 
     while (predicate(num)) {

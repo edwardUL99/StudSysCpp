@@ -51,7 +51,7 @@ void ExamCreatePage::edit() {
         } else if (choice == "S") {
             cout << "Please enter the semester(1-2): " << endl;
 
-            int semester = ui::getInt([](const int &x) -> bool { return x < 1 || x > 2; }, "The semester can only be 1 or 2, try again: ");
+            int semester = ui::getInt(Predicate<int>([](const int &x) -> bool { return x < 1 || x > 2; }), "The semester can only be 1 or 2, try again: ");
 
             this->semester = semester;
         } else if (choice == "O") {
@@ -122,7 +122,7 @@ ExamAnswer ExamCreatePage::createAnswers(int examID, string question, int number
 
     cout << "Choose which answer is the correct answer (1-" << numberOfAnswers << "): " << endl;
 
-    int key = ui::getInt([numberOfAnswers](const int &x) -> bool { return x < 1 || x > numberOfAnswers; });
+    int key = ui::getInt(Predicate<int>([numberOfAnswers](const int &x) -> bool { return x < 1 || x > numberOfAnswers; }), "You must choose an answer between 1 and " + std::to_string(numberOfAnswers));
 
     ExamAnswer &akey = answers[key - 1];
     akey.setKey(true);
@@ -141,7 +141,7 @@ void ExamCreatePage::createQuestions() {
 
         cout << "Please enter the number of answers for this question: " << endl;
 
-        int numAnswers = ui::getInt([](const int &x) -> bool { return x < 2; }, "You must have 2 or more answers, try again: ");
+        int numAnswers = ui::getInt(Predicate<int>([](const int &x) -> bool { return x < 2; }), "You must have 2 or more answers, try again: ");
         
         vector<ExamAnswer> answers;
 
