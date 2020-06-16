@@ -12,6 +12,7 @@ enum Tables {
         STUDENTS,
         COURSES,
         MODULES,
+        STUDENT_REGISTRATIONS,
         EXAMS,
         EXAM_ANSWER_KEYS,
         EXAM_QUESTIONS,

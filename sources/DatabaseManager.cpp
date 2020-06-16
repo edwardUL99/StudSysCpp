@@ -4,6 +4,7 @@
 #include "headers/Lecturer.h"
 #include "headers/Course.h"
 #include "headers/Module.h"
+#include "headers/StudentRegistration.h"
 #include "headers/Exam.h"
 #include "headers/ExamGrade.h"
 #include "headers/ModuleGrade.h"
@@ -481,6 +482,26 @@ bool DatabaseManager::update(string code, const Module &updatedModule)
     }
 }
 
+bool DatabaseManager::add(const StudentRegistration &registration) {
+    string query = "INSERT INTO student_registrations (student, module) VALUES (" + std::to_string(registration.getStudent().getID()) + ", '" + registration.getModule().getCode() + "');"; 
+    
+    try {
+        this->stmt->execute(query);
+
+        return true;
+    } catch (SQLException &e) {
+        Warning w(e.what(), query);
+        this->warnings.push_back(w);
+        return false;
+    }
+}
+
+bool DatabaseManager::remove(const StudentRegistration &registration) {
+    string query = "DELETE FROM student_registrations WHERE student = " + std::to_string(registration.getStudent().getID()) + " AND module = '" + registration.getModule().getCode() + "';";
+
+    return this->executeUpdate(query) != 0;
+}
+
 bool DatabaseManager::add(const ExamAnswer &answer) {
     try {
         string query = "INSERT INTO exam_answers (exam, question, answer) VALUES (" + std::to_string(answer.getExamID()) + ", '" + answer.getQuestion() + "', '" + answer.getAnswer() + "');";
@@ -490,6 +511,39 @@ bool DatabaseManager::add(const ExamAnswer &answer) {
     } catch (SQLException &e) {
         throw e;
     }
+}
+
+boost::optional<StudentRegistration> DatabaseManager::getStudentRegistration(const Student &student, const Module &module) {
+    string query = "SELECT * FROM student_registrations WHERE student = " + std::to_string(student.getID()) + " AND module = '" + module.getCode() + "';";
+
+    ResultSet *res = executeQuery(query);
+
+    if (res->next()) {
+        Student s = getStudent(res->getInt("student")).get();
+        Module m = getModule(res->getString("module")).get();
+
+        return StudentRegistration(s, m);
+    }
+
+    delete res;
+
+    return boost::none;
+}
+
+std::vector<StudentRegistration> DatabaseManager::getAllStudentRegistrations() {
+    vector<StudentRegistration> registrations;
+
+    string query = "SELECT * FROM student_registrations;";
+
+    ResultSet *res = executeQuery(query);
+
+    while (res->next()) {
+        registrations.push_back(StudentRegistration(getStudent(res->getInt("student")).get(), getModule(res->getString("module")).get()));
+    }
+
+    delete res;
+
+    return registrations;
 }
 
 bool DatabaseManager::add(const ExamQuestion &question) {

@@ -4,11 +4,9 @@
 using std::string;
 
 NotFoundException::NotFoundException(string description) {
-    this->description = description;
+    this->description = description + " does not exist in the database";
 }
 
 const char* NotFoundException::what() const throw() {
-    static string s = description + " does not exist in the database";
-    std::cout << s << std::endl;
-    return s.c_str();
+    return description.c_str();
 }

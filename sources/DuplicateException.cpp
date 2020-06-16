@@ -1,10 +1,9 @@
 #include "headers/DuplicateException.h"
 #include <string>
 
-DuplicateException::DuplicateException(std::string description) : entityDescription(description) {
+DuplicateException::DuplicateException(std::string description) : entityDescription(description + " already exists in the database") {
 }
 
 const char *DuplicateException::what() const throw() {
-    static std::string s = entityDescription + " already exists in the database";
-    return s.c_str();
+    return entityDescription.c_str();
 }

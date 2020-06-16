@@ -22,6 +22,7 @@ class Student;
 class Lecturer;
 class Course;
 class Module;
+class StudentRegistration;
 class Exam;
 class ExamQuestion;
 class ExamAnswer;
@@ -65,6 +66,7 @@ public:
     bool add(const Course &course);
     bool add(const Student &student);
     bool add(const Module &module);
+    bool add(const StudentRegistration &registration);
     bool add(const Exam &exam);
     bool add(const ExamGrade &examGrade);
     bool add(const LecturerAccount &lecturerAccount); //const and reference here doesnt seem to work with inheritance because it caused bad_alloc as debigger said memory not accessible for e.g department
@@ -75,6 +77,7 @@ public:
     bool remove(const Course &course);
     bool remove(const Student &student);
     bool remove(const Module &module);
+    bool remove(const StudentRegistration &registration);
     bool remove(const Exam &exam); //can't have exam as const has in the removal process, in order to find the exam, the id for that exam needs to be retrieved from the database
     bool remove(const ExamGrade &examGrade);
     bool remove(const LecturerAccount &lecturerAccount);
@@ -96,6 +99,8 @@ public:
     boost::optional<Course> getCourse(std::string id);
     boost::optional<Student> getStudent(int id);
     boost::optional<Module> getModule(std::string code);
+    //This method is trivial, if you have the student and registration for paramter, you already have a StudentRegistration. A possible use is checking if the student is registered, ie if it has_value() they are registered
+    boost::optional<StudentRegistration> getStudentRegistration(const Student &student, const Module &module);
     boost::optional<Exam> getExam(int id);
     boost::optional<ExamGrade> getExamGrade(const Student &student, const Exam &exam);
     boost::optional<ModuleGrade> getModuleGrade(const Module &module, const Student &student);
@@ -107,6 +112,7 @@ public:
     std::vector<Course> getAllCourses();
     std::vector<Student> getAllStudents();
     std::vector<Module> getAllModules();
+    std::vector<StudentRegistration> getAllStudentRegistrations();
     std::vector<Exam> getAllExams();
     std::vector<ExamGrade> getAllExamGrades();
     std::vector<ModuleGrade> getAllModuleGrades();

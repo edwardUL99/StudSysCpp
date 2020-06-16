@@ -5,9 +5,9 @@ using std::string;
 KeyMismatch::KeyMismatch(string newKey, string oldKey) {
     this->newKey = newKey;
     this->oldKey = oldKey;
+    this->message = "Key " + newKey + " does not match Key " + oldKey;
 }
 
 const char* KeyMismatch::what() const throw() {
-    string s = "Key " + newKey + " does not match Key " + oldKey;
-    return s.c_str();
+    return message.c_str();
 }
