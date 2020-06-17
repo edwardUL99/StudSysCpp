@@ -21,20 +21,9 @@
 
 class StudentSystem {
     private:
-        std::vector<Lecturer> lecturers;
-        std::vector<Student> students;
-        std::vector<Course> courses;
-        std::vector<Module> modules;
-        std::vector<Exam> exams; //this may need to change
-        std::vector<ExamGrade> examGrades;
-        std::vector<ModuleGrade> moduleGrades;
-        std::vector<LecturerAccount> lecturerAccounts;
-        std::vector<StudentAccount> studentAccounts;
         DatabaseManager database;
-        void restoreSystem(); //restores system from database
 
     public:
-        StudentSystem();
         bool addLecturer(const Lecturer &lecturer);
         Lecturer getLecturer(int id);
         bool removeLecturer(const Lecturer &lecturer);
@@ -53,6 +42,19 @@ class StudentSystem {
         Module getModule(std::string code);
         bool removeModule(const Module &module);
         bool updateModule(std::string code, const Module &updaredModule);
+        /**
+         * Method to register a student to the specified module in the System 
+         * Note that you can't update a student registration directly, the best route
+         * is to call unregisterStudentModule and then register with the new one
+         */
+        bool registerStudentModule(const Student &student, const Module &module);
+        /**
+         * Method to remove a student's registration for a certain module
+         * This can also be used to update an existing registration
+         * i.e unregister and then register with the new module
+         */
+        bool unregisterStudentModule(const Student &student, const Module &module);
+        std::vector<Module> getStudentRegisteredModules(const Student &student);
         bool addExam(const Exam &exam); //exam may need to change
         Exam getExam(int id);
         bool removeExam(const Exam &exam);

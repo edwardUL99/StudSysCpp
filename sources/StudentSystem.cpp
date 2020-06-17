@@ -2,25 +2,9 @@
 #include "headers/DuplicateException.h"
 #include "headers/NotFoundException.h"
 #include "headers/KeyMismatch.h"
+#include "headers/StudentRegistration.h"
 
 using std::string;
-
-StudentSystem::StudentSystem() {
-    restoreSystem();
-}
-
-//mightn't need this
-void StudentSystem::restoreSystem() {
-    this->lecturers = this->database.getAllLecturers();
-    this->students = this->database.getAllStudents();
-    this->courses = this->database.getAllCourses();
-    this->modules = this->database.getAllModules();
-    this->moduleGrades = this->database.getAllModuleGrades();
-    this->exams = this->database.getAllExams();
-    this->examGrades = this->database.getAllExamGrades();
-    this->lecturerAccounts = this->database.getAllLecturerAccounts();
-    this->studentAccounts = this->database.getAllStudentAccounts();
-}
 
 string StudentSystem::recordLogin(const Account &account) {
     string date = "FIRST_LOGIN";
@@ -62,12 +46,7 @@ bool StudentSystem::addLecturer(const Lecturer &lecturer) {
     if (this->database.contains(lecturer)) {
         throw DuplicateException(lecturer.getDescription());
     } else {
-        if (this->database.add(lecturer)) {
-            this->lecturers.push_back(lecturer);
-            return true;
-        }
-
-        return false;
+        return this->database.add(lecturer);
     }
 }
 
@@ -82,19 +61,7 @@ Lecturer StudentSystem::getLecturer(int id) {
 }
 
 bool StudentSystem::removeLecturer(const Lecturer &lecturer) {
-    if (this->database.remove(lecturer)) {
-        for (auto it = this->lecturers.begin(); it != this->lecturers.end(); it++) {
-            const Lecturer l = *it;
-            if (l.getID() == lecturer.getID() && l.getEmail() == lecturer.getEmail()) {
-                this->lecturers.erase(it);
-                break;
-            }
-        }
-
-        return true;
-    }
-
-    return false;
+    return this->database.remove(lecturer);
 }
 
 bool StudentSystem::updateLecturer(int id, const Lecturer &updatedLecturer) {
@@ -119,14 +86,7 @@ bool StudentSystem::addStudent(const Student &student) {
     if (this->database.contains(student)) {
         throw DuplicateException(student.getDescription());
     } else {
-
-        if (this->database.add(student)) {
-            //check if added to database, then add to system
-            this->students.push_back(student);
-            return true;
-        }
-
-        return false;
+        return this->database.add(student);
     }
 }
 
@@ -141,19 +101,7 @@ Student StudentSystem::getStudent(int id) {
 }
 
 bool StudentSystem::removeStudent(const Student &student) {
-    if (this->database.remove(student)) {
-        for (auto it = this->students.begin(); it != this->students.end(); it++) {
-            const Student s = *it;
-            if (s.getID() == student.getID() && s.getEmail() == student.getEmail()) {
-                this->students.erase(it);
-                break;
-            }
-        }
-
-        return true;
-    }
-
-    return false;
+    return this->database.remove(student);
 }
 
 bool StudentSystem::updateStudent(int id, const Student &updatedStudent) {
@@ -178,13 +126,7 @@ bool StudentSystem::addCourse(const Course &course) {
     if (this->database.contains(course)) {
         throw DuplicateException(course.getDescription());
     } else {
-        if (this->database.add(course)) {
-            //check if added to database, then add to system
-            this->courses.push_back(course);
-            return true;
-        }
-
-        return false;
+        return this->database.add(course);
     }
 }
 
@@ -199,19 +141,7 @@ Course StudentSystem::getCourse(string id) {
 }
 
 bool StudentSystem::removeCourse(const Course &course) {
-    if (this->database.remove(course)) {
-        for (auto it = this->courses.begin(); it != this->courses.end(); it++) {
-            const Course c = *it;
-            if (c.getID() == course.getID()) {
-                this->courses.erase(it);
-                break;
-            }
-        }
-
-        return true;
-    }
-
-    return false;
+    return this->database.remove(course);
 }
 
 bool StudentSystem::updateCourse(string id, const Course &updatedCourse) {
@@ -226,13 +156,7 @@ bool StudentSystem::addModule(const Module &module) {
     if (this->database.contains(module)) {
         throw DuplicateException(module.getDescription());
     } else {
-        if (this->database.add(module)) {
-            //check if added to database, then add to system
-            this->modules.push_back(module);
-            return true;
-        }
-
-        return false;
+        return this->database.add(module);
     }
 }
 
@@ -247,19 +171,7 @@ Module StudentSystem::getModule(string code) {
 }
 
 bool StudentSystem::removeModule(const Module &module) {
-    if (this->database.remove(module)) {
-        for (auto it = this->modules.begin(); it != this->modules.end(); it++) {
-            const Module m = *it;
-            if (m.getCode() == module.getCode()) {
-                this->modules.erase(it);
-                break;
-            }
-        }
-
-        return true;
-    }
-
-    return false;
+    return this->database.remove(module);
 }
 
 bool StudentSystem::updateModule(string code, const Module &updatedModule) {
@@ -270,17 +182,39 @@ bool StudentSystem::updateModule(string code, const Module &updatedModule) {
     }
 }
 
+bool StudentSystem::registerStudentModule(const Student &student, const Module &module) {
+    StudentRegistration registration(student, module);
+
+    if (this->database.contains(registration)) {
+        throw DuplicateException(registration.getDescription());
+    } else {
+        return this->database.add(registration);
+    }
+}
+
+bool StudentSystem::unregisterStudentModule(const Student &student, const Module &module) {
+    StudentRegistration registration(student, module);
+
+    return this->database.remove(registration);
+}
+
+std::vector<Module> StudentSystem::getStudentRegisteredModules(const Student &student) {
+    std::vector<Module> modules;
+
+    for (const StudentRegistration &registration : this->database.getAllStudentRegistrations()) {
+        if (registration.getStudent().getID() == student.getID()) {
+            modules.push_back(registration.getModule());
+        }
+    }
+
+    return modules;
+}
+
 bool StudentSystem::addExam(const Exam &exam) {
     if (this->database.contains(exam)) {
         throw DuplicateException(exam.getDescription());
     } else {
-        if (this->database.add(exam)) {
-            //check if added to database, then add to system
-            this->exams.push_back(exam);
-            return true;
-        }
-
-        return false;
+        return this->database.add(exam);
     }
 }
 
@@ -295,19 +229,7 @@ Exam StudentSystem::getExam(int id) {
 }
 
 bool StudentSystem::removeExam(const Exam &exam) {
-    if (this->database.remove(exam)) {
-        for (auto it = this->exams.begin(); it != this->exams.end(); it++) {
-            const Exam e = *it;
-            if (e.getID() == exam.getID()) {
-                this->exams.erase(it);
-                break;
-            }
-        }
-
-        return true;
-    }
-
-    return false;
+    return this->database.remove(exam);
 }
 
 bool StudentSystem::updateExam(const Exam &oldExam, const Exam &updatedExam) {
@@ -322,14 +244,7 @@ bool StudentSystem::addExamGrade(const ExamGrade &examGrade) {
     if (this->database.contains(examGrade)) {
         throw DuplicateException(examGrade.getDescription());
     } else {
-        if (this->database.add(examGrade)) {
-            //check if added to database, then add to system
-            this->examGrades.push_back(examGrade);
-            
-            return true;
-        }
-
-        return false;
+        return this->database.add(examGrade);
     }
 }
 
@@ -344,19 +259,7 @@ ExamGrade StudentSystem::getExamGrade(const Student &student, const Exam &exam) 
 }
 
 bool StudentSystem::removeExamGrade(const ExamGrade &examGrade) {
-    if (this->database.remove(examGrade)) {
-        for (auto it = this->examGrades.begin(); it != this->examGrades.end(); it++) {
-            const ExamGrade eg = *it;
-            if (eg.getExam().getID() == examGrade.getExam().getID() && eg.getStudent().getID() == examGrade.getStudent().getID()) {
-                this->examGrades.erase(it);
-                break;
-            }
-        }
-
-        return true;
-    }
-
-    return false;
+    return this->database.remove(examGrade);
 }
 
 bool StudentSystem::updateExamGrade(const Student &student, const Exam &exam, const ExamGrade &updatedExamGrade) {
@@ -381,14 +284,7 @@ bool StudentSystem::addAccount(LecturerAccount lecturerAccount) {
     if (this->database.contains(lecturerAccount)) {
         throw DuplicateException(lecturerAccount.getDescription());
     } else {
-        if (this->database.add(lecturerAccount)) {
-            //check if added to database, then add to system
-            this->lecturerAccounts.push_back(lecturerAccount);
-
-            return true;
-        }
-
-        return false;
+        return this->database.add(lecturerAccount);
     }
 }
 
@@ -403,19 +299,7 @@ LecturerAccount StudentSystem::getLecturerAccount(int id) {
 }
 
 bool StudentSystem::removeAccount(const LecturerAccount &lecturerAccount) {
-    if (this->database.remove(lecturerAccount)) {
-        for (auto it = this->lecturerAccounts.begin(); it != this->lecturerAccounts.end(); it++) {
-            const LecturerAccount account = *it;
-            if (account.getLecturer().getID() == lecturerAccount.getLecturer().getID()) {
-                this->lecturerAccounts.erase(it);
-                break;
-            }
-        }
-
-        return true;
-    }
-
-    return false;
+    return this->database.remove(lecturerAccount);
 }
 
 bool StudentSystem::updateAccount(const Lecturer &lecturer, const LecturerAccount &updatedLecturerAccount) {
@@ -430,14 +314,7 @@ bool StudentSystem::addAccount(const StudentAccount &studentAccount) {
     if (this->database.contains(studentAccount)) {
         throw DuplicateException(studentAccount.getDescription());
     } else {
-        if (this->database.add(studentAccount)) {
-            //check if added to database, then add to system
-            this->studentAccounts.push_back(studentAccount);
-
-            return true;
-        }
-
-        return false;
+        return this->database.add(studentAccount);
     }
 }
 
@@ -452,19 +329,7 @@ StudentAccount StudentSystem::getStudentAccount(int id) {
 }
 
 bool StudentSystem::removeAccount(const StudentAccount &studentAccount) {
-    if (this->database.remove(studentAccount)) {
-        for (auto it = this->studentAccounts.begin(); it != this->studentAccounts.end(); it++) {
-            const StudentAccount account = *it;
-            if (account.getStudent().getID() == studentAccount.getStudent().getID()) {
-                this->studentAccounts.erase(it);
-                break;
-            }
-        }
-
-        return true;
-    }
-
-    return false;
+    return this->database.remove(studentAccount);
 }
 
 bool StudentSystem::updateAccount(const Student &student, const StudentAccount &updatedStudentAccount) {
