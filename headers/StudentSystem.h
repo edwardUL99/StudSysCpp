@@ -42,6 +42,7 @@ class StudentSystem {
         Module getModule(std::string code);
         bool removeModule(const Module &module);
         bool updateModule(std::string code, const Module &updaredModule);
+        std::vector<Module> getModules();
         /**
          * Method to register a student to the specified module in the System 
          * Note that you can't update a student registration directly, the best route

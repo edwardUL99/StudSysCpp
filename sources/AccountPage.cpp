@@ -1,5 +1,6 @@
 #include "headers/AccountPage.h"
 #include "headers/AccountSettingsPage.h"
+#include "headers/ModuleSelectorPage.h"
 #include "headers/UI.h"
 
 using std::string;
@@ -26,8 +27,8 @@ void AccountPage::show() {
         string choice = ui::getChoice();
 
         if (choice == "V") {
-            //show module choice page here
-            cout << "Not implemented" << endl;
+            ModuleSelectorPage selectPage(account, system);
+            selectPage.show();
         } else if (choice == "S") {
             AccountSettingsPage settings(system, account);
             settings.show();

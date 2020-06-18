@@ -297,6 +297,39 @@ void Administration::resetStudentPassword()
     }
 }
 
+void Administration::registerStudent() {
+    cout << "Enter the student ID of the student to register: " << endl;
+
+    int id = ui::getInt(ui::intltezeropred, ui::ltezeroretrymsg);
+
+    bool containsStudent = false;
+    bool containsModule = false;
+
+    string code;
+
+    try {
+        Student student = system.getStudent(id);
+        containsStudent = true; //if above executed without throwing, the student was found in the system
+
+        cout << "Enter the code of the module to register the student on: " << endl;
+
+        code = ui::getString(ui::emptystrpred, ui::emptystrretrymsg);
+
+        Module module = system.getModule(code);
+        containsModule = true; //if above executed without throwing, the module was found in the system
+
+        if (this->system.registerStudentModule(student, module)) {
+            cout << "Student " << id << " has been registered on Module " << code << "." << endl;
+        } else {
+            cout << "Registration was not successful, please try again later" << endl;
+        }
+    } catch (NotFoundException &nf) {
+        if (!containsStudent) cout << "Student with ID " << id << " not found in the system, exiting registration..." << endl;
+        if (!containsModule) cout << "Module with code " << code << " not fount in the system, exiting registration..." << endl;
+        return;
+    }
+}
+
 void Administration::createLecturer()
 {
     cout << "Please enter the lecturer ID to be used for the new lecturer: " << endl;
@@ -425,7 +458,7 @@ void Administration::show() {
     cout << "\nWelcome to the Administration Panel\n" << endl;
 
     while (run) {
-        cout << "(C)reate course/module/student/lecturer, (R)emove course/module/student/lecturer, Reset student/lecturer (P)assword, (L)ogout, (Q)uit" << endl;
+        cout << "(C)reate course/module/student/lecturer, (R)emove course/module/student/lecturer, Reset student/lecturer (P)assword, Register Student on (M)odule, (L)ogout, (Q)uit" << endl;
 
         string choice = ui::getChoice();
 
@@ -483,6 +516,8 @@ void Administration::show() {
                     break;
                 }
             }
+        } else if (choice == "M") {
+            registerStudent();
         } else if (choice == "L") {
             run = false;
         } else if (choice == "Q") {

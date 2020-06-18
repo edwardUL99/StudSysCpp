@@ -12,6 +12,7 @@ class Administration : public Page {
         void removeModule();
         void createStudent();
         void removeStudent();
+        void registerStudent();
         void resetStudentPassword();
         void createLecturer();
         void removeLecturer();

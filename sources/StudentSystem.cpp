@@ -182,6 +182,10 @@ bool StudentSystem::updateModule(string code, const Module &updatedModule) {
     }
 }
 
+std::vector<Module> StudentSystem::getModules() {
+    return this->database.getAllModules();
+}
+
 bool StudentSystem::registerStudentModule(const Student &student, const Module &module) {
     StudentRegistration registration(student, module);
 
