@@ -325,7 +325,7 @@ void Administration::registerStudent() {
         }
     } catch (NotFoundException &nf) {
         if (!containsStudent) cout << "Student with ID " << id << " not found in the system, exiting registration..." << endl;
-        if (!containsModule) cout << "Module with code " << code << " not fount in the system, exiting registration..." << endl;
+        if (!containsModule && code != "") cout << "Module with code " << code << " not found in the system, exiting registration..." << endl;
         return;
     }
 }
