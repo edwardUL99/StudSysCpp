@@ -4,8 +4,12 @@
 #include "Page.h"
 #include "Account.h"
 
-//This class is the first page arrived on after login
-class AccountPage : public Page {
+namespace ui
+{
+
+    //This class is the first page arrived on after login
+    class AccountPage : public Page
+    {
     private:
         Account &account;
 
@@ -14,6 +18,8 @@ class AccountPage : public Page {
         virtual ~AccountPage() = default;
         Account &getAccount();
         virtual void show() override;
-};
+    };
+
+} // namespace ui
 
 #endif

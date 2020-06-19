@@ -7,7 +7,11 @@
 
 class Module;
 
-class ModuleSelectorPage : public Page {
+namespace ui
+{
+
+    class ModuleSelectorPage : public Page
+    {
     private:
         Account &account;
         bool isStudentAccount() const;
@@ -17,6 +21,8 @@ class ModuleSelectorPage : public Page {
         ModuleSelectorPage(Account &account, StudentSystem &system);
         virtual ~ModuleSelectorPage() = default;
         virtual void show() override;
-};
+    };
+
+} // namespace ui
 
 #endif

@@ -4,13 +4,19 @@
 #include "Page.h"
 #include <string>
 
-class WelcomePage : public Page {
+namespace ui
+{
+
+    class WelcomePage : public Page
+    {
     private:
         static const std::string welcomeText;
 
     public:
         WelcomePage(StudentSystem &system);
         virtual void show() override;
-};
+    };
+
+} // namespace ui
 
 #endif

@@ -1,12 +1,11 @@
 #include "headers/ExamCreatePage.h"
-#include "headers/UI.h"
+#include "headers/UIUtils.h"
 #include "headers/NotFoundException.h"
 #include <time.h>
 
 using std::vector;
 using std::string;
-
-//see github issues
+using ui::ExamCreatePage;
 
 ExamCreatePage::ExamCreatePage(Module module, StudentSystem &system) : Page(system), module(module) {
     this->name = "";

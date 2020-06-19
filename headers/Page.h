@@ -2,14 +2,18 @@
 #define PAGE_H
 
 #include "StudentSystem.h"
-#include "UI.h"
+#include "UIUtils.h"
 #include <iostream>
 
-using std::cout;
 using std::cin;
+using std::cout;
 using std::endl;
 
-class Page {
+namespace ui
+{
+
+    class Page
+    {
     protected:
         StudentSystem &system;
 
@@ -17,6 +21,8 @@ class Page {
         Page(StudentSystem &studentSystem);
         virtual ~Page() = default;
         virtual void show() = 0; //page is an abstract class
-};
+    };
+
+} // namespace ui
 
 #endif

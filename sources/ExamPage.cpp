@@ -1,9 +1,10 @@
 #include "headers/ExamPage.h"
-#include "headers/UI.h"
+#include "headers/UIUtils.h"
 #include <cstring>
 
 using std::map;
 using std::string;
+using ui::ExamPage;
 
 ExamPage::ExamPage(Student student, Exam exam, StudentSystem &system, bool allowReverse) : Page(system), student(student), exam(exam), answers(student, exam), allowReverse(allowReverse)
 {

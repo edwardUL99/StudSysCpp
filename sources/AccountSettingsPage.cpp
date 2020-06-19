@@ -3,9 +3,10 @@
 #include "headers/StudentAccount.h"
 #include "headers/Lecturer.h"
 #include "headers/Student.h"
-#include "headers/UI.h"
+#include "headers/UIUtils.h"
 
 using std::string;
+using ui::AccountSettingsPage;
 
 AccountSettingsPage::AccountSettingsPage(StudentSystem &system, Account &account) : Page(system), account(account) {}
 

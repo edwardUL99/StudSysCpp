@@ -4,6 +4,7 @@
 #include "headers/Administration.h"
 
 using std::string;
+using ui::WelcomePage;
 
 const string WelcomePage::welcomeText = "Welcome to the Student Management System.\nIf you do not have an account, please contact the administration office.\nOtherwise, login following the commands below\n";
 

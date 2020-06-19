@@ -19,6 +19,7 @@ using std::boolalpha;
 using std::cin;
 using std::endl;
 using std::string;
+using ui::WelcomePage;
 
 int main(int argc, char **argv)
 {

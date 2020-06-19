@@ -6,11 +6,12 @@
 #include "headers/LecturerAccount.h"
 #include "headers/NotFoundException.h"
 #include "headers/DuplicateException.h"
-#include "headers/UI.h"
+#include "headers/UIUtils.h"
 
 #include <cstring>
 #include <string>
 using std::string;
+using ui::Administration;
 
 Administration::Administration(StudentSystem &studentSystem) : Page(studentSystem) {}
 

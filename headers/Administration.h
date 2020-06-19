@@ -3,7 +3,11 @@
 
 #include "Page.h"
 
-class Administration : public Page {
+namespace ui
+{
+
+    class Administration : public Page
+    {
     private:
         bool login();
         void createCourse();
@@ -17,11 +21,13 @@ class Administration : public Page {
         void createLecturer();
         void removeLecturer();
         void resetLecturerPassword();
-    
+
     public:
         Administration(StudentSystem &system);
         virtual ~Administration() = default;
         virtual void show() override;
-};
+    };
+
+} // namespace ui
 
 #endif

@@ -7,7 +7,11 @@
 #include <string>
 #include <vector>
 
-class ExamCreatePage : public Page {
+namespace ui
+{
+
+    class ExamCreatePage : public Page
+    {
     private:
         Module module;
         std::string name;
@@ -28,6 +32,8 @@ class ExamCreatePage : public Page {
         virtual ~ExamCreatePage() = default;
         bool checkPopulated() const;
         virtual void show() override;
-};
+    };
+
+} // namespace ui
 
 #endif

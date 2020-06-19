@@ -10,9 +10,13 @@
 
 //will have to make sure to pass in the student from account in AccountPage
 
-typedef typename std::vector<ExamQuestion>::iterator ExamIterator;
+namespace ui
+{
 
-class ExamPage : public Page {
+    typedef typename std::vector<ExamQuestion>::iterator ExamIterator;
+
+    class ExamPage : public Page
+    {
     private:
         ExamIterator qIterator;
         Student student; //the student taking the exam
@@ -26,6 +30,8 @@ class ExamPage : public Page {
         ExamPage(Student student, Exam exam, StudentSystem &system, bool allowReverse = true);
         virtual ~ExamPage() = default;
         virtual void show() override;
-};
+    };
+
+} // namespace ui
 
 #endif

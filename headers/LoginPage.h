@@ -7,7 +7,11 @@
 
 #include <string>
 
-class LoginPage : public Page {
+namespace ui
+{
+
+    class LoginPage : public Page
+    {
     private:
         std::string email;
         std::string password;
@@ -36,5 +40,7 @@ class LoginPage : public Page {
         StudentAccount getStudentAccount() const; //MAY BE GOOD IDEA TO HAVE POLYMORPHIC CLASSES AND HAVE ACCOUNT AS BASE CLASS SO CAN JUST HAVE getAccount RETURNING ACCOUNT AND IN THE SCREEN AFTER WELCOME, JUST ONE CONSTRUCTOR TAKING ACCOUNT PARAM RATHER THAN 2 DIFFERENT PAGES
         LecturerAccount getLecturerAccount() const;
         virtual void show() override;
-};
+    };
+
+} // namespace ui
 #endif

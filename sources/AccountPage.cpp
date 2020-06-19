@@ -1,9 +1,10 @@
 #include "headers/AccountPage.h"
 #include "headers/AccountSettingsPage.h"
 #include "headers/ModuleSelectorPage.h"
-#include "headers/UI.h"
+#include "headers/UIUtils.h"
 
 using std::string;
+using ui::AccountPage;
 
 AccountPage::AccountPage(StudentSystem &system, Account &account) : Page(system), account(account) {}
 

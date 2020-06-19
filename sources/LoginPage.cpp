@@ -3,6 +3,7 @@
 #include "headers/NotLoggedInException.h"
 
 using std::string;
+using ui::LoginPage;
 
 LoginPage::LoginPage(StudentSystem &system, bool student) : Page(system)
 {
