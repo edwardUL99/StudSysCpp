@@ -63,6 +63,8 @@ int main(int argc, char **argv) {
                     cout << "Invalid input, aborting..." << endl;
                     exit(-1);
                 }
+            } else if (strcmp(arg, "-t") == 0) { //use -t to run test code
+                stmt->execute("INSERT INTO courses (id, type, name, duration, course_leader) VALUES ('LM121', 'BSc', 'Computer Science', 6, 1);");
             } //other commands here
         }
     }
