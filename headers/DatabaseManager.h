@@ -150,6 +150,21 @@ public:
     std::vector<Warning> getWarnings() const;
     void clearWarnings();
     void writeWarningsToLog();
+
+    /**
+     * Locks the specified table so that no other process can write or read from it until it is updated
+     * @param table The table to lock
+     */
+    void lockTable(Tables table);
+    /**
+     * Unlocks any tables held by this current process/thread
+     */
+    void unlockTables();
+    /**
+     * Returns whether the specified table is locked 
+     * @param The table to check 
+     */
+    bool isTableLocked(Tables table);
 };
 
 #endif // DATABASE_MANAGER_H

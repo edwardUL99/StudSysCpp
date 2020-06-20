@@ -14,7 +14,6 @@ enum Tables {
         MODULES,
         STUDENT_REGISTRATIONS,
         EXAMS,
-        EXAM_ANSWER_KEYS,
         EXAM_QUESTIONS,
         EXAM_ANSWERS,
         EXAM_GRADES,

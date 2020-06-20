@@ -50,6 +50,7 @@ DatabaseManager::~DatabaseManager()
 {
     this->connection->close();
     this->writeWarningsToLog();
+    this->unlockTables();
     delete this->connection;
     delete this->stmt;
 }
@@ -72,18 +73,26 @@ void DatabaseManager::setLastExamID()
 }
 
 bool DatabaseManager::add(const Lecturer &lecturer)
-{
+{   
+    this->lockTable(LECTURERS);
+
     string query = "INSERT INTO lecturers (id, name, age, email, department) VALUES (" + std::to_string(lecturer.getID()) + ", '" + lecturer.getName() + "', " + std::to_string(lecturer.getAge()) + ", '" + lecturer.getEmail() + "', '" + lecturer.getDepartment() + "');";
 
     try
     {
         this->stmt->execute(query);
+
+        this->unlockTables();
+
         return true; //if you reached this line execute ran without any exceptions, so lecturer was added successfully. This is the same with other add methods
     }
     catch (SQLException &e)
     {
         Warning w(e.what(), query);
         this->warnings.push_back(w);
+        
+        this->unlockTables();
+        
         return false;
     }
 }
@@ -187,8 +196,14 @@ vector<Lecturer> DatabaseManager::getAllLecturers()
 
 bool DatabaseManager::remove(const Lecturer &lecturer)
 {
+    this->lockTable(LECTURERS);
+
     string email = "'" + lecturer.getEmail() + "'";
-    return this->stmt->executeUpdate("DELETE FROM lecturers WHERE email = " + email + ";") != 0;
+    bool removed = this->stmt->executeUpdate("DELETE FROM lecturers WHERE email = " + email + ";") != 0;
+
+    this->unlockTables();
+
+    return removed;
 }
 
 int DatabaseManager::getLecturerID(Lecturer &lecturer)
@@ -219,25 +234,38 @@ bool DatabaseManager::update(int id, const Lecturer &updatedLecturer)
     }
     else
     {
+        this->lockTable(LECTURERS);
+
         string query = "UPDATE lecturers SET name = '" + updatedLecturer.getName() + "', age = " + std::to_string(updatedLecturer.getAge()) + ", email = '" + updatedLecturer.getEmail() + "', department = '" + updatedLecturer.getDepartment() + "' WHERE id = " + std::to_string(id) + ";";
 
-        return executeUpdate(query) != 0;
+        bool updated = executeUpdate(query) != 0;
+
+        this->unlockTables();
+
+        return updated;
     }
 }
 
 bool DatabaseManager::add(const Course &course)
 {
+    this->lockTable(COURSES);
+
     string query = "INSERT INTO courses (id, type, name, duration, course_leader) VALUES ('" + course.getID() + "', '" + course.getType() + "', '" + course.getName() + "', " + std::to_string(course.getDuration()) + ", " + std::to_string(course.getCourseLeader().getID()) + ");";
 
     try
     {
         this->stmt->execute(query);
+
+        this->unlockTables();
+
         return true;
     }
     catch (SQLException &e)
     {
         Warning w(e.what(), query);
         this->warnings.push_back(w);
+
+        this->unlockTables();
         return false;
     }
 }
@@ -284,8 +312,14 @@ vector<Course> DatabaseManager::getAllCourses()
 
 bool DatabaseManager::remove(const Course &course)
 {
+    this->lockTable(COURSES);
+
     string c = "'" + course.getID() + "'";
-    return this->stmt->executeUpdate("DELETE FROM courses WHERE id = " + c + ";") != 0;
+    bool removed = this->stmt->executeUpdate("DELETE FROM courses WHERE id = " + c + ";") != 0;
+
+    this->unlockTables();
+
+    return removed;
 }
 
 bool DatabaseManager::update(string id, const Course &updatedCourse)
@@ -298,25 +332,39 @@ bool DatabaseManager::update(string id, const Course &updatedCourse)
     }
     else
     {
+        this->lockTable(COURSES);
+
         string query = "UPDATE courses SET type = '" + updatedCourse.getType() + "', name = '" + updatedCourse.getName() + "', duration = " + std::to_string(updatedCourse.getDuration()) + ", course_leader = " + std::to_string(updatedCourse.getCourseLeader().getID()) + " WHERE id = '" + id1 + "';";
 
-        return executeUpdate(query) != 0;
+        bool updated = executeUpdate(query) != 0;
+
+        this->unlockTables();
+
+        return updated;
     }
 }
 
 bool DatabaseManager::add(const Student &student)
 {
+    this->lockTable(STUDENTS);
+
     string query = "INSERT INTO students (id, name, age, email, qca, course) VALUES (" + std::to_string(student.getID()) + ", '" + student.getName() + "', " + std::to_string(student.getAge()) + ", '" + student.getEmail() + "', " + std::to_string(student.getQCA()) + ", '" + student.getCourse().getID() + "');";
 
     try
     {
         this->stmt->execute(query);
+        
+        this->unlockTables();
+        
         return true;
     }
     catch (SQLException &e)
     {
         Warning w(e.what(), query);
         this->warnings.push_back(w);
+
+        this->unlockTables();
+
         return false;
     }
 }
@@ -365,8 +413,14 @@ vector<Student> DatabaseManager::getAllStudents()
 
 bool DatabaseManager::remove(const Student &student)
 {
+    this->lockTable(STUDENTS);
+
     string email = "'" + student.getEmail() + "'";
-    return this->stmt->executeUpdate("DELETE FROM students WHERE email = " + email + ";") != 0;
+    bool removed = this->stmt->executeUpdate("DELETE FROM students WHERE email = " + email + ";") != 0;
+
+    this->unlockTables();
+
+    return removed;
 }
 
 bool DatabaseManager::update(int id, const Student &updatedStudent)
@@ -379,9 +433,14 @@ bool DatabaseManager::update(int id, const Student &updatedStudent)
     }
     else
     {
+        this->lockTable(STUDENTS);
+
         string query = "UPDATE students SET name = '" + updatedStudent.getName() + "', age = " + std::to_string(updatedStudent.getAge()) + ", email = '" + updatedStudent.getEmail() + "', qca = " + std::to_string(updatedStudent.getQCA()) + ", course = '" + updatedStudent.getCourse().getID() + "' WHERE id = " + std::to_string(id1) + ";";
 
-        return executeUpdate(query) != 0;
+        bool updated = executeUpdate(query) != 0;
+
+        this->unlockTables();
+        return updated;
     }
 }
 
@@ -405,17 +464,25 @@ int DatabaseManager::getStudentID(Student &student)
 
 bool DatabaseManager::add(const Module &module)
 {
+    this->lockTable(MODULES);
+
     string query = "INSERT INTO modules (code, name, credits, lecturer) VALUES ('" + module.getCode() + "', '" + module.getName() + "', " + std::to_string(module.getCredits()) + ", " + std::to_string(module.getLecturer().getID()) + ");";
 
     try
     {
         this->stmt->execute(query);
+
+        this->unlockTables();
+
         return true;
     }
     catch (SQLException &e)
     {
         Warning w(e.what(), query);
         this->warnings.push_back(w);
+        
+        this->unlockTables();
+
         return false;
     }
 }
@@ -462,8 +529,15 @@ vector<Module> DatabaseManager::getAllModules()
 
 bool DatabaseManager::remove(const Module &module)
 {
+    this->lockTable(MODULES);
+
     string query = "DELETE FROM modules WHERE code = '" + module.getCode() + "';";
-    return this->stmt->executeUpdate(query) != 0;
+    
+    bool removed = this->stmt->executeUpdate(query) != 0;
+
+    this->unlockTables();
+
+    return removed;
 }
 
 bool DatabaseManager::update(string code, const Module &updatedModule)
@@ -476,41 +550,49 @@ bool DatabaseManager::update(string code, const Module &updatedModule)
     }
     else
     {
+        this->lockTable(MODULES);
+
         string query = "UPDATE modules SET name = '" + updatedModule.getName() + "', credits = " + std::to_string(updatedModule.getCredits()) + ", lecturer = " + std::to_string(updatedModule.getLecturer().getID()) + " WHERE code = '" + code1 + "';";
 
-        return executeUpdate(query) != 0;
+        bool updated = executeUpdate(query) != 0;
+
+        this->unlockTables();
+
+        return updated;
     }
 }
 
 bool DatabaseManager::add(const StudentRegistration &registration) {
+    this->lockTable(STUDENT_REGISTRATIONS);
+
     string query = "INSERT INTO student_registrations (student, module) VALUES (" + std::to_string(registration.getStudent().getID()) + ", '" + registration.getModule().getCode() + "');"; 
     
     try {
         this->stmt->execute(query);
 
+        this->unlockTables();
+
         return true;
     } catch (SQLException &e) {
         Warning w(e.what(), query);
         this->warnings.push_back(w);
+
+        this->unlockTables();
+
         return false;
     }
 }
 
 bool DatabaseManager::remove(const StudentRegistration &registration) {
+    this->lockTable(STUDENT_REGISTRATIONS);
+    
     string query = "DELETE FROM student_registrations WHERE student = " + std::to_string(registration.getStudent().getID()) + " AND module = '" + registration.getModule().getCode() + "';";
 
-    return this->executeUpdate(query) != 0;
-}
+    bool removed = this->executeUpdate(query) != 0;
 
-bool DatabaseManager::add(const ExamAnswer &answer) {
-    try {
-        string query = "INSERT INTO exam_answers (exam, question, answer) VALUES (" + std::to_string(answer.getExamID()) + ", '" + answer.getQuestion() + "', '" + answer.getAnswer() + "');";
-        this->stmt->execute(query);
-        
-        return true;
-    } catch (SQLException &e) {
-        throw e;
-    }
+    this->unlockTables();
+
+    return removed;
 }
 
 boost::optional<StudentRegistration> DatabaseManager::getStudentRegistration(const Student &student, const Module &module) {
@@ -546,6 +628,17 @@ std::vector<StudentRegistration> DatabaseManager::getAllStudentRegistrations() {
     return registrations;
 }
 
+bool DatabaseManager::add(const ExamAnswer &answer) {
+    try {
+        string query = "INSERT INTO exam_answers (exam, question, answer) VALUES (" + std::to_string(answer.getExamID()) + ", '" + answer.getQuestion() + "', '" + answer.getAnswer() + "');";
+        this->stmt->execute(query);
+        
+        return true;
+    } catch (SQLException &e) {
+        throw e;
+    }
+}
+
 bool DatabaseManager::add(const ExamQuestion &question) {
     try {
         string query = "INSERT INTO exam_questions (exam, question, answer_key, numberOfAnswers) VALUES (" + std::to_string(question.getExamID()) + ", '" + question.getQuestion() + "', '" + question.getKey().getAnswer() + "', " + std::to_string(question.getNumberOfAnswers()) + ");";
@@ -568,6 +661,10 @@ bool DatabaseManager::add(const ExamQuestion &question) {
 //this may not work, you'll have to edit getExam too but remove may be fine because you have cascades
 bool DatabaseManager::add(const Exam &exam)
 {
+    this->lockTable(EXAMS);
+    this->lockTable(EXAM_QUESTIONS);
+    this->lockTable(EXAM_ANSWERS);
+
     string query = "INSERT INTO exams (id, module, name, year, semester, numberOfQuestions, weightPerQuestion, totalWeight) VALUES (" + std::to_string(exam.getID()) + ", '" + exam.getModule().getCode() + "', '" + exam.getName() + "', " + std::to_string(exam.getYear()) + ", " + std::to_string(exam.getSemester()) + ", " + std::to_string(exam.getNumberOfQuestions()) + ", " + std::to_string(exam.getWeightPerQuestion()) + ", " + std::to_string(exam.getTotalWeight()) + ");";
 
     try
@@ -580,12 +677,18 @@ bool DatabaseManager::add(const Exam &exam)
             bool questionAdded = add(examQuestion);
             added = added && questionAdded;
         }
+
+        this->unlockTables();
+
         return added;
     }
     catch (SQLException &e)
     {
         Warning w(e.what(), query);
         this->warnings.push_back(w);
+
+        this->unlockTables();
+
         return false;
     }
 }
@@ -671,6 +774,10 @@ vector<Exam> DatabaseManager::getAllExams()
 
 bool DatabaseManager::remove(const Exam &exam)
 {
+    this->lockTable(EXAMS);
+    this->lockTable(EXAM_QUESTIONS);
+    this->lockTable(EXAM_ANSWERS);
+
     string module = "'" + exam.getModule().getCode() + "'";
     string name = "'" + exam.getName() + "'";
     string numQuestions = std::to_string(exam.getNumberOfQuestions());
@@ -678,6 +785,8 @@ bool DatabaseManager::remove(const Exam &exam)
     string totalW = std::to_string(exam.getTotalWeight()); //most likely to be only one result if all attributes match
 
     bool deleted = this->stmt->executeUpdate("DELETE FROM exams WHERE module = " + module + " AND " + "name = " + name + " AND " + "numberOfQuestions = " + numQuestions + " AND " + "weightPerQuestion = " + weight + " AND " + "totalWeight = " + totalW + ";") != 0;
+
+    this->unlockTables();
 
     return deleted;
 }
@@ -727,6 +836,8 @@ bool DatabaseManager::update(const ExamQuestion &oldQuestion, const ExamQuestion
             updated = updated && newAnswerAdded;
         }
     } else if (nsize < osize) {
+        this->unlockTables();
+
         throw "Answer count sizes not equal, thrown from private ExamQuestion update";
     }
 
@@ -744,6 +855,10 @@ bool DatabaseManager::update(const Exam &oldExam, const Exam &updatedExam)
     }
     else
     {   
+        this->lockTable(EXAMS);
+        this->lockTable(EXAM_QUESTIONS);
+        this->lockTable(EXAM_ANSWERS);
+
         string query = "UPDATE exams SET module = '" + updatedExam.getModule().getCode() + "', name = '" + updatedExam.getName() + "', year = " + std::to_string(updatedExam.getYear()) + ", semester = " + std::to_string(updatedExam.getSemester()) + ", numberOfQuestions = " + std::to_string(updatedExam.getNumberOfQuestions()) + ", weightPerQuestion = " + std::to_string(updatedExam.getWeightPerQuestion()) + ", totalWeight = " + std::to_string(updatedExam.getTotalWeight()) + " WHERE id = " + std::to_string(id) + ";";
 
         bool updated = executeUpdate(query) != 0;
@@ -768,10 +883,14 @@ bool DatabaseManager::update(const Exam &oldExam, const Exam &updatedExam)
                     add(newQuestions[i]);
                 }
             } else {
+                this->unlockTables();
+
                 throw "Size differences between number of exam questions between old and updated exam";
             }
 
         }
+
+        this->unlockTables();
 
         return updated;
     }
@@ -802,6 +921,8 @@ int DatabaseManager::getExamID(Exam &exam)
 
 bool DatabaseManager::add(const ExamGrade &examGrade)
 {
+    this->lockTable(EXAM_GRADES);
+
     Exam exam = examGrade.getExam();
     int id = exam.getID();
     string query = "INSERT INTO exam_grades (student, exam, grade) VALUES (" + std::to_string(examGrade.getStudent().getID()) + ", " + std::to_string(id) + ", " + std::to_string(examGrade.getGrade()) + ");";
@@ -809,12 +930,18 @@ bool DatabaseManager::add(const ExamGrade &examGrade)
     try
     {
         this->stmt->execute(query);
+        
+        this->unlockTables();
+
         return true;
     }
     catch (SQLException &e)
     {
         Warning w(e.what(), query);
         this->warnings.push_back(w);
+
+        this->unlockTables();
+
         return false;
     }
 }
@@ -861,8 +988,14 @@ vector<ExamGrade> DatabaseManager::getAllExamGrades()
 
 bool DatabaseManager::remove(const ExamGrade &examGrade)
 {
+    this->lockTable(EXAM_GRADES);
+
     string query = "DELETE FROM exam_grades WHERE student = " + std::to_string(examGrade.getStudent().getID()) + " AND exam = " + std::to_string(examGrade.getExam().getID()) + ";";
-    return this->stmt->executeUpdate(query) != 0;
+    bool removed = this->stmt->executeUpdate(query) != 0;
+
+    this->unlockTables();
+
+    return removed;
 }
 
 bool DatabaseManager::update(const Student &student, const Exam &exam, const ExamGrade &updatedExamGrade)
@@ -880,24 +1013,34 @@ bool DatabaseManager::update(const Student &student, const Exam &exam, const Exa
     }
     else
     {
+        this->lockTable(EXAM_GRADES);
+
         string query = "UPDATE exam_grades SET grade = " + std::to_string(updatedExamGrade.getGrade()) + " WHERE student = " + std::to_string(sId1) + " AND exam = " + std::to_string(eId1) + ";";
 
-        return executeUpdate(query) != 0;
+        bool updated = executeUpdate(query) != 0;
+
+        this->unlockTables();
+
+        return updated;
     }
 }
 
 void DatabaseManager::calculateModuleGrades(std::string module, const Student &student)
 {
+    this->lockTable(MODULE_GRADES);
+
     string query = "CALL calculate_grades('" + module + "', " + std::to_string(student.getID()) + ");";
 
     try
     {
         this->stmt->execute(query);
+        this->unlockTables();
     }
     catch (SQLException &e)
     {
         Warning w(e.what(), query);
         warnings.push_back(w);
+        this->unlockTables();
     }
 }
 
@@ -943,18 +1086,25 @@ vector<ModuleGrade> DatabaseManager::getAllModuleGrades()
 }
 
 bool DatabaseManager::add(const LecturerAccount &lecturerAccount)
-{
+{   
+    this->lockTable(LECTURER_ACCOUNTS);
     string query = "INSERT INTO lecturer_accounts (id, pass) VALUES (" + std::to_string(lecturerAccount.getLecturer().getID()) + ", '" + lecturerAccount.getPassword() + "');";
 
     try
     {
         this->stmt->execute(query);
+
+        this->unlockTables();
+
         return true;
     }
     catch (SQLException &e)
     {
         Warning w(e.what(), query);
         this->warnings.push_back(w);
+
+        this->unlockTables();
+
         return false;
     }
 }
@@ -997,8 +1147,14 @@ vector<LecturerAccount> DatabaseManager::getAllLecturerAccounts()
 }
 
 bool DatabaseManager::remove(const LecturerAccount &lecturerAccount)
-{
-    return executeUpdate("DELETE FROM lecturer_accounts WHERE id = " + std::to_string(lecturerAccount.getLecturer().getID()) + ";") != 0;
+{   
+    this->lockTable(LECTURER_ACCOUNTS);
+    
+    bool removed = executeUpdate("DELETE FROM lecturer_accounts WHERE id = " + std::to_string(lecturerAccount.getLecturer().getID()) + ";") != 0;
+
+    this->unlockTables();
+
+    return removed;
 }
 
 bool DatabaseManager::update(const Lecturer &lecturer, const LecturerAccount &updatedLecturerAccount)
@@ -1011,26 +1167,39 @@ bool DatabaseManager::update(const Lecturer &lecturer, const LecturerAccount &up
         throw KeyMismatch(std::to_string(id), std::to_string(id1));
     }
     else
-    {
+    {   
+        this->lockTable(LECTURER_ACCOUNTS);
         string query = "UPDATE lecturer_accounts SET pass = '" + updatedLecturerAccount.getPassword() + "' WHERE id = " + std::to_string(id1) + ";";
 
-        return executeUpdate(query) != 0;
+        bool updated = executeUpdate(query) != 0;
+
+        this->unlockTables();
+
+        return updated;
     }
 }
 
 bool DatabaseManager::add(const StudentAccount &studentAccount)
 {
+    this->lockTable(STUDENT_ACCOUNTS);
+
     string query = "INSERT INTO student_accounts (id, pass) VALUES (" + std::to_string(studentAccount.getStudent().getID()) + ", '" + studentAccount.getPassword() + "');";
 
     try
     {
         this->stmt->execute(query);
+       
+        this->unlockTables();
+       
         return true;
     }
     catch (SQLException &e)
     {
         Warning w(e.what(), query);
         this->warnings.push_back(w);
+
+        this->unlockTables();
+
         return false;
     }
 }
@@ -1073,8 +1242,14 @@ vector<StudentAccount> DatabaseManager::getAllStudentAccounts()
 }
 
 bool DatabaseManager::remove(const StudentAccount &studentAccount)
-{
-    return executeUpdate("DELETE FROM student_accounts WHERE id = " + std::to_string(studentAccount.getStudent().getID()) + ";") != 0;
+{   
+    this->lockTable(STUDENT_ACCOUNTS);
+
+    bool removed = executeUpdate("DELETE FROM student_accounts WHERE id = " + std::to_string(studentAccount.getStudent().getID()) + ";") != 0;
+
+    this->unlockTables();
+
+    return removed;
 }
 
 bool DatabaseManager::update(const Student &student, const StudentAccount &updatedStudentAccount)
@@ -1088,9 +1263,15 @@ bool DatabaseManager::update(const Student &student, const StudentAccount &updat
     }
     else
     {
+        this->lockTable(STUDENT_ACCOUNTS);
+
         string query = "UPDATE student_accounts SET pass = '" + updatedStudentAccount.getPassword() + "' WHERE id = " + std::to_string(id1) + ";";
 
-        return executeUpdate(query) != 0;
+        bool updated = executeUpdate(query) != 0;
+
+        this->unlockTables();
+
+        return updated;
     }
 }
 
@@ -1170,4 +1351,24 @@ void DatabaseManager::writeWarningsToLog()
         }
         writer.flush();
     }
+}
+
+void DatabaseManager::lockTable(Tables table) {
+    this->stmt->execute("LOCK TABLE " + DatabaseManager::tableNames.at(table) + " WRITE;");
+}
+
+void DatabaseManager::unlockTables() {
+    this->stmt->execute("UNLOCK TABLES;");
+}
+
+bool DatabaseManager::isTableLocked(Tables table) {
+    string tname = "'" + DatabaseManager::tableNames.at(table) + "'";
+    string dbname = DB;
+    ResultSet *res = this->stmt->executeQuery("SHOW OPEN TABLES IN " + dbname + "WHERE Table = " + tname + " AND In_use > 1;");
+
+    bool locked = res->next();
+
+    delete res;
+
+    return locked;
 }

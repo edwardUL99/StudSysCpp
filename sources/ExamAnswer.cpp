@@ -53,11 +53,7 @@ std::string ExamAnswer::getObjectType() const {
 }
 
 Tables ExamAnswer::getTable() const {
-    if (key) {
-        return EXAM_ANSWER_KEYS;
-    } else {
-        return EXAM_ANSWERS;
-    }
+    return EXAM_ANSWERS;
 }
 
 std::string ExamAnswer::getDescription() const {
