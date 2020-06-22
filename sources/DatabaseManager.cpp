@@ -36,10 +36,10 @@ const map<Tables, string> DatabaseManager::tableNames = {
     {LECTURER_ACCOUNTS, "lecturer_accounts"},
     {STUDENT_ACCOUNTS, "student_accounts"}};
 
-DatabaseManager::DatabaseManager(string database, string url, string user, string pass)
+DatabaseManager::DatabaseManager(string database, string user, string pass, string host)
 {
     this->driver = get_driver_instance();
-    this->connection = this->driver->connect(url, user, pass);
+    this->connection = this->driver->connect(host, user, pass);
     this->connection->setSchema(database);
     //now connected to the database
     this->stmt = this->connection->createStatement();

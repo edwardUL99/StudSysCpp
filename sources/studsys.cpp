@@ -34,20 +34,25 @@ int main(int argc, char **argv)
 
             exit(0);
         } else if (argc == 9) {
-            if ((strcmp(argv[1], "-d") == 0 && strcmp(argv[3], "-u") == 0 && strcmp(argv[5], "-p") == 0 && strcmp(argv[7], "-h") == 0) {
-                 dbname = argv[2];
-                 username = argv[4];
-                 password = argv[6];
-                 host = argv[8];
+            if (strcmp(argv[1], "-d") == 0 && strcmp(argv[3], "-u") == 0 && strcmp(argv[5], "-p") == 0 && strcmp(argv[7], "-h") == 0) {
+                dbname = argv[2];
+                username = argv[4];
+                password = argv[6];
+                host = argv[8];
             } else {
-	         cout << "Invalid arguments, run ./studsys -h for help" << endl;
+	            cout << "Invalid arguments, run ./studsys -h for help" << endl;
+                exit(-1);
             }
         } else {
-	    cout << "Invalid arguments, run ./studsys -h for help" << endl;
+	        cout << "Invalid arguments, run ./studsys -h for help" << endl;
+            exit(-1);
         }
+    } else {
+        cout << "Invalid arguments, run ./studsys -h for help" << endl;
+        exit(-1);
     }
 
-    StudentSystem system;
+    StudentSystem system(dbname, username, password, host);
     //have a UI class/library which holds globals/data members and have ui.start() to abstract out that you have a welcome screen like her
     WelcomePage welcome(system);
     welcome.show();
