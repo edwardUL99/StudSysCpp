@@ -53,7 +53,7 @@ bool StudentSystem::addLecturer(const Lecturer &lecturer) {
 Lecturer StudentSystem::getLecturer(int id) {
     boost::optional<Lecturer> lecturer = this->database.getLecturer(id);
 
-    if (lecturer.has_value()) {
+    if (lecturer) {
         return lecturer.get();
     } else {
         throw NotFoundException("Lecturer identified by " + std::to_string(id));
@@ -93,7 +93,7 @@ bool StudentSystem::addStudent(const Student &student) {
 Student StudentSystem::getStudent(int id) {
     boost::optional<Student> student = this->database.getStudent(id);
 
-    if (student.has_value()) {
+    if (student) {
         return student.get();
     } else {
         throw NotFoundException("Student identified by " + std::to_string(id));
@@ -133,7 +133,7 @@ bool StudentSystem::addCourse(const Course &course) {
 Course StudentSystem::getCourse(string id) {
     boost::optional<Course> course = this->database.getCourse(id);
 
-    if (course.has_value()) {
+    if (course) {
         return course.get();
     } else {
         throw NotFoundException("Course identified by " + id);
@@ -163,7 +163,7 @@ bool StudentSystem::addModule(const Module &module) {
 Module StudentSystem::getModule(string code) {
     boost::optional<Module> module = this->database.getModule(code);
 
-    if (module.has_value()) {
+    if (module) {
         return module.get();
     } else {
         throw NotFoundException("Module identified by " + code);
@@ -225,7 +225,7 @@ bool StudentSystem::addExam(const Exam &exam) {
 Exam StudentSystem::getExam(int id) {
     boost::optional<Exam> exam = this->database.getExam(id);
 
-    if (exam.has_value()) {
+    if (exam) {
         return exam.get();
     } else {
         throw NotFoundException("Exam identified by " + std::to_string(id));
@@ -255,7 +255,7 @@ bool StudentSystem::addExamGrade(const ExamGrade &examGrade) {
 ExamGrade StudentSystem::getExamGrade(const Student &student, const Exam &exam) {
     boost::optional<ExamGrade> examGrade = this->database.getExamGrade(student, exam);
 
-    if (examGrade.has_value()) {
+    if (examGrade) {
         return examGrade.get();
     } else {
         throw NotFoundException("Exam Grade identified by Student " + std::to_string(student.getID()) + " and Exam " + std::to_string(exam.getID()));
@@ -277,7 +277,7 @@ bool StudentSystem::updateExamGrade(const Student &student, const Exam &exam, co
 ModuleGrade StudentSystem::getModuleGrade(const Module &module, const Student &student) {
     boost::optional<ModuleGrade> moduleGrade = this->database.getModuleGrade(module, student);
 
-    if (moduleGrade.has_value()) {
+    if (moduleGrade) {
         return moduleGrade.get();
     } else {
         throw NotFoundException("Module Grade identified by module " + module.getCode() + " and student " + std::to_string(student.getID()));
@@ -295,7 +295,7 @@ bool StudentSystem::addAccount(LecturerAccount lecturerAccount) {
 LecturerAccount StudentSystem::getLecturerAccount(int id) {
     boost::optional<LecturerAccount> lecturerAccount = this->database.getLecturerAccount(id);
 
-    if (lecturerAccount.has_value()) {
+    if (lecturerAccount) {
         return lecturerAccount.get();
     } else {
         throw NotFoundException("Lecturer Account identified by lecturer " + id);
@@ -325,7 +325,7 @@ bool StudentSystem::addAccount(const StudentAccount &studentAccount) {
 StudentAccount StudentSystem::getStudentAccount(int id) {
     boost::optional<StudentAccount> studentAccount = this->database.getStudentAccount(id);
 
-    if (studentAccount.has_value()) {
+    if (studentAccount) {
         return studentAccount.get();
     } else {
         throw NotFoundException("Student Account identified by student " + std::to_string(id));
