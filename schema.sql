@@ -4,9 +4,9 @@
 
 CREATE TABLE IF NOT EXISTS lecturers (
 	id INTEGER NOT NULL,
-	name VARCHAR(255) NOT NULL,
+	name VARCHAR(100) NOT NULL,
 	age INTEGER(3),
-	email VARCHAR(255),
+	email VARCHAR(100),
 	department VARCHAR(100),
 	PRIMARY KEY (id),
 	UNIQUE KEY (email)
@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS lecturers (
 CREATE TABLE IF NOT EXISTS courses (
 	id CHAR(5),
 	type CHAR(5) NOT NULL, /*e.g BSc*/
-	name VARCHAR(255) NOT NULL,
+	name VARCHAR(100) NOT NULL,
 	duration INTEGER(1),
 	course_leader INTEGER,
 	PRIMARY KEY (id),
@@ -26,9 +26,9 @@ CREATE TABLE IF NOT EXISTS courses (
 
 CREATE TABLE IF NOT EXISTS students (
 	id INTEGER NOT NULL,
-	name VARCHAR(255) NOT NULL,
+	name VARCHAR(100) NOT NULL,
 	age INTEGER,
-	email VARCHAR(255),
+	email VARCHAR(100),
 	qca FLOAT DEFAULT 0.00, /*Maybe have a procedure or trigger that updates qca after grade is totalled */
 	course CHAR(5),
 	PRIMARY KEY (id),
@@ -80,7 +80,7 @@ CREATE TABLE IF NOT EXISTS exams (
 
 CREATE TABLE IF NOT EXISTS exam_questions (
 	exam INTEGER NOT NULL,
-	question VARCHAR(255),
+	question VARCHAR(100),
 	answer_key VARCHAR(50),
 	numberOfAnswers INTEGER,
 	PRIMARY KEY (exam, question),
@@ -91,7 +91,7 @@ CREATE TABLE IF NOT EXISTS exam_questions (
 
 CREATE TABLE IF NOT EXISTS exam_answers (
 	exam INTEGER,
-	question VARCHAR(255),
+	question VARCHAR(100),
 	answer VARCHAR(50),
 	PRIMARY KEY (exam, question, answer),
 	FOREIGN KEY (exam, question) REFERENCES exam_questions(exam, question)

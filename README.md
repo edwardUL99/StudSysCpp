@@ -59,8 +59,19 @@ It is programmed with C++ entirely and can be run on Linux with g++
                        g++ <object_folder>/*.o -l mysqlcppconn -o <program-name>
                c. I recommend using studsys as program name
 
+## Database Setup:
+   You need a MySQL server either MySQL or MariaDB
+   Steps:
+       1. Login to MySQL using mysql -u <user-name> -p (this user must be able to create databases and users)
+       2. Type CREATE DATABASE <database-name>;
+       3. Exit the MySQL shell
+       4. Now type mysql -u <user-name> --password=<user-password> <database-name> < <file-name.sql>. You will need to do this with schema.sql, triggers.sql and procedures.sql
+       5. Log back into the mysql shell and create a user for the system to use and password by typing CREATE USER '<user-name>'@'localhost' IDENTIFIED BY 'user-password';
+       6. Then type GRANT SELECT, INSERT, UPDATE, DELETE ON <database-name> TO '<user-name>'@'localhost';
+       7. Then type FLUSH PRIVILEGES; and then exit
+   The MySQL server is not set-up and ready to use with the system
 ## How to run:
-   From root of the download directory type ./<program-name>
+   From root of the download directory type ./<program-name> -d <database_name>.* -u <user_name> -p <pass_word> -h <host>
 
 ## studsysdbadmin:
    Very limited program to administrate the database, compile using:
