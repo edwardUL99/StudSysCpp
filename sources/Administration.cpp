@@ -51,7 +51,7 @@ bool Administration::login()
 void Administration::createCourse() {
     cout << "Please enter the course code: " << endl;
 
-    string code = ui::getString(ui::mcodepred, ui::mcoderetrymsg);
+    string code = ui::getString(ui::ccodepred, ui::ccoderetrymsg);
 
     cout << "Please enter the course type: " << endl;
 
