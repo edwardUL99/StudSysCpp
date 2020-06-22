@@ -62,7 +62,7 @@ It is programmed with C++ entirely and can be run on Linux with g++
 ## Database Setup:
    You need a MySQL server either MySQL or MariaDB
    Steps:
-       1. Login to MySQL using mysql -u <user-name> -p (this user must be able to create databases
+       1. Login to MySQL using mysql -u <user-name> -p (this user must be able to create databases and users)
        2. Type CREATE DATABASE <database-name>;
        3. Exit the MySQL shell
        4. Now type mysql -u <user-name> --password=<user-password> <database-name> < <file-name.sql>. You will need to do this with schema.sql, triggers.sql and procedures.sql
