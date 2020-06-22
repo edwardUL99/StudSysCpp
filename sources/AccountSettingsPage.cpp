@@ -54,13 +54,13 @@ void AccountSettingsPage::changeName()
             boost::optional<LecturerAccount> lectAcc = accToLectAcc();
             boost::optional<StudentAccount> studAcc = accToStudAcc();
 
-            if (lectAcc.has_value())
+            if (lectAcc)
             {
                 Lecturer lecturer = lectAcc.get().getLecturer();
                 lecturer.setName(name);
                 system.updateLecturer(lecturer.getID(), lecturer);
             }
-            else if (studAcc.has_value())
+            else if (studAcc)
             {
                 Student student = studAcc.get().getStudent();
                 student.setName(name);
@@ -112,13 +112,13 @@ void AccountSettingsPage::changePassword()
                 boost::optional<LecturerAccount> lectAcc = accToLectAcc();
                 boost::optional<StudentAccount> studAcc = accToStudAcc();
 
-                if (lectAcc.has_value())
+                if (lectAcc)
                 {
                     LecturerAccount lecturerAccount = lectAcc.get();
                     lecturerAccount.setPassword(newPass);
                     system.updateAccount(lecturerAccount.getLecturer(), lecturerAccount);
                 }
-                else if (studAcc.has_value())
+                else if (studAcc)
                 {
                     StudentAccount studentAccount = studAcc.get();
                     studentAccount.setPassword(newPass);

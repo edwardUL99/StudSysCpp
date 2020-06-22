@@ -121,7 +121,7 @@ boost::optional<Lecturer> DatabaseManager::getLecturer(int id)
 }
 
 /*bool DatabaseManager::contains(const Lecturer &lecturer) {
-    return getLecturer(lecturer.getID()).has_value();
+    return (bool)getLecturer(lecturer.getID());
 }*/
 
 bool DatabaseManager::contains(const DatabaseItem &item)
@@ -133,47 +133,47 @@ bool DatabaseManager::contains(const DatabaseItem &item)
     case LECTURERS:
     {
         const Lecturer &lecturer = dynamic_cast<const Lecturer &>(item);
-        return getLecturer(lecturer.getID()).has_value();
+        return (bool)getLecturer(lecturer.getID());
     }
     case STUDENTS:
     {
         const Student &student = dynamic_cast<const Student &>(item);
-        return getStudent(student.getID()).has_value();
+        return (bool)getStudent(student.getID());
     }
     case COURSES:
     {
         const Course &course = dynamic_cast<const Course &>(item);
-        return getCourse(course.getID()).has_value();
+        return (bool)getCourse(course.getID());
     }
     case MODULES:
     {
         const Module &module = dynamic_cast<const Module &>(item);
-        return getModule(module.getCode()).has_value();
+        return (bool)getModule(module.getCode());
     }
     case EXAMS:
     {
         const Exam &exam = dynamic_cast<const Exam &>(item);
-        return getExam(exam.getID()).has_value();
+        return (bool)getExam(exam.getID());
     }
     case EXAM_GRADES:
     {
         const ExamGrade &examGrade = dynamic_cast<const ExamGrade &>(item);
-        return getExamGrade(examGrade.getStudent(), examGrade.getExam()).has_value();
+        return (bool)getExamGrade(examGrade.getStudent(), examGrade.getExam());
     }
     case MODULE_GRADES:
     {
         const ModuleGrade &moduleGrade = dynamic_cast<const ModuleGrade &>(item);
-        return getModuleGrade(moduleGrade.getModule(), moduleGrade.getStudent()).has_value();
+        return (bool)getModuleGrade(moduleGrade.getModule(), moduleGrade.getStudent());
     }
     case LECTURER_ACCOUNTS:
     {
         const LecturerAccount &lecturerAccount = dynamic_cast<const LecturerAccount &>(item);
-        return getLecturerAccount(lecturerAccount.getLecturer().getID()).has_value();
+        return (bool)getLecturerAccount(lecturerAccount.getLecturer().getID());
     }
     case STUDENT_ACCOUNTS:
     {
         const StudentAccount &studentAccount = dynamic_cast<const StudentAccount &>(item);
-        return getStudentAccount(studentAccount.getStudent().getID()).has_value();
+        return (bool)getStudentAccount(studentAccount.getStudent().getID());
     }
     default:
         return false;
@@ -299,7 +299,7 @@ boost::optional<Course> DatabaseManager::getCourse(string id)
 }
 
 /*bool DatabaseManager::contains(const Course &course) {
-    return getCourse(course.getID()).has_value();
+    return (bool)getCourse(course.getID());
 }*/
 
 vector<Course> DatabaseManager::getAllCourses()
@@ -406,7 +406,7 @@ boost::optional<Student> DatabaseManager::getStudent(int id)
 }
 
 /*bool DatabaseManager::contains(const Student &student) {
-    return getStudent(student.getID()).has_value();
+    return (bool)getStudent(student.getID());
 }*/
 
 vector<Student> DatabaseManager::getAllStudents()
@@ -528,7 +528,7 @@ boost::optional<Module> DatabaseManager::getModule(string code)
 }
 
 /*bool DatabaseManager::contains(const Module &module) {
-    return getModule(module.getCode()).has_value();
+    return (bool)getModule(module.getCode());
 }*/
 
 vector<Module> DatabaseManager::getAllModules()
@@ -783,7 +783,7 @@ boost::optional<Exam> DatabaseManager::getExam(int id)
 }
 
 /*bool DatabaseManager::contains(const Exam &exam) {
-    return getExam(exam.getID()).has_value();
+    return (bool)getExam(exam.getID());
 }*/
 
 vector<Exam> DatabaseManager::getAllExams()
@@ -1002,7 +1002,7 @@ boost::optional<ExamGrade> DatabaseManager::getExamGrade(const Student &student,
 }
 
 /*bool DatabaseManager::contains(const ExamGrade &examGrade) {
-    return getExamGrade(examGrade.getStudent(), examGrade.getExam()).has_value();
+    return (bool)getExamGrade(examGrade.getStudent(), examGrade.getExam());
 }*/
 
 vector<ExamGrade> DatabaseManager::getAllExamGrades()
