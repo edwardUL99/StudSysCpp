@@ -74,6 +74,8 @@ void DatabaseManager::setLastExamID()
 
 bool DatabaseManager::add(const Lecturer &lecturer)
 {   
+    if (this->isTableLocked(LECTURERS)) return false;
+
     this->lockTable(LECTURERS);
 
     string query = "INSERT INTO lecturers (id, name, age, email, department) VALUES (" + std::to_string(lecturer.getID()) + ", '" + lecturer.getName() + "', " + std::to_string(lecturer.getAge()) + ", '" + lecturer.getEmail() + "', '" + lecturer.getDepartment() + "');";
@@ -196,6 +198,8 @@ vector<Lecturer> DatabaseManager::getAllLecturers()
 
 bool DatabaseManager::remove(const Lecturer &lecturer)
 {
+    if (this->isTableLocked(LECTURERS)) return false;
+
     this->lockTable(LECTURERS);
 
     string email = "'" + lecturer.getEmail() + "'";
@@ -233,7 +237,9 @@ bool DatabaseManager::update(int id, const Lecturer &updatedLecturer)
         throw KeyMismatch(std::to_string(id), std::to_string(id1));
     }
     else
-    {
+    {   
+        if (this->isTableLocked(LECTURERS)) return false;
+
         this->lockTable(LECTURERS);
 
         string query = "UPDATE lecturers SET name = '" + updatedLecturer.getName() + "', age = " + std::to_string(updatedLecturer.getAge()) + ", email = '" + updatedLecturer.getEmail() + "', department = '" + updatedLecturer.getDepartment() + "' WHERE id = " + std::to_string(id) + ";";
@@ -248,6 +254,8 @@ bool DatabaseManager::update(int id, const Lecturer &updatedLecturer)
 
 bool DatabaseManager::add(const Course &course)
 {
+    if (this->isTableLocked(COURSES)) return false;
+
     this->lockTable(COURSES);
 
     string query = "INSERT INTO courses (id, type, name, duration, course_leader) VALUES ('" + course.getID() + "', '" + course.getType() + "', '" + course.getName() + "', " + std::to_string(course.getDuration()) + ", " + std::to_string(course.getCourseLeader().getID()) + ");";
@@ -312,6 +320,8 @@ vector<Course> DatabaseManager::getAllCourses()
 
 bool DatabaseManager::remove(const Course &course)
 {
+    if (this->isTableLocked(COURSES)) return false;
+
     this->lockTable(COURSES);
 
     string c = "'" + course.getID() + "'";
@@ -332,6 +342,8 @@ bool DatabaseManager::update(string id, const Course &updatedCourse)
     }
     else
     {
+        if (this->isTableLocked(COURSES)) return false;
+
         this->lockTable(COURSES);
 
         string query = "UPDATE courses SET type = '" + updatedCourse.getType() + "', name = '" + updatedCourse.getName() + "', duration = " + std::to_string(updatedCourse.getDuration()) + ", course_leader = " + std::to_string(updatedCourse.getCourseLeader().getID()) + " WHERE id = '" + id1 + "';";
@@ -346,6 +358,8 @@ bool DatabaseManager::update(string id, const Course &updatedCourse)
 
 bool DatabaseManager::add(const Student &student)
 {
+    if (this->isTableLocked(STUDENTS)) return false;
+
     this->lockTable(STUDENTS);
 
     string query = "INSERT INTO students (id, name, age, email, qca, course) VALUES (" + std::to_string(student.getID()) + ", '" + student.getName() + "', " + std::to_string(student.getAge()) + ", '" + student.getEmail() + "', " + std::to_string(student.getQCA()) + ", '" + student.getCourse().getID() + "');";
@@ -413,6 +427,8 @@ vector<Student> DatabaseManager::getAllStudents()
 
 bool DatabaseManager::remove(const Student &student)
 {
+    if (this->isTableLocked(STUDENTS)) return false;
+
     this->lockTable(STUDENTS);
 
     string email = "'" + student.getEmail() + "'";
@@ -433,6 +449,8 @@ bool DatabaseManager::update(int id, const Student &updatedStudent)
     }
     else
     {
+        if (this->isTableLocked(STUDENTS)) return false;
+
         this->lockTable(STUDENTS);
 
         string query = "UPDATE students SET name = '" + updatedStudent.getName() + "', age = " + std::to_string(updatedStudent.getAge()) + ", email = '" + updatedStudent.getEmail() + "', qca = " + std::to_string(updatedStudent.getQCA()) + ", course = '" + updatedStudent.getCourse().getID() + "' WHERE id = " + std::to_string(id1) + ";";
@@ -464,6 +482,8 @@ int DatabaseManager::getStudentID(Student &student)
 
 bool DatabaseManager::add(const Module &module)
 {
+    if (this->isTableLocked(MODULES)) return false;
+
     this->lockTable(MODULES);
 
     string query = "INSERT INTO modules (code, name, credits, lecturer) VALUES ('" + module.getCode() + "', '" + module.getName() + "', " + std::to_string(module.getCredits()) + ", " + std::to_string(module.getLecturer().getID()) + ");";
@@ -529,6 +549,8 @@ vector<Module> DatabaseManager::getAllModules()
 
 bool DatabaseManager::remove(const Module &module)
 {
+    if (this->isTableLocked(MODULES)) return false;
+
     this->lockTable(MODULES);
 
     string query = "DELETE FROM modules WHERE code = '" + module.getCode() + "';";
@@ -550,6 +572,8 @@ bool DatabaseManager::update(string code, const Module &updatedModule)
     }
     else
     {
+        if (this->isTableLocked(MODULES)) return false;
+
         this->lockTable(MODULES);
 
         string query = "UPDATE modules SET name = '" + updatedModule.getName() + "', credits = " + std::to_string(updatedModule.getCredits()) + ", lecturer = " + std::to_string(updatedModule.getLecturer().getID()) + " WHERE code = '" + code1 + "';";
@@ -563,6 +587,8 @@ bool DatabaseManager::update(string code, const Module &updatedModule)
 }
 
 bool DatabaseManager::add(const StudentRegistration &registration) {
+    if (this->isTableLocked(STUDENT_REGISTRATIONS)) return false;
+
     this->lockTable(STUDENT_REGISTRATIONS);
 
     string query = "INSERT INTO student_registrations (student, module) VALUES (" + std::to_string(registration.getStudent().getID()) + ", '" + registration.getModule().getCode() + "');"; 
@@ -584,6 +610,8 @@ bool DatabaseManager::add(const StudentRegistration &registration) {
 }
 
 bool DatabaseManager::remove(const StudentRegistration &registration) {
+    if (this->isTableLocked(STUDENT_REGISTRATIONS)) return false;
+    
     this->lockTable(STUDENT_REGISTRATIONS);
     
     string query = "DELETE FROM student_registrations WHERE student = " + std::to_string(registration.getStudent().getID()) + " AND module = '" + registration.getModule().getCode() + "';";
@@ -661,6 +689,8 @@ bool DatabaseManager::add(const ExamQuestion &question) {
 //this may not work, you'll have to edit getExam too but remove may be fine because you have cascades
 bool DatabaseManager::add(const Exam &exam)
 {
+    if (this->isTableLocked(EXAMS) || this->isTableLocked(EXAM_QUESTIONS) || this->isTableLocked(EXAM_ANSWERS)) return false;
+    
     this->lockTable(EXAMS);
     this->lockTable(EXAM_QUESTIONS);
     this->lockTable(EXAM_ANSWERS);
@@ -774,6 +804,8 @@ vector<Exam> DatabaseManager::getAllExams()
 
 bool DatabaseManager::remove(const Exam &exam)
 {
+    if (this->isTableLocked(EXAMS) || this->isTableLocked(EXAM_QUESTIONS) || this->isTableLocked(EXAM_ANSWERS)) return false;
+
     this->lockTable(EXAMS);
     this->lockTable(EXAM_QUESTIONS);
     this->lockTable(EXAM_ANSWERS);
@@ -815,7 +847,8 @@ bool DatabaseManager::update(const ExamQuestion &oldQuestion, const ExamQuestion
                   + "', answer_key = '" + newQuestion.getKey().getAnswer()
                   + "', numberOfAnswers = " + std::to_string(newQuestion.getNumberOfAnswers())
                   + " WHERE exam = " + oid + " AND question = '" + oldQuestion.getQuestion() + "';";
-
+    
+    //executeUpdate will always be called since updated is always true when this line is reached
     updated = updated && executeUpdate(query) != 0;
 
     vector<ExamAnswer> oldAnswers = oldQuestion.getPossibleAnswers();
@@ -855,6 +888,8 @@ bool DatabaseManager::update(const Exam &oldExam, const Exam &updatedExam)
     }
     else
     {   
+        if (this->isTableLocked(EXAMS) || this->isTableLocked(EXAM_QUESTIONS) || this->isTableLocked(EXAM_ANSWERS)) return false;
+
         this->lockTable(EXAMS);
         this->lockTable(EXAM_QUESTIONS);
         this->lockTable(EXAM_ANSWERS);
@@ -921,6 +956,8 @@ int DatabaseManager::getExamID(Exam &exam)
 
 bool DatabaseManager::add(const ExamGrade &examGrade)
 {
+    if (this->isTableLocked(EXAM_GRADES)) return false;
+
     this->lockTable(EXAM_GRADES);
 
     Exam exam = examGrade.getExam();
@@ -988,6 +1025,8 @@ vector<ExamGrade> DatabaseManager::getAllExamGrades()
 
 bool DatabaseManager::remove(const ExamGrade &examGrade)
 {
+    if (this->isTableLocked(EXAM_GRADES)) return false;
+
     this->lockTable(EXAM_GRADES);
 
     string query = "DELETE FROM exam_grades WHERE student = " + std::to_string(examGrade.getStudent().getID()) + " AND exam = " + std::to_string(examGrade.getExam().getID()) + ";";
@@ -1013,6 +1052,8 @@ bool DatabaseManager::update(const Student &student, const Exam &exam, const Exa
     }
     else
     {
+        if (this->isTableLocked(EXAM_GRADES)) return false;
+
         this->lockTable(EXAM_GRADES);
 
         string query = "UPDATE exam_grades SET grade = " + std::to_string(updatedExamGrade.getGrade()) + " WHERE student = " + std::to_string(sId1) + " AND exam = " + std::to_string(eId1) + ";";
@@ -1027,6 +1068,8 @@ bool DatabaseManager::update(const Student &student, const Exam &exam, const Exa
 
 void DatabaseManager::calculateModuleGrades(std::string module, const Student &student)
 {
+    if (this->isTableLocked(MODULE_GRADES)) return;
+
     this->lockTable(MODULE_GRADES);
 
     string query = "CALL calculate_grades('" + module + "', " + std::to_string(student.getID()) + ");";
@@ -1087,6 +1130,8 @@ vector<ModuleGrade> DatabaseManager::getAllModuleGrades()
 
 bool DatabaseManager::add(const LecturerAccount &lecturerAccount)
 {   
+    if (this->isTableLocked(LECTURER_ACCOUNTS)) return false;
+
     this->lockTable(LECTURER_ACCOUNTS);
     string query = "INSERT INTO lecturer_accounts (id, pass) VALUES (" + std::to_string(lecturerAccount.getLecturer().getID()) + ", '" + lecturerAccount.getPassword() + "');";
 
@@ -1148,6 +1193,8 @@ vector<LecturerAccount> DatabaseManager::getAllLecturerAccounts()
 
 bool DatabaseManager::remove(const LecturerAccount &lecturerAccount)
 {   
+    if (this->isTableLocked(LECTURER_ACCOUNTS)) return false;
+
     this->lockTable(LECTURER_ACCOUNTS);
     
     bool removed = executeUpdate("DELETE FROM lecturer_accounts WHERE id = " + std::to_string(lecturerAccount.getLecturer().getID()) + ";") != 0;
@@ -1168,6 +1215,8 @@ bool DatabaseManager::update(const Lecturer &lecturer, const LecturerAccount &up
     }
     else
     {   
+        if (this->isTableLocked(LECTURER_ACCOUNTS)) return false;
+
         this->lockTable(LECTURER_ACCOUNTS);
         string query = "UPDATE lecturer_accounts SET pass = '" + updatedLecturerAccount.getPassword() + "' WHERE id = " + std::to_string(id1) + ";";
 
@@ -1181,6 +1230,8 @@ bool DatabaseManager::update(const Lecturer &lecturer, const LecturerAccount &up
 
 bool DatabaseManager::add(const StudentAccount &studentAccount)
 {
+    if (this->isTableLocked(STUDENT_ACCOUNTS)) return false;
+
     this->lockTable(STUDENT_ACCOUNTS);
 
     string query = "INSERT INTO student_accounts (id, pass) VALUES (" + std::to_string(studentAccount.getStudent().getID()) + ", '" + studentAccount.getPassword() + "');";
@@ -1243,6 +1294,8 @@ vector<StudentAccount> DatabaseManager::getAllStudentAccounts()
 
 bool DatabaseManager::remove(const StudentAccount &studentAccount)
 {   
+    if (this->isTableLocked(STUDENT_ACCOUNTS)) return false;
+
     this->lockTable(STUDENT_ACCOUNTS);
 
     bool removed = executeUpdate("DELETE FROM student_accounts WHERE id = " + std::to_string(studentAccount.getStudent().getID()) + ";") != 0;
@@ -1263,6 +1316,8 @@ bool DatabaseManager::update(const Student &student, const StudentAccount &updat
     }
     else
     {
+        if (this->isTableLocked(STUDENT_ACCOUNTS)) return false;
+
         this->lockTable(STUDENT_ACCOUNTS);
 
         string query = "UPDATE student_accounts SET pass = '" + updatedStudentAccount.getPassword() + "' WHERE id = " + std::to_string(id1) + ";";
@@ -1364,7 +1419,7 @@ void DatabaseManager::unlockTables() {
 bool DatabaseManager::isTableLocked(Tables table) {
     string tname = "'" + DatabaseManager::tableNames.at(table) + "'";
     string dbname = DB;
-    ResultSet *res = this->stmt->executeQuery("SHOW OPEN TABLES IN " + dbname + "WHERE Table = " + tname + " AND In_use > 1;");
+    ResultSet *res = this->stmt->executeQuery("SHOW OPEN TABLES IN " + dbname + " WHERE `Table` LIKE '%" + tname + "%' AND In_use > 0;");
 
     bool locked = res->next();
 
