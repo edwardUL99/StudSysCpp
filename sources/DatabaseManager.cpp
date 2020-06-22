@@ -1417,7 +1417,7 @@ void DatabaseManager::unlockTables() {
 }
 
 bool DatabaseManager::isTableLocked(Tables table) {
-    string tname = "'" + DatabaseManager::tableNames.at(table) + "'";
+    string tname = DatabaseManager::tableNames.at(table);
     string dbname = DB;
     ResultSet *res = this->stmt->executeQuery("SHOW OPEN TABLES IN " + dbname + " WHERE `Table` LIKE '%" + tname + "%' AND In_use > 0;");
 
