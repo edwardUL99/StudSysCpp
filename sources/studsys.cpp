@@ -23,13 +23,27 @@ using ui::WelcomePage;
 
 int main(int argc, char **argv)
 {
+    string dbname;
+    string username;
+    string password;
+    string host;
+
     if (argc > 1) {
         if (strcmp(argv[1], "-h") == 0) {
-            cout << "Login as a Lecturer to access lecturer resources, student to access student resources" << endl;
-            cout << "If you are administration you have access to a hidden command, which is:\n(A)dministration\nContact your administration supervisor for login details" << endl;
-            cout << "Otherwise, instructions are very clear" << endl;
+            cout << "Usage: ./studsys -d database_name -u username -p password -h host" << endl; 
 
             exit(0);
+        } else if (argc == 9) {
+            if ((strcmp(argv[1], "-d") == 0 && strcmp(argv[3], "-u") == 0 && strcmp(argv[5], "-p") == 0 && strcmp(argv[7], "-h") == 0) {
+                 dbname = argv[2];
+                 username = argv[4];
+                 password = argv[6];
+                 host = argv[8];
+            } else {
+	         cout << "Invalid arguments, run ./studsys -h for help" << endl;
+            }
+        } else {
+	    cout << "Invalid arguments, run ./studsys -h for help" << endl;
         }
     }
 
