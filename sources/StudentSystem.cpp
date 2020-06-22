@@ -6,6 +6,8 @@
 
 using std::string;
 
+StudentSystem::StudentSystem(string dbname, string username, string password, string host) : database(dbname, username, password, host) {}
+
 string StudentSystem::recordLogin(const Account &account) {
     string date = "FIRST_LOGIN";
 

@@ -24,6 +24,7 @@ class StudentSystem {
         DatabaseManager database;
 
     public:
+        StudentSystem(std::string dbname, std::string username, std::string password, std::string host);
         bool addLecturer(const Lecturer &lecturer);
         Lecturer getLecturer(int id);
         bool removeLecturer(const Lecturer &lecturer);

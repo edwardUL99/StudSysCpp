@@ -58,7 +58,7 @@ private:
 public:
     //with remove methods figure out what to do if a foreign key constraint prevents it
     //add methods to perform updates
-    DatabaseManager(std::string database = DB, std::string url = DB_HOST, std::string user = DB_USER, std::string pass = DB_PASS);
+    DatabaseManager(std::string database = DB, std::string user = DB_USER, std::string pass = DB_PASS, std::string host = DB_HOST);
     ~DatabaseManager();
     
     //Overloaded add methods to add different entities to the database
