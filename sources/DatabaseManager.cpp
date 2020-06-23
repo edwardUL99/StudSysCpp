@@ -30,6 +30,7 @@ const map<Tables, string> DatabaseManager::tableNames = {
     {STUDENTS, "students"},
     {COURSES, "courses"},
     {MODULES, "modules"},
+    {STUDENT_REGISTRATIONS, "student_registrations"},
     {EXAMS, "exams"},
     {EXAM_GRADES, "exam_grades"},
     {MODULE_GRADES, "module_grades"},
@@ -174,6 +175,11 @@ bool DatabaseManager::contains(const DatabaseItem &item)
     {
         const StudentAccount &studentAccount = dynamic_cast<const StudentAccount &>(item);
         return (bool)getStudentAccount(studentAccount.getStudent().getID());
+    }
+    case STUDENT_REGISTRATIONS:
+    {
+        const StudentRegistration &sReg = dynamic_cast<const StudentRegistration &>(item);
+        return (bool)getStudentRegistration(sReg.getStudent(), sReg.getModule());
     }
     default:
         return false;
