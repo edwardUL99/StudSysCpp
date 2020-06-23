@@ -13,12 +13,14 @@
 #include <vector>
 #include <cstring>
 #include <string>
+#include <fstream>
 
 using std::cout;
 using std::boolalpha;
 using std::cin;
 using std::endl;
 using std::string;
+using std::ifstream;
 using ui::WelcomePage;
 
 int main(int argc, char **argv)
@@ -30,9 +32,26 @@ int main(int argc, char **argv)
 
     if (argc > 1) {
         if (strcmp(argv[1], "-h") == 0) {
-            cout << "Usage: ./studsys -d database_name -u username -p password -h host" << endl; 
+            cout << "Usage 1: ./studsys -d database_name -u username -p password -h host" << endl;
+            cout << "Usage 2: ./studsys config_file" << endl; 
 
             exit(0);
+        } else if (argc == 2) {
+            ifstream file;
+            file.open(argv[1]);
+
+            if (!file.is_open()) {
+                cout << "Error: " << argv[1] << " does not exist, exiting..." << endl;
+
+                exit(-1);
+            } else {
+                getline(file, dbname);
+                getline(file, username);
+                getline(file, password);
+                getline(file, host);
+            }
+
+            file.close();
         } else if (argc == 9) {
             if (strcmp(argv[1], "-d") == 0 && strcmp(argv[3], "-u") == 0 && strcmp(argv[5], "-p") == 0 && strcmp(argv[7], "-h") == 0) {
                 dbname = argv[2];

@@ -1,2 +1,0 @@
-To run, use:
-./studsys -d student_sys -u studsys -p systemPass -h localhost
