@@ -71,9 +71,10 @@ It is programmed with C++ entirely and can be run on Linux with g++
        3. Exit the MySQL shell
        4. Now type mysql -u <user-name> --password=<user-password> <database-name> < <file-name.sql>. You will need to do this with schema.sql, triggers.sql and procedures.sql
        5. Log back into the mysql shell and create a user for the system to use and password by typing CREATE USER '<user-name>'@'localhost' IDENTIFIED BY 'user-password';
-       6. Then type GRANT ALL PRIVILEGES ON <database-name>.* TO '<user-name>'@'localhost';
+       6. Then type GRANT ALL PRIVILEGES ON <database-name>.* TO '<user-name>'@'%';
        7. Then type FLUSH PRIVILEGES; and then exit
-   The MySQL server is not set-up and ready to use with the system
+       8. Ensure bind-address in mysql config is set to 0.0.0.0 on the database server machine
+   The MySQL server is now set-up and ready to use with the system
 ## How to run:
    From root of the download directory type ./<program-name> -d <database_name> -u <user_name> -p <pass_word> -h <host>
       or
