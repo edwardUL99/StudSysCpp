@@ -43,6 +43,10 @@ It is programmed with C++ entirely and can be run on Linux with g++
         1. In the operating system drop-down pick Linux - Generic
         2. Choose in OS Version drop-down choose glib 2.12 64 bit
            My OS is 64 bit which I developed it in, but you could try it with 32 bit but it's not guaranteed to work
+	3. Ensure you install the correct MySQL C++ connector. Can't install above on Raspberry Pi for example but there are plenty of installation guides on google
+
+   A MySQL server running on the local host, configured as of below in Database Setup
+   Also works with mariadb-server-10.0 (this is what you'll need on Raspberry Pi
 ## How to compile:
    There are 3 options to compile the program:
         1. Use compile.sh in the directory, but replace any paths with your path to where it's installed
@@ -67,15 +71,16 @@ It is programmed with C++ entirely and can be run on Linux with g++
        3. Exit the MySQL shell
        4. Now type mysql -u <user-name> --password=<user-password> <database-name> < <file-name.sql>. You will need to do this with schema.sql, triggers.sql and procedures.sql
        5. Log back into the mysql shell and create a user for the system to use and password by typing CREATE USER '<user-name>'@'localhost' IDENTIFIED BY 'user-password';
-       6. Then type GRANT ALL PRIVILEGES ON <database-name>.* TO '<user-name>'@'localhost';
+       6. Then type GRANT ALL PRIVILEGES ON <database-name>.* TO '<user-name>'@'%';
        7. Then type FLUSH PRIVILEGES; and then exit
-   The MySQL server is not set-up and ready to use with the system
+       8. Ensure bind-address in mysql config is set to 0.0.0.0 on the database server machine
+   The MySQL server is now set-up and ready to use with the system
 ## How to run:
    From root of the download directory type ./<program-name> -d <database_name> -u <user_name> -p <pass_word> -h <host>
       or
-   ./<program-name> config_file
+   ./<program-name> login_file
 
-   With config line containing on line 1 <database_name>, line 2 <user_name>, line 3 <pass_word>, line 4 <host>
+   With login_file line containing on line 1 <database_name>, line 2 <user_name>, line 3 <pass_word>, line 4 <host>
 
 ## studsysdbadmin:
    Very limited program to administrate the database, compile using:
