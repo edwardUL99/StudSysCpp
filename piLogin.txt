@@ -1,5 +1,5 @@
 student_sys
-studsys 
+studsys
 systemPass
 localhost
 
