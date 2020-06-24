@@ -216,6 +216,20 @@ std::vector<Module> StudentSystem::getStudentRegisteredModules(const Student &st
     return modules;
 }
 
+std::vector<Student> StudentSystem::getStudentsRegisteredOnModule(const Module &module) {
+    std::vector<Student> students;
+
+    for (const StudentRegistration &reg : this->database.getAllStudentRegistrations()) {
+        if (reg.getModule().getCode() == module.getCode()) {
+            students.push_back(reg.getStudent());
+        }
+    }
+
+    //string query = "SELECT student FROM student_registrations JOIN modules ON module = code WHERE module = '" + module.getCode() + "';"; maybe use this and result set instead and then getStudent (from id)
+
+    return students;
+}
+
 bool StudentSystem::addExam(const Exam &exam) {
     if (this->database.contains(exam)) {
         throw DuplicateException(exam.getDescription());

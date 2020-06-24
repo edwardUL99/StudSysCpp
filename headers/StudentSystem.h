@@ -57,6 +57,7 @@ class StudentSystem {
          */
         bool unregisterStudentModule(const Student &student, const Module &module);
         std::vector<Module> getStudentRegisteredModules(const Student &student);
+        std::vector<Student> getStudentsRegisteredOnModule(const Module &module);
         bool addExam(const Exam &exam); //exam may need to change
         Exam getExam(int id);
         bool removeExam(const Exam &exam);

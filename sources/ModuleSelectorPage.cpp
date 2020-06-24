@@ -1,4 +1,5 @@
 #include "headers/ModuleSelectorPage.h"
+#include "headers/ModuleHomePage.h"
 #include "headers/Module.h"
 #include "headers/StudentAccount.h"
 #include "headers/UIUtils.h"
@@ -86,11 +87,9 @@ void ModuleSelectorPage::show()
 
                 int num = ui::getInt(Predicate<int>([numModules](const int &x) -> bool { return x < 1 || x > numModules; }), "Please re-enter a number between 1 and " + std::to_string(numModules) + ": ");
 
-                /*
-            * ModuleHomePage modulePage(modules[num-1], account, system);
-            * modulePage.show();
-            * run = false;
-            */
+                ModuleHomePage modulePage(account, modules[num - 1], system);
+                modulePage.show();
+                run = false;
             }
             else
             {

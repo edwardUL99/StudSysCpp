@@ -163,9 +163,4 @@ CREATE TABLE IF NOT EXISTS student_logins (
 		ON UPDATE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS table_locks ( 
-	table_name VARCHAR(30) PRIMARY KEY,
-	locked BOOLEAN DEFAULT FALSE
-);
-
 /*other tables below*/
