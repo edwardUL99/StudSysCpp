@@ -45,8 +45,9 @@ It is programmed with C++ entirely and can be run on Linux with g++
            My OS is 64 bit which I developed it in, but you could try it with 32 bit but it's not guaranteed to work
 	3. Ensure you install the correct MySQL C++ connector. Can't install above on Raspberry Pi for example but there are plenty of installation guides on google
 
-   A MySQL server running on the local host, configured as of below in Database Setup
+   A MySQL server,, configured as of below in Database Setup
    Also works with mariadb-server-10.0 (this is what you'll need on Raspberry Pi
+
 ## How to compile:
    There are 3 options to compile the program:
         1. Use compile.sh in the directory, but replace any paths with your path to where it's installed
@@ -75,6 +76,10 @@ It is programmed with C++ entirely and can be run on Linux with g++
        7. Then type FLUSH PRIVILEGES; and then exit
        8. Ensure bind-address in mysql config is set to 0.0.0.0 on the database server machine
    The MySQL server is now set-up and ready to use with the system
+
+If you don't have access to the database to create databases or users, or don't know the host, contact the database administrator to create a database if not already exists.
+The admin will then be able to give you the IP address to the database server to login to
+
 ## How to run:
    From root of the download directory type ./<program-name> -d <database_name> -u <user_name> -p <pass_word> -h <host>
       or
