@@ -260,6 +260,31 @@ bool StudentSystem::updateExam(const Exam &oldExam, const Exam &updatedExam) {
     }
 }
 
+std::vector<Exam> StudentSystem::retrieveExamsByModule(const Module &module) {
+    std::vector<Exam> exams;
+
+    for (const Exam &exam : this->database.getAllExams()) {
+        if (exam.getModule().getCode() == module.getCode()) {
+            exams.push_back(exam);
+        }
+    }
+
+    return exams;
+    
+    /* Or you could do as follows:
+    string query = "SELECT id FROM exams LEFT JOIN modules ON module = code WHERE module = '" + module.getCode() + "';";
+    ResultSet *res = this->database.executeQuery(query);
+
+    while (res->next()) {
+        exams.push_back(this->getExam(res->getInt("id")));
+    }
+
+    delete res;
+
+    return exams;
+    */
+}
+
 bool StudentSystem::addExamGrade(const ExamGrade &examGrade) {
     if (this->database.contains(examGrade)) {
         throw DuplicateException(examGrade.getDescription());
