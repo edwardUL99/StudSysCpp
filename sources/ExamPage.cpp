@@ -48,7 +48,7 @@ void ExamPage::show() {
     bool run = true;
     bool answerable = true;
 
-    const std::vector<ExamQuestion> questions = exam.getQuestions();
+    std::vector<ExamQuestion> questions = exam.getQuestions();
 
     while (run) {
         if (allowReverse && answerable) cout << "(A)nswer current question, (N)ext question, (P)revious question, (S)ubmit for grading, (C)ancel" << endl;
@@ -58,14 +58,12 @@ void ExamPage::show() {
         string choice = ui::getChoice();
 
         if (choice == "A" && answerable) {
-            displayQuestion(*qIterator);
-            if (qIterator != questions.end()) {
-                qIterator++;
-            } else {
-                if (!allowReverse) {
-                    answerable = false;
-                }
+            if (qIterator == questions.end()) {
+                cout << "You are at the end of the exam, to answer last question again, click P, then answer" << endl;
+                continue;
             }
+
+            displayQuestion(*qIterator);
         } else if (choice == "N" && answerable) {
             if (qIterator != questions.end()) {
                 qIterator++;
@@ -88,7 +86,8 @@ void ExamPage::show() {
 
                  if (choice == "Y") {
                     ExamGrade grade = this->answers.getExamGrade(); //calculate the exam grade 
-                    
+                    this->system.addExamGrade(grade);
+
                     run = false;
                     break;
                 } else if (choice == "N") {

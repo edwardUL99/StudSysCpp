@@ -1,4 +1,5 @@
 #include "headers/ExamSelectorPage.h"
+#include "headers/ExamCreatePage.h"
 #include "headers/StudentAccount.h"
 #include "headers/ExamPage.h"
 #include "headers/Exam.h"
@@ -29,7 +30,7 @@ void ExamSelectorPage::show() {
         int i = 0;
 
         for (const Exam &exam : exams) {
-            cout << i << ") " << exam.getName() << " - " << exam.getNumberOfQuestions() << " questions - " << exam.getTotalWeight() << " marks" << endl;
+            cout << i + 1 << ") " << exam.getName() << " - " << exam.getNumberOfQuestions() << " questions - " << exam.getTotalWeight() << " marks" << endl;
             i++;
         }
     } else {
@@ -38,13 +39,25 @@ void ExamSelectorPage::show() {
 
     bool run = true;
 
+    bool lecturer = false;
+
+    try {
+        LecturerAccount &lectAcc = dynamic_cast<LecturerAccount&>(account);
+        lecturer = true;
+    } catch (std::bad_cast &bc) {}
+
     while (run) {
-        if (noExams) cout << "(B)ack, (Q)uit" << endl;
-        else cout << "(T)ake exam, (B)ack, (Q)uit" << endl;
+        if (noExams) {
+           if (lecturer) cout << "(C)reate Exam, (B)ack, (Q)uit" << endl;
+           else cout << "(B)ack, (Q)uit" << endl;
+        } else { 
+            if (lecturer) cout << "(E)dit Exam, (B)ack, (Q)uit" << endl;
+            else cout << "(T)ake exam, (B)ack, (Q)uit" << endl;
+        }
 
         string choice = ui::getChoice();
 
-        if (choice == "T" && !noExams) {
+        if (choice == "T" && !noExams && !lecturer) {
             string msg = "Please choose a number between 1 and " + std::to_string(size) + ": ";
             cout << msg << endl;
 
@@ -56,6 +69,11 @@ void ExamSelectorPage::show() {
 
             ExamPage examPage(student, exam, this->system);
             examPage.show();
+        } else if (choice == "E" && !noExams && lecturer) {
+            cout << "Not implemented yet" << endl;
+        } else if (choice == "C" && lecturer) {
+            ExamCreatePage createPage(this->module, this->system);
+            createPage.show();
         } else if (choice == "B") {
             run = false;
         } else if (choice == "Q") {

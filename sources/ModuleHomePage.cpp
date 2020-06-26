@@ -1,4 +1,5 @@
 #include "headers/ModuleHomePage.h"
+#include "headers/ExamSelectorPage.h"
 #include "headers/UIUtils.h"
 
 using ui::ModuleHomePage;
@@ -23,7 +24,8 @@ void ModuleHomePage::show() {
         } else if (choice == "T") {
             cout << "Not implemented yet" << endl;
         } else if (choice == "E") {
-            cout << "Not implemented yet" << endl;
+            ExamSelectorPage selectorPage(this->account, this->module, this->system);
+            selectorPage.show();
         } else if (choice == "S") {
             cout << "Students registered on Module " << code << ":" << endl;
             
