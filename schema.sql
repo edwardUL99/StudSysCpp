@@ -2,6 +2,8 @@
 
 /*make sure its 3NF, go over sulis slides and your project and videos to make sure it is */
 
+
+/*may not be in 3NF, see comment in issue #20 on GitHub*/
 CREATE TABLE IF NOT EXISTS lecturers (
 	id INTEGER NOT NULL,
 	name VARCHAR(100) NOT NULL,
@@ -24,6 +26,8 @@ CREATE TABLE IF NOT EXISTS courses (
 		ON UPDATE CASCADE
 );
 
+
+/*may not be in 3NF, see comment in issue #20 on GitHub*/
 CREATE TABLE IF NOT EXISTS students (
 	id INTEGER NOT NULL,
 	name VARCHAR(100) NOT NULL,
