@@ -50,6 +50,8 @@ void ExamPage::show() {
 
     std::vector<ExamQuestion> questions = exam.getQuestions();
 
+    int index = 1; //used to maintain the position in the exam
+
     while (run) {
         if (allowReverse && answerable) cout << "(A)nswer current question, (N)ext question, (P)revious question, (S)ubmit for grading, (C)ancel" << endl;
         else if (answerable) cout << "(A)nswer current question, (N)ext question, (S)ubmit for grading, (C)ancel" << endl;
@@ -65,15 +67,17 @@ void ExamPage::show() {
 
             displayQuestion(*qIterator);
         } else if (choice == "N" && answerable) {
-            if (qIterator != questions.end()) {
+            if (index != questions.size()) {
                 qIterator++;
+                index++;
                 cout << "Next question--->" << endl;
             } else {
                 cout << "You are on the last question" << endl;
             }
         } else if (choice == "P" && answerable && allowReverse) {
-            if (qIterator != questions.begin()) {
+            if (index != 1) {
                 qIterator--;
+                index--;
                 cout << "<---Previous question" << endl;
             } else {
                 cout << "You are on the first question" << endl;
