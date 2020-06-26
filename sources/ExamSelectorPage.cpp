@@ -3,6 +3,7 @@
 #include "headers/StudentAccount.h"
 #include "headers/ExamPage.h"
 #include "headers/Exam.h"
+#include "headers/NotFoundException.h"
 #include "headers/UIUtils.h"
 
 using ui::ExamSelectorPage;
@@ -67,8 +68,19 @@ void ExamSelectorPage::show() {
             Student student = studentAccount.getStudent();
             Exam exam = exams[num - 1];
 
-            ExamPage examPage(student, exam, this->system);
-            examPage.show();
+            bool tookExam = false;
+
+            try {
+                ExamGrade grade = this->system.getExamGrade(student, exam);
+                tookExam = true;
+            } catch (NotFoundException &nf) {}
+            
+            if (!tookExam) {
+                ExamPage examPage(student, exam, this->system);
+                examPage.show();
+            } else {
+                cout << "You already took this exam, so you cannot take it again. If this is an error, contact your lecturer" << endl;
+            }
         } else if (choice == "E" && !noExams && lecturer) {
             cout << "Not implemented yet" << endl;
         } else if (choice == "C" && lecturer) {
