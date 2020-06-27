@@ -5,13 +5,11 @@
 
 /*may not be in 3NF, see comment in issue #20 on GitHub*/
 CREATE TABLE IF NOT EXISTS lecturers (
-	id INTEGER NOT NULL,
+	email VARCHAR(100),
 	name VARCHAR(100) NOT NULL,
 	age INTEGER(3),
-	email VARCHAR(100),
 	department VARCHAR(100),
-	PRIMARY KEY (id),
-	UNIQUE KEY (email)
+	PRIMARY KEY (email)
 );
 
 CREATE TABLE IF NOT EXISTS courses (
@@ -19,9 +17,9 @@ CREATE TABLE IF NOT EXISTS courses (
 	type CHAR(5) NOT NULL, /*e.g BSc*/
 	name VARCHAR(100) NOT NULL,
 	duration INTEGER(1),
-	course_leader INTEGER,
+	course_leader VARCHAR(100),
 	PRIMARY KEY (id),
-	FOREIGN KEY (course_leader) REFERENCES lecturers(id)
+	FOREIGN KEY (course_leader) REFERENCES lecturers(email)
 		ON DELETE RESTRICT
 		ON UPDATE CASCADE
 );
@@ -32,11 +30,9 @@ CREATE TABLE IF NOT EXISTS students (
 	id INTEGER NOT NULL,
 	name VARCHAR(100) NOT NULL,
 	age INTEGER,
-	email VARCHAR(100),
 	qca FLOAT DEFAULT 0.00, /*Maybe have a procedure or trigger that updates qca after grade is totalled */
 	course CHAR(5),
 	PRIMARY KEY (id),
-	UNIQUE KEY (email),
 	FOREIGN KEY (course) REFERENCES courses(id)
 		ON DELETE RESTRICT
 		ON UPDATE CASCADE
@@ -46,9 +42,9 @@ CREATE TABLE IF NOT EXISTS modules (
 	code CHAR(6) NOT NULL,
 	name VARCHAR(100),
 	credits INTEGER(1),
-	lecturer INTEGER,
+	lecturer VARCHAR(100),
 	PRIMARY KEY (code),
-	FOREIGN KEY (lecturer) REFERENCES lecturers(id)
+	FOREIGN KEY (lecturer) REFERENCES lecturers(email)
 		ON DELETE RESTRICT
 		ON UPDATE CASCADE
 );
@@ -77,7 +73,6 @@ CREATE TABLE IF NOT EXISTS exams (
 	weightPerQuestion FLOAT,
 	totalWeight FLOAT,
 	PRIMARY KEY (id, name),
-	UNIQUE KEY (name, year, semester),
 	FOREIGN KEY (module) REFERENCES modules(code)
 		ON DELETE CASCADE
 		ON UPDATE CASCADE 
@@ -133,10 +128,10 @@ CREATE TABLE IF NOT EXISTS module_grades (
 );
 
 CREATE TABLE IF NOT EXISTS lecturer_accounts (
-	id INTEGER,
+	email VARCHAR(100),
 	pass VARCHAR(16),
 	PRIMARY KEY (id),
-	FOREIGN KEY (id) REFERENCES lecturers(id)
+	FOREIGN KEY (email) REFERENCES lecturers(email)
 		ON DELETE CASCADE 
 		ON UPDATE CASCADE
 );
@@ -151,10 +146,10 @@ CREATE TABLE IF NOT EXISTS student_accounts (
 );
 
 CREATE TABLE IF NOT EXISTS lecturer_logins (
-	id INTEGER,
+	email VARCHAR(100),
 	loginTime DATETIME DEFAULT CURRENT_TIMESTAMP,
-	PRIMARY KEY (id, loginTime),
-	FOREIGN KEY (id) REFERENCES lecturer_accounts(id)
+	PRIMARY KEY (email, loginTime),
+	FOREIGN KEY (email) REFERENCES lecturer_accounts(email)
 		ON DELETE CASCADE
 		ON UPDATE CASCADE
 );

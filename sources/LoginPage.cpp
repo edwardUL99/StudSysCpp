@@ -68,8 +68,6 @@ void LoginPage::show()
         }
         else if (choice == "S")
         {
-            int id = this->student ? this->system.getStudentID(email) : this->system.getLecturerID(email);
-
             bool submit = false;
             bool exists = true;
 
@@ -77,7 +75,7 @@ void LoginPage::show()
             {
                 try
                 {
-                    StudentAccount studentAccount = this->system.getStudentAccount(id);
+                    StudentAccount studentAccount = this->system.getStudentAccount(this->system.getStudentID(email));
 
                     submit = studentAccount.getPassword() == password;
                 }
@@ -91,7 +89,7 @@ void LoginPage::show()
             {
                 try
                 {
-                    LecturerAccount lecturerAccount = this->system.getLecturerAccount(id);
+                    LecturerAccount lecturerAccount = this->system.getLecturerAccount(email);
 
                     submit = lecturerAccount.getPassword() == password;
                 }
@@ -181,8 +179,6 @@ LecturerAccount LoginPage::getLecturerAccount() const
     }
     else
     {
-        int id = this->system.getLecturerID(this->email);
-
-        return this->system.getLecturerAccount(id);
+        return this->system.getLecturerAccount(this->email);
     }
 }

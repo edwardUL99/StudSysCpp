@@ -2,7 +2,7 @@
 
 using std::string;
 
-Student::Student(int id, string name, int age, string email, Course course, float qca) : Person(id, name, age, email), course(course) {
+Student::Student(int id, string name, int age, Course course, float qca) : Person(id, name, age, std::to_string(id) + "@student.mail.ie"), course(course) {
     this->qca = qca;
 }
 

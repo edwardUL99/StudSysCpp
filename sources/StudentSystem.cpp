@@ -52,13 +52,13 @@ bool StudentSystem::addLecturer(const Lecturer &lecturer) {
     }
 }
 
-Lecturer StudentSystem::getLecturer(int id) {
-    boost::optional<Lecturer> lecturer = this->database.getLecturer(id);
+Lecturer StudentSystem::getLecturer(string email) {
+    boost::optional<Lecturer> lecturer = this->database.getLecturer(email);
 
     if (lecturer) {
         return lecturer.get();
     } else {
-        throw NotFoundException("Lecturer identified by " + std::to_string(id));
+        throw NotFoundException("Lecturer identified by " + email);
     }
 }
 
@@ -66,22 +66,12 @@ bool StudentSystem::removeLecturer(const Lecturer &lecturer) {
     return this->database.remove(lecturer);
 }
 
-bool StudentSystem::updateLecturer(int id, const Lecturer &updatedLecturer) {
+bool StudentSystem::updateLecturer(string email, const Lecturer &updatedLecturer) {
     try {
-        return this->database.update(id, updatedLecturer);
+        return this->database.update(email, updatedLecturer);
     } catch (KeyMismatch &m) {
         throw m;
     }
-}
-
-int StudentSystem::getLecturerID(string email) {
-    for (const Lecturer &l : this->database.getAllLecturers()) {
-        if (l.getEmail() == email) {
-            return l.getID();
-        }
-    }
-
-    return -1;
 }
 
 bool StudentSystem::addStudent(const Student &student) {
@@ -333,13 +323,13 @@ bool StudentSystem::addAccount(LecturerAccount lecturerAccount) {
     }
 }
 
-LecturerAccount StudentSystem::getLecturerAccount(int id) {
-    boost::optional<LecturerAccount> lecturerAccount = this->database.getLecturerAccount(id);
+LecturerAccount StudentSystem::getLecturerAccount(string email) {
+    boost::optional<LecturerAccount> lecturerAccount = this->database.getLecturerAccount(email);
 
     if (lecturerAccount) {
         return lecturerAccount.get();
     } else {
-        throw NotFoundException("Lecturer Account identified by lecturer " + id);
+        throw NotFoundException("Lecturer Account identified by lecturer " + email);
     }
 }
 

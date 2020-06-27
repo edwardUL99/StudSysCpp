@@ -84,7 +84,7 @@ public:
     bool remove(const StudentAccount &studentAccount);
 
     //Overloaded update methods to change different entities in the database, the entity must have same ID, or primary key but a different attribute, if the id (first 1 or 2 params does not match, e.g. id != updatedLecturer.getID(), KeyMismatch exception is thrown)
-    bool update(int id, const Lecturer &updatedLecturer);
+    bool update(std::string, const Lecturer &updatedLecturer);
     bool update(int id, const Student &updatedStudent);
     bool update(std::string id, const Course &updatedCourse);
     bool update(std::string code, const Module &updatedModule);
@@ -95,7 +95,7 @@ public:
     bool update(const Student &student, const StudentAccount &updatedStudentAccount);
 
     //Various get methods to retrieve INDIVIDUAL entities from the database
-    boost::optional<Lecturer> getLecturer(int id);
+    boost::optional<Lecturer> getLecturer(std::string email);
     boost::optional<Course> getCourse(std::string id);
     boost::optional<Student> getStudent(int id);
     boost::optional<Module> getModule(std::string code);
@@ -104,7 +104,7 @@ public:
     boost::optional<Exam> getExam(int id);
     boost::optional<ExamGrade> getExamGrade(const Student &student, const Exam &exam);
     boost::optional<ModuleGrade> getModuleGrade(const Module &module, const Student &student);
-    boost::optional<LecturerAccount> getLecturerAccount(int id);
+    boost::optional<LecturerAccount> getLecturerAccount(std::string email);
     boost::optional<StudentAccount> getStudentAccount(int id);
 
     //Various get methods to retrieve ALL entities of a type from the database
@@ -118,11 +118,6 @@ public:
     std::vector<ModuleGrade> getAllModuleGrades();
     std::vector<LecturerAccount> getAllLecturerAccounts();
     std::vector<StudentAccount> getAllStudentAccounts();
-
-
-    int getLecturerID(Lecturer &lecturer); 
-    int getStudentID(Student &student);
-    int getExamID(Exam &exam);
 
     //Procedure to calculate module grades for the specified module and student
     void calculateModuleGrades(std::string module, const Student &student);

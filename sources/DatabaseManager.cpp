@@ -76,7 +76,7 @@ void DatabaseManager::setLastExamID()
 
 bool DatabaseManager::add(const Lecturer &lecturer)
 {   
-    string query = "INSERT INTO lecturers (id, name, age, email, department) VALUES (" + std::to_string(lecturer.getID()) + ", '" + lecturer.getName() + "', " + std::to_string(lecturer.getAge()) + ", '" + lecturer.getEmail() + "', '" + lecturer.getDepartment() + "');";
+    string query = "INSERT INTO lecturers (email, name, age, department) VALUES ('" + lecturer.getEmail() + "', '" + lecturer.getName() + "', " + std::to_string(lecturer.getAge()) + ", '" + lecturer.getDepartment() + "');";
 
     try
     {
@@ -93,20 +93,19 @@ bool DatabaseManager::add(const Lecturer &lecturer)
     }
 }
 
-boost::optional<Lecturer> DatabaseManager::getLecturer(int id)
+boost::optional<Lecturer> DatabaseManager::getLecturer(string email)
 {
-    ResultSet *res = executeQuery("SELECT * FROM lecturers WHERE id = " + std::to_string(id) + ";");
+    ResultSet *res = executeQuery("SELECT * FROM lecturers WHERE email = '" + email + "';");
 
     if (res->next())
     {
         string name = res->getString("name");
         int age = res->getInt("age");
-        string email = res->getString("email");
         string department = res->getString("department");
 
         delete res;
 
-        return Lecturer(id, name, age, email, department);
+        return Lecturer(name, age, email, department);
     }
 
     delete res;
@@ -127,7 +126,7 @@ bool DatabaseManager::contains(const DatabaseItem &item)
     case LECTURERS:
     {
         const Lecturer &lecturer = dynamic_cast<const Lecturer &>(item);
-        return (bool)getLecturer(lecturer.getID());
+        return (bool)getLecturer(lecturer.getEmail());
     }
     case STUDENTS:
     {
@@ -162,7 +161,7 @@ bool DatabaseManager::contains(const DatabaseItem &item)
     case LECTURER_ACCOUNTS:
     {
         const LecturerAccount &lecturerAccount = dynamic_cast<const LecturerAccount &>(item);
-        return (bool)getLecturerAccount(lecturerAccount.getLecturer().getID());
+        return (bool)getLecturerAccount(lecturerAccount.getLecturer().getEmail());
     }
     case STUDENT_ACCOUNTS:
     {
@@ -187,7 +186,7 @@ vector<Lecturer> DatabaseManager::getAllLecturers()
 
     while (res->next())
     {
-        lecturers.push_back(getLecturer(res->getInt("id")).get());
+        lecturers.push_back(getLecturer(res->getString("email")).get());
     }
 
     delete res;
@@ -203,34 +202,16 @@ bool DatabaseManager::remove(const Lecturer &lecturer)
     return removed;
 }
 
-int DatabaseManager::getLecturerID(Lecturer &lecturer)
+bool DatabaseManager::update(string email, const Lecturer &updatedLecturer)
 {
-    string email = "'" + lecturer.getEmail() + "'";
-    ResultSet *res = executeQuery("SELECT id FROM lecturers WHERE email = " + email + ";");
+    string email1 = updatedLecturer.getEmail();
 
-    int id = -1;
-
-    while (res->next())
+    if (email != email1)
     {
-        id = res->getInt("id");
-        lecturer.setID(id);
-    }
-
-    delete res;
-
-    return id;
-}
-
-bool DatabaseManager::update(int id, const Lecturer &updatedLecturer)
-{
-    int id1 = updatedLecturer.getID();
-
-    if (id != id1)
-    {
-        throw KeyMismatch(std::to_string(id), std::to_string(id1));
+        throw KeyMismatch(email, email1);
     }
     else {
-        string query = "UPDATE lecturers SET name = '" + updatedLecturer.getName() + "', age = " + std::to_string(updatedLecturer.getAge()) + ", email = '" + updatedLecturer.getEmail() + "', department = '" + updatedLecturer.getDepartment() + "' WHERE id = " + std::to_string(id) + ";";
+        string query = "UPDATE lecturers SET name = '" + updatedLecturer.getName() + "', age = " + std::to_string(updatedLecturer.getAge()) + ", department = '" + updatedLecturer.getDepartment() + "' WHERE email = '" + email + "';";
 
         bool updated = executeUpdate(query) != 0;
 
@@ -240,7 +221,7 @@ bool DatabaseManager::update(int id, const Lecturer &updatedLecturer)
 
 bool DatabaseManager::add(const Course &course)
 {
-    string query = "INSERT INTO courses (id, type, name, duration, course_leader) VALUES ('" + course.getID() + "', '" + course.getType() + "', '" + course.getName() + "', " + std::to_string(course.getDuration()) + ", " + std::to_string(course.getCourseLeader().getID()) + ");";
+    string query = "INSERT INTO courses (id, type, name, duration, course_leader) VALUES ('" + course.getID() + "', '" + course.getType() + "', '" + course.getName() + "', " + std::to_string(course.getDuration()) + ", '" + course.getCourseLeader().getEmail() + "');";
 
     try
     {
@@ -266,7 +247,7 @@ boost::optional<Course> DatabaseManager::getCourse(string id)
         string type = res->getString("type");
         string name = res->getString("name");
         int duration = res->getInt("duration");
-        boost::optional<Lecturer> lecturer = getLecturer(res->getInt("course_leader"));
+        boost::optional<Lecturer> lecturer = getLecturer(res->getString("course_leader"));
         delete res;
 
         return Course(id, type, name, duration, lecturer.get());
@@ -315,7 +296,7 @@ bool DatabaseManager::update(string id, const Course &updatedCourse)
     }
     else
     {
-        string query = "UPDATE courses SET type = '" + updatedCourse.getType() + "', name = '" + updatedCourse.getName() + "', duration = " + std::to_string(updatedCourse.getDuration()) + ", course_leader = " + std::to_string(updatedCourse.getCourseLeader().getID()) + " WHERE id = '" + id1 + "';";
+        string query = "UPDATE courses SET type = '" + updatedCourse.getType() + "', name = '" + updatedCourse.getName() + "', duration = " + std::to_string(updatedCourse.getDuration()) + ", course_leader = '" + updatedCourse.getCourseLeader().getEmail() + "' WHERE id = '" + id1 + "';";
 
         bool updated = executeUpdate(query) != 0;
 
@@ -325,7 +306,7 @@ bool DatabaseManager::update(string id, const Course &updatedCourse)
 
 bool DatabaseManager::add(const Student &student)
 {
-    string query = "INSERT INTO students (id, name, age, email, qca, course) VALUES (" + std::to_string(student.getID()) + ", '" + student.getName() + "', " + std::to_string(student.getAge()) + ", '" + student.getEmail() + "', " + std::to_string(student.getQCA()) + ", '" + student.getCourse().getID() + "');";
+    string query = "INSERT INTO students (id, name, age, qca, course) VALUES (" + std::to_string(student.getID()) + ", '" + student.getName() + "', " + std::to_string(student.getAge()) + ", " + std::to_string(student.getQCA()) + ", '" + student.getCourse().getID() + "');";
 
     try
     {
@@ -350,13 +331,12 @@ boost::optional<Student> DatabaseManager::getStudent(int id)
     {
         string name = res->getString("name");
         int age = res->getInt("age");
-        string email = res->getString("email");
         float qca = res->getDouble("qca");
         boost::optional<Course> course = getCourse(res->getString("course"));
 
         delete res;
 
-        return Student(id, name, age, email, course.get(), qca);
+        return Student(id, name, age, course.get(), qca);
     }
 
     delete res;
@@ -386,8 +366,8 @@ vector<Student> DatabaseManager::getAllStudents()
 
 bool DatabaseManager::remove(const Student &student)
 {
-    string email = "'" + student.getEmail() + "'";
-    bool removed = this->stmt->executeUpdate("DELETE FROM students WHERE email = " + email + ";") != 0;
+    string id = std::to_string(student.getID());
+    bool removed = this->stmt->executeUpdate("DELETE FROM students WHERE id = " + id + ";") != 0;
 
     return removed;
 }
@@ -402,7 +382,7 @@ bool DatabaseManager::update(int id, const Student &updatedStudent)
     }
     else
     {
-        string query = "UPDATE students SET name = '" + updatedStudent.getName() + "', age = " + std::to_string(updatedStudent.getAge()) + ", email = '" + updatedStudent.getEmail() + "', qca = " + std::to_string(updatedStudent.getQCA()) + ", course = '" + updatedStudent.getCourse().getID() + "' WHERE id = " + std::to_string(id1) + ";";
+        string query = "UPDATE students SET name = '" + updatedStudent.getName() + "', age = " + std::to_string(updatedStudent.getAge()) + ", qca = " + std::to_string(updatedStudent.getQCA()) + ", course = '" + updatedStudent.getCourse().getID() + "' WHERE id = " + std::to_string(id1) + ";";
 
         bool updated = executeUpdate(query) != 0;
 
@@ -410,27 +390,9 @@ bool DatabaseManager::update(int id, const Student &updatedStudent)
     }
 }
 
-int DatabaseManager::getStudentID(Student &student)
-{
-    string email = "'" + student.getEmail() + "'";
-    ResultSet *res = executeQuery("SELECT id FROM lecturers WHERE email = " + email + ";");
-
-    int id = -1;
-
-    if (res->next())
-    {
-        id = res->getInt("id");
-        student.setID(id);
-    }
-
-    delete res;
-
-    return id;
-}
-
 bool DatabaseManager::add(const Module &module)
 {
-    string query = "INSERT INTO modules (code, name, credits, lecturer) VALUES ('" + module.getCode() + "', '" + module.getName() + "', " + std::to_string(module.getCredits()) + ", " + std::to_string(module.getLecturer().getID()) + ");";
+    string query = "INSERT INTO modules (code, name, credits, lecturer) VALUES ('" + module.getCode() + "', '" + module.getName() + "', " + std::to_string(module.getCredits()) + ", '" + module.getLecturer().getEmail() + "');";
 
     try
     {
@@ -455,7 +417,7 @@ boost::optional<Module> DatabaseManager::getModule(string code)
     {
         string name = res->getString("name");
         int credits = res->getInt("credits");
-        boost::optional<Lecturer> lecturer = getLecturer(res->getInt("lecturer"));
+        boost::optional<Lecturer> lecturer = getLecturer(res->getString("lecturer"));
 
         delete res;
 
@@ -506,7 +468,7 @@ bool DatabaseManager::update(string code, const Module &updatedModule)
     }
     else
     {
-        string query = "UPDATE modules SET name = '" + updatedModule.getName() + "', credits = " + std::to_string(updatedModule.getCredits()) + ", lecturer = " + std::to_string(updatedModule.getLecturer().getID()) + " WHERE code = '" + code1 + "';";
+        string query = "UPDATE modules SET name = '" + updatedModule.getName() + "', credits = " + std::to_string(updatedModule.getCredits()) + ", lecturer = '" + updatedModule.getLecturer().getEmail() + "' WHERE code = '" + code1 + "';";
 
         bool updated = executeUpdate(query) != 0;
 
@@ -814,29 +776,6 @@ bool DatabaseManager::update(const Exam &oldExam, const Exam &updatedExam)
     }
 }
 
-int DatabaseManager::getExamID(Exam &exam)
-{
-    string module = "'" + exam.getModule().getCode() + "'";
-    string name = "'" + exam.getName() + "'";
-    string numQuestions = std::to_string(exam.getNumberOfQuestions());
-    string weight = std::to_string(exam.getWeightPerQuestion());
-    string totalW = std::to_string(exam.getTotalWeight()); //most likely to be only one result if all attributes match
-
-    string query = "SELECT id FROM exams WHERE module = " + module + " AND " + "name = " + name + " AND " + "numberOfQuestions = " + numQuestions + " AND " + "weightPerQuestion = " + weight + " AND " + "totalWeight = " + totalW + ";";
-
-    int id = -1;
-
-    ResultSet *res = executeQuery(query);
-
-    if (res->next())
-    {
-        id = res->getInt("id");
-        exam.setID(id);
-    }
-
-    return id;
-}
-
 bool DatabaseManager::add(const ExamGrade &examGrade)
 {
     Exam exam = examGrade.getExam();
@@ -987,7 +926,7 @@ vector<ModuleGrade> DatabaseManager::getAllModuleGrades()
 
 bool DatabaseManager::add(const LecturerAccount &lecturerAccount)
 {   
-    string query = "INSERT INTO lecturer_accounts (id, pass) VALUES (" + std::to_string(lecturerAccount.getLecturer().getID()) + ", '" + lecturerAccount.getPassword() + "');";
+    string query = "INSERT INTO lecturer_accounts (email, pass) VALUES ('" + lecturerAccount.getEmail() + "', '" + lecturerAccount.getPassword() + "');";
 
     try
     {
@@ -1004,15 +943,15 @@ bool DatabaseManager::add(const LecturerAccount &lecturerAccount)
     }
 }
 
-boost::optional<LecturerAccount> DatabaseManager::getLecturerAccount(int id)
+boost::optional<LecturerAccount> DatabaseManager::getLecturerAccount(string email)
 {
-    string query = "SELECT * FROM lecturer_accounts WHERE id = " + std::to_string(id) + ";";
+    string query = "SELECT * FROM lecturer_accounts WHERE email = '" + email + "';";
 
     ResultSet *res = executeQuery(query);
 
     if (res->next())
     {
-        boost::optional<Lecturer> lecturer = getLecturer(id);
+        boost::optional<Lecturer> lecturer = getLecturer(email);
         string pass = res->getString("pass");
 
         delete res;
@@ -1033,7 +972,7 @@ vector<LecturerAccount> DatabaseManager::getAllLecturerAccounts()
 
     while (res->next())
     {
-        accounts.push_back(getLecturerAccount(res->getInt("id")).get());
+        accounts.push_back(getLecturerAccount(res->getString("email")).get());
     }
 
     delete res;
@@ -1050,16 +989,16 @@ bool DatabaseManager::remove(const LecturerAccount &lecturerAccount)
 
 bool DatabaseManager::update(const Lecturer &lecturer, const LecturerAccount &updatedLecturerAccount)
 {
-    int id = lecturer.getID();
-    int id1 = updatedLecturerAccount.getLecturer().getID();
+    string email = lecturer.getEmail();
+    string email1 = updatedLecturerAccount.getLecturer().getEmail();
 
-    if (id != id1)
+    if (email != email1)
     {
-        throw KeyMismatch(std::to_string(id), std::to_string(id1));
+        throw KeyMismatch(email, email1);
     }
     else
     {   
-        string query = "UPDATE lecturer_accounts SET pass = '" + updatedLecturerAccount.getPassword() + "' WHERE id = " + std::to_string(id1) + ";";
+        string query = "UPDATE lecturer_accounts SET pass = '" + updatedLecturerAccount.getPassword() + "' WHERE email = '" + email + "';";
 
         bool updated = executeUpdate(query) != 0;
 

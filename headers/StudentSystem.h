@@ -26,10 +26,9 @@ class StudentSystem {
     public:
         StudentSystem(std::string dbname, std::string username, std::string password, std::string host);
         bool addLecturer(const Lecturer &lecturer);
-        Lecturer getLecturer(int id);
+        Lecturer getLecturer(std::string email);
         bool removeLecturer(const Lecturer &lecturer);
-        bool updateLecturer(int id, const Lecturer &updatedLecturer);
-        int getLecturerID(std::string email);
+        bool updateLecturer(std::string email, const Lecturer &updatedLecturer);
         bool addStudent(const Student &student);
         Student getStudent(int id);
         bool removeStudent(const Student &student);
@@ -69,7 +68,7 @@ class StudentSystem {
         bool updateExamGrade(const Student &student, const Exam &exam, const ExamGrade &updatedExamGrade);
         ModuleGrade getModuleGrade(const Module &module, const Student &student);
         bool addAccount(LecturerAccount lecturerAccount);
-        LecturerAccount getLecturerAccount(int id);
+        LecturerAccount getLecturerAccount(std::string email);
         bool removeAccount(const LecturerAccount &lecturerAccount);
         bool updateAccount(const Lecturer &lecturer, const LecturerAccount &updatedLecturerAccount);
         bool addAccount(const StudentAccount &studentAccount);

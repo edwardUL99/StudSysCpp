@@ -11,7 +11,7 @@ private:
     Course course;
 
 public:
-    Student(int id, std::string name, int age, std::string email, Course course, float qca = 0.0);
+    Student(int id, std::string name, int age, Course course, float qca = 0.0);
     virtual ~Student() = default;
     float getQCA() const;
     void setQCA(float qca);

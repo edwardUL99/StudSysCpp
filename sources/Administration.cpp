@@ -71,7 +71,7 @@ void Administration::createCourse() {
 
     try
     {
-        Lecturer lecturer = system.getLecturer(system.getLecturerID(email));
+        Lecturer lecturer = system.getLecturer(email);
         Course course(code, type, name, duration, lecturer);
 
         if (system.addCourse(course))
@@ -138,7 +138,7 @@ void Administration::createModule()
 
     try
     {
-        Lecturer lecturer = system.getLecturer(system.getLecturerID(email));
+        Lecturer lecturer = system.getLecturer(email);
         Module module(code, name, credits, lecturer);
 
         if (system.addModule(module))
@@ -209,7 +209,7 @@ void Administration::createStudent()
     try
     {
         Course course = system.getCourse(code);
-        Student student(id, name, age, email, course);
+        Student student(id, name, age, course);
 
         cout << "Choose a password for this student: " << endl;
         
@@ -333,10 +333,6 @@ void Administration::registerStudent() {
 
 void Administration::createLecturer()
 {
-    cout << "Please enter the lecturer ID to be used for the new lecturer: " << endl;
-
-    int id = ui::getInt(ui::intltezeropred, ui::ltezeroretrymsg);
-
     cout << "Please enter the Lecturer's first name: " << endl;
 
     string fname = ui::getString(ui::emptystrpred, ui::emptystrretrymsg);
@@ -362,7 +358,7 @@ void Administration::createLecturer()
     try
     {
         string name = fname + " " + sname;
-        Lecturer lecturer(id, name, age, email, department);
+        Lecturer lecturer(name, age, email, department);
 
         cout << "Choose a password for this Lecturer: " << endl;
 
@@ -388,14 +384,14 @@ void Administration::createLecturer()
 
 void Administration::removeLecturer()
 {
-    cout << "Please enter the Lecturer ID you wish to remove: " << endl;
+    cout << "Please enter the Lecturer email you wish to remove: " << endl;
 
-    int id = ui::getInt(ui::intltezeropred, ui::ltezeroretrymsg);
+    string email = ui::getString(ui::emptystrpred, ui::emptystrretrymsg);
 
     try
     {
-        Lecturer lecturer = system.getLecturer(id);
-        LecturerAccount account = system.getLecturerAccount(id);
+        Lecturer lecturer = system.getLecturer(email);
+        LecturerAccount account = system.getLecturerAccount(email);
         string name = lecturer.getName();
 
         system.removeAccount(account);
@@ -411,21 +407,21 @@ void Administration::removeLecturer()
     }
     catch (NotFoundException &nf)
     {
-        cout << "The Lecturer " << id << " does not exist, exiting Lecturer deletion" << endl;
+        cout << "The Lecturer " << email << " does not exist, exiting Lecturer deletion" << endl;
     }
 }
 
 void Administration::resetLecturerPassword()
 {
-    cout << "Please enter the Lecturer ID for whom to reset the password: " << endl;
+    cout << "Please enter the Lecturer email for whom to reset the password: " << endl;
 
-    int id = ui::getInt(ui::intltezeropred, ui::ltezeroretrymsg);
+    string email = ui::getString(ui::emptystrpred, ui::emptystrretrymsg);
 
     try
     {
-        Lecturer lecturer = system.getLecturer(id);
+        Lecturer lecturer = system.getLecturer(email);
 
-        LecturerAccount account = system.getLecturerAccount(id);
+        LecturerAccount account = system.getLecturerAccount(email);
 
         cout << "Please enter the new password: " << endl;
 
@@ -444,7 +440,7 @@ void Administration::resetLecturerPassword()
     }
     catch (NotFoundException &nf)
     {
-        cout << "The Lecturer " << id << " does not exist, exiting Lecturer password reset" << endl;
+        cout << "The Lecturer " << email << " does not exist, exiting Lecturer password reset" << endl;
     }
 }
 

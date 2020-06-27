@@ -2,7 +2,7 @@
 
 using std::string;
 
-Lecturer::Lecturer(int id, string name, int age, string email, string department) : Person(id, name, age, email) {
+Lecturer::Lecturer(string name, int age, string email, string department) : Person(-1, name, age, email) {
     this->department = department;
 }
 
@@ -19,7 +19,7 @@ string Lecturer::getObjectType() const {
 }
 
 string Lecturer::getDescription() const {
-    string ret = "ID: " + std::to_string(id) + ", Name: " + name + ", Age: " + std::to_string(age) + ", E-mail: " + email + ", Department: " + department;
+    string ret = "Name: " + name + ", Age: " + std::to_string(age) + ", E-mail: " + email + ", Department: " + department;
     return ret;
 }
 

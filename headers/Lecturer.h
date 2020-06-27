@@ -9,7 +9,7 @@ private:
     std::string department;
 
 public:
-    Lecturer(int id, std::string name, int age, std::string email, std::string department);
+    Lecturer(std::string name, int age, std::string email, std::string department);
     virtual ~Lecturer() = default;
     std::string getDepartment() const;
     //returns a comma seperated list of values to be used when columns (id,name, age, email, department) are used

@@ -58,7 +58,7 @@ void AccountSettingsPage::changeName()
             {
                 Lecturer lecturer = lectAcc.get().getLecturer();
                 lecturer.setName(name);
-                system.updateLecturer(lecturer.getID(), lecturer);
+                system.updateLecturer(lecturer.getEmail(), lecturer);
             }
             else if (studAcc)
             {
