@@ -982,7 +982,7 @@ vector<LecturerAccount> DatabaseManager::getAllLecturerAccounts()
 
 bool DatabaseManager::remove(const LecturerAccount &lecturerAccount)
 {    
-    bool removed = executeUpdate("DELETE FROM lecturer_accounts WHERE id = " + std::to_string(lecturerAccount.getLecturer().getID()) + ";") != 0;
+    bool removed = executeUpdate("DELETE FROM lecturer_accounts WHERE email = '" + lecturerAccount.getEmail() + "';") != 0;
 
     return removed;
 }

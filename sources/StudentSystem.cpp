@@ -28,15 +28,15 @@ string StudentSystem::recordLogin(const Account &account) {
 
     try {
         const LecturerAccount &lecturer = dynamic_cast<const LecturerAccount&>(account);
-        string id = std::to_string(lecturer.getLecturer().getID());
+        string email = "'" + lecturer.getEmail() + "'";
 
-        res = this->database.executeQuery("SELECT loginTime FROM lecturer_logins WHERE loginTime >= ALL(SELECT loginTime FROM lecturer_logins) AND id = " + id + ";");
+        res = this->database.executeQuery("SELECT loginTime FROM lecturer_logins WHERE loginTime >= ALL(SELECT loginTime FROM lecturer_logins) AND email = " + email + ";");
 
         if (res->next()) {
             date = res->getString("loginTime");
         }
 
-        this->database.execute("INSERT INTO lecturer_logins (id) VALUES (" + id + ");");
+        this->database.execute("INSERT INTO lecturer_logins (email) VALUES (" + email + ");");
     } catch (std::bad_cast &b) {}
 
     delete res;

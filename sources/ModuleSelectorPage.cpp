@@ -41,7 +41,7 @@ std::vector<Module> ModuleSelectorPage::getModuleList() const
 
         for (const Module &module : this->system.getModules())
         {
-            if (module.getLecturer().getID() == lecturer.getID())
+            if (module.getLecturer().getEmail() == lecturer.getEmail())
             {
                 modules.push_back(module);
             }
