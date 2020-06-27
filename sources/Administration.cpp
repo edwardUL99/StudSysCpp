@@ -57,7 +57,7 @@ void Administration::createCourse() {
 
     string type = ui::getString(ui::emptystrpred, ui::emptystrretrymsg);
 
-    cout << "Please enter the name of the module: " << endl;
+    cout << "Please enter the name of the course: " << endl;
 
     string name = ui::getString(ui::emptystrpred, ui::emptystrretrymsg);
 
