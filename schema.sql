@@ -130,7 +130,7 @@ CREATE TABLE IF NOT EXISTS module_grades (
 CREATE TABLE IF NOT EXISTS lecturer_accounts (
 	email VARCHAR(100),
 	pass VARCHAR(16),
-	PRIMARY KEY (id),
+	PRIMARY KEY (email),
 	FOREIGN KEY (email) REFERENCES lecturers(email)
 		ON DELETE CASCADE 
 		ON UPDATE CASCADE
