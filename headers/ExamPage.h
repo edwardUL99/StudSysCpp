@@ -13,12 +13,9 @@
 namespace ui
 {
 
-    typedef typename std::vector<ExamQuestion>::iterator ExamIterator;
-
     class ExamPage : public Page
     {
     private:
-        ExamIterator qIterator;
         Student student; //the student taking the exam
         Exam exam;
         ExamSubmission answers;

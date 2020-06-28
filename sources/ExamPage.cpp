@@ -7,9 +7,7 @@ using std::string;
 using ui::ExamPage;
 
 ExamPage::ExamPage(Student student, Exam exam, StudentSystem &system, bool allowReverse) : Page(system), student(student), exam(exam), answers(student, exam), allowReverse(allowReverse)
-{
-    qIterator = exam.getQuestions().begin();
-}
+{}
 
 void ExamPage::displayQuestion(const ExamQuestion &examQuestion)
 {
@@ -50,7 +48,7 @@ void ExamPage::show() {
 
     std::vector<ExamQuestion> questions = exam.getQuestions();
 
-    int index = 1; //used to maintain the position in the exam
+    int index = 0; //used to maintain the position in the exam
 
     while (run) {
         if (allowReverse && answerable) cout << "(A)nswer current question, (N)ext question, (P)revious question, (S)ubmit for grading, (C)ancel" << endl;
@@ -60,23 +58,21 @@ void ExamPage::show() {
         string choice = ui::getChoice();
 
         if (choice == "A" && answerable) {
-            if (qIterator == questions.end()) {
+            if (index == questions.size()) {
                 cout << "You are at the end of the exam, to answer last question again, click P, then answer" << endl;
                 continue;
             }
 
-            displayQuestion(*qIterator);
+            displayQuestion(questions[index]);
         } else if (choice == "N" && answerable) {
             if (index != questions.size()) {
-                qIterator++;
                 index++;
                 cout << "Next question--->" << endl;
             } else {
                 cout << "You are on the last question" << endl;
             }
         } else if (choice == "P" && answerable && allowReverse) {
-            if (index != 1) {
-                qIterator--;
+            if (index != 0) {
                 index--;
                 cout << "<---Previous question" << endl;
             } else {
