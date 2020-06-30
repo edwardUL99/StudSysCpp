@@ -96,7 +96,7 @@ void LoginPage::show()
                 catch (NotFoundException &nf)
                 {
                     exists = false;
-                    cout << "E-mail " << email << "does not exist" << endl;
+                    cout << "E-mail " << email << " does not exist" << endl;
                 }
             }
 
