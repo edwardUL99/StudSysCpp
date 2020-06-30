@@ -62,7 +62,6 @@ CREATE TABLE IF NOT EXISTS student_registrations (
 		ON UPDATE CASCADE
 );
 
-/*may not be in 3NF, see comment in issue #19 on GitHub*/
 CREATE TABLE IF NOT EXISTS exams (
 	id INTEGER NOT NULL,
 	module CHAR(6),

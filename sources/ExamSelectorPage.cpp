@@ -52,7 +52,7 @@ void ExamSelectorPage::show() {
            if (lecturer) cout << "(C)reate Exam, (B)ack, (Q)uit" << endl;
            else cout << "(B)ack, (Q)uit" << endl;
         } else { 
-            if (lecturer) cout << "(E)dit Exam, (B)ack, (Q)uit" << endl;
+            if (lecturer) cout << "(C)reate Exam, (E)dit Exam, (B)ack, (Q)uit" << endl;
             else cout << "(T)ake exam, (B)ack, (Q)uit" << endl;
         }
 
