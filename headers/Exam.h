@@ -69,6 +69,7 @@ public:
     void setTotalWeight(float totalWeight);
     bool addExamQuestion(const ExamQuestion &question);
     std::vector<ExamQuestion> getQuestions() const;
+    void setQuestions(std::vector<ExamQuestion> &questions);
     virtual std::string getObjectType() const override;
     virtual std::string getDescription() const override;
     virtual Tables getTable() const override;

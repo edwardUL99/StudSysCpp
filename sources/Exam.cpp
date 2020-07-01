@@ -111,6 +111,10 @@ vector<ExamQuestion> Exam::getQuestions() const {
     return questions;
 }
 
+void Exam::setQuestions(vector<ExamQuestion> &questions) {
+    this->questions = questions;
+}
+
 string Exam::getObjectType() const {
     return "Exam";
 }

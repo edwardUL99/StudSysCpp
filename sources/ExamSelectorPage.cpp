@@ -2,6 +2,7 @@
 #include "headers/ExamCreatePage.h"
 #include "headers/StudentAccount.h"
 #include "headers/ExamPage.h"
+#include "headers/ExamEditPage.h"
 #include "headers/Exam.h"
 #include "headers/NotFoundException.h"
 #include "headers/UIUtils.h"
@@ -82,7 +83,13 @@ void ExamSelectorPage::show() {
                 cout << "You already took this exam, so you cannot take it again. If this is an error, contact your lecturer" << endl;
             }
         } else if (choice == "E" && !noExams && lecturer) {
-            cout << "Not implemented yet" << endl;
+            string msg = "Please choose a number between 1 and " + std::to_string(size) + ": ";
+            cout << msg << endl;
+
+            int num = ui::getInt(Predicate<int>([size](const int &x) -> bool { return x < 1 || x > size; }), msg);
+            
+            ExamEditPage editPage(exams[num-1], system);
+            editPage.show();
         } else if (choice == "C" && lecturer) {
             ExamCreatePage createPage(this->module, this->system);
             createPage.show();
