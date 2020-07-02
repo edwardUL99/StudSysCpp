@@ -87,9 +87,14 @@ void ExamSelectorPage::show() {
             cout << msg << endl;
 
             int num = ui::getInt(Predicate<int>([size](const int &x) -> bool { return x < 1 || x > size; }), msg);
-            
-            ExamEditPage editPage(exams[num-1], system);
-            editPage.show();
+            Exam &exam = exams[num-1];
+
+            if (!this->system.examTaken(exam)) {
+                ExamEditPage editPage(exams[num-1], system);
+                editPage.show();
+            } else {
+                cout << "This exam has already been taken by students so you cannot edit it" << endl;
+            }
         } else if (choice == "C" && lecturer) {
             ExamCreatePage createPage(this->module, this->system);
             createPage.show();

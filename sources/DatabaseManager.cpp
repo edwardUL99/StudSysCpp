@@ -686,8 +686,9 @@ bool DatabaseManager::update(const ExamAnswer &oldAnswer, const ExamAnswer &newA
     string oid = std::to_string(oldAnswer.getExamID());
     string nid = std::to_string(newAnswer.getExamID());
 
-    string query = "UPDATE exam_answers SET answer = '" + newAnswer.getAnswer() 
-                  + "', WHERE exam = " + oid
+    string query = "UPDATE exam_answers SET answer = '" + newAnswer.getAnswer()
+                  + "', question = '" + newAnswer.getQuestion() 
+                  + "' WHERE exam = " + oid
                   + " AND question = '" + oldAnswer.getQuestion()
                   + "' AND answer = '" + oldAnswer.getAnswer()
                   + "';";

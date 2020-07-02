@@ -64,6 +64,10 @@ class StudentSystem {
         std::vector<Exam> retrieveExamsByModule(const Module &module);
         bool addExamGrade(const ExamGrade &examGrade);
         ExamGrade getExamGrade(const Student &student, const Exam &exam);
+        /**
+         * Queries the database to see if the specified exam has been taken by any students
+         */
+        bool examTaken(const Exam &exam);
         bool removeExamGrade(const ExamGrade &examGrade);
         bool updateExamGrade(const Student &student, const Exam &exam, const ExamGrade &updatedExamGrade);
         ModuleGrade getModuleGrade(const Module &module, const Student &student);

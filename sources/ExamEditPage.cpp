@@ -44,9 +44,11 @@ void ExamEditPage::updateQuestions() {
                     cout << "Change the answer, or leave blank to stay the same: " << endl;
                    
                     for (int i = 0; i < numAnswers; i++) {
+                        ExamAnswer &answer = answers[i];
+                        cout << i + 1 << ")" << answer.getAnswer() << endl;
                         string newAns = ui::getString();
                         if (newAns != "") {
-                            answers[i] = ExamAnswer(newExam.getID(), question.getQuestion(), newAns, answers[i].isKey());    
+                            answer = ExamAnswer(newExam.getID(), question.getQuestion(), newAns, answer.isKey());    
                         }    
                     }
 
@@ -54,16 +56,15 @@ void ExamEditPage::updateQuestions() {
                     
                     int oldKey = 0;
                     for (int i = 0; i < numAnswers; i++) {
-                        if (answers[i].isKey()) oldKey = i;
-                        cout << i + 1 << ")" << answers[i].getAnswer() << endl;
+                        ExamAnswer &answer = answers[i];
+                        if (answer.isKey()) oldKey = i;
+                        cout << i + 1 << ")" << answer.getAnswer() << endl;
                     }
 
                     int key = ui::getInt(Predicate<int>([numAnswers](const int &x) -> bool { return x < 1 || x > numAnswers; }), "Please enter a number between 1 and " + std::to_string(numAnswers) + ": ");
 
                     answers[key-1].setKey(true);
-                    answers[oldKey-1].setKey(false);
-
-                    cout << "Do you want to submit these changes? (Y/N)?" << endl;
+                    answers[oldKey].setKey(false);
 
                     ch = "";
 

@@ -275,6 +275,14 @@ std::vector<Exam> StudentSystem::retrieveExamsByModule(const Module &module) {
     */
 }
 
+bool StudentSystem::examTaken(const Exam &exam) {
+    ResultSet *res = this->database.executeQuery("SELECT * FROM exam_grades WHERE exam = " + std::to_string(exam.getID()) + ";");
+    bool taken = res->next(); //if res has an item from next, the exam has been taken
+
+    delete res;
+    return taken;
+}
+
 bool StudentSystem::addExamGrade(const ExamGrade &examGrade) {
     if (this->database.contains(examGrade)) {
         throw DuplicateException(examGrade.getDescription());
