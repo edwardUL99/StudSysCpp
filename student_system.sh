@@ -1,0 +1,95 @@
+#!/bin/bash
+
+#Script to run StudentSystem
+
+#Get the count of command line arguments
+COUNT=$#
+
+database=""
+user=""
+pass=""
+host=""
+file=""
+
+if [ "$COUNT" -eq "0" ]; then
+    echo "Enter the database name: "
+    read database
+
+    echo "Enter the username: "
+    read user
+
+    echo "Enter the password: "
+    read -s pass
+
+    echo "Enter the host: "
+    read host
+fi
+
+if [ "$COUNT" -eq "2" ]; then
+    if [ "$1" == "-f" ]; then
+		file="$2"
+    else
+		echo $usage_str
+    fi
+fi
+
+usage_str="student_system -d <database_name> -u <user_name> -p <password> -h <host>"
+
+if [ -z $file ]; then
+   while [ "$COUNT" -gt "0" ];
+   	do
+    		case "$1" in
+			-d ) database="$2"
+	     		 shift 2
+	             COUNT=$(expr $COUNT - 2)
+	             ;;
+			-u ) user="$2"
+	     		 shift 2
+	     		 COUNT=$(expr $COUNT - 2)
+	     		;;
+        	        -p ) pass="$2"
+	     		 shift 2
+	     		 COUNT=$(expr $COUNT - 2)
+	     		;;
+			-h ) host="$2"
+	     		shift 2
+	     		COUNT=$(expr $COUNT - 2)
+	     		;;
+			* ) echo $usage_str
+				exit 1
+	    	esac
+	done
+fi
+	
+PROGRAM_LOCATION="/progs/"
+PROGRAM="studsys"
+
+if [ "$COUNT" -eq "0" ]; then
+	#you have went through case statement so more than 1 argument was given
+	if [ -z $database ]; then
+   		echo $usage_str
+   		exit 1
+	elif [ -z $user ]; then
+   		echo $usage_str
+   		exit 1
+	elif [ -z $pass ]; then
+   		echo $usage_str
+   		exit 1
+	elif [ -z $host ]; then
+   		echo $usage_str
+   		exit 1
+   	fi
+elif [ "$COUNT" -eq "2" ]; then
+	if [ -z $file ]; then
+		echo $usage_str
+		exit 1
+	fi
+fi
+
+#call the program
+
+if [ "$COUNT" -eq "0" ]; then
+	$PROGRAM_LOCATION$PROGRAM -d $database -u $user -p $pass -h $host
+else
+	$PROGRAM_LOCATION$PROGRAM $file
+fi
