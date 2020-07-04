@@ -83,7 +83,7 @@ int main(int argc, char **argv)
     Exam exam = system.getExam(1);
 
     ui::ExamEditPage edit(exam, system);
-    edit.show();*/
+    edit.show(); */
 
     return 0;
 }

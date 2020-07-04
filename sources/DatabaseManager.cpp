@@ -713,22 +713,13 @@ bool DatabaseManager::update(const ExamQuestion &oldQuestion, const ExamQuestion
     vector<ExamAnswer> oldAnswers = oldQuestion.getPossibleAnswers();
     vector<ExamAnswer> newAnswers = newQuestion.getPossibleAnswers();
 
-    int osize = oldAnswers.size(), nsize = newAnswers.size();
+    int osize = oldAnswers.size();
 
-    if (osize <= nsize) {
-        int index = 0;
-
-        for (int i = 0; i < osize; i++, index++) {
-            bool answersUpdated = update(oldAnswers[i], newAnswers[i]);
-            updated = updated || answersUpdated;
-        }
-
-        for (int i = index; i < nsize - 1; i++) {
-            bool newAnswerAdded = add(newAnswers[i]);
-            updated = updated || newAnswerAdded;
-        }
-    } else if (nsize < osize) {
-        throw "Answer count sizes not equal, thrown from private ExamQuestion update";
+    for (int i = 0; i < osize; i++) {
+        ExamAnswer oldAnswer = oldAnswers[i];
+        ExamAnswer newAnswer = newAnswers[i];
+        bool answersUpdated = update(oldAnswer, newAnswer);
+        updated = updated || answersUpdated;
     }
 
     return updated;
@@ -748,28 +739,14 @@ bool DatabaseManager::update(const Exam &oldExam, const Exam &updatedExam)
 
         bool updated = executeUpdate(query) != 0;
 
-        for (const ExamQuestion &question : updatedExam.getQuestions()) {
-            query = "UPDATE exam_questions SET question = '" + question.getQuestion() + "', numberOfAnswers = " + std::to_string(question.getNumberOfAnswers()) + " WHERE exam = " + std::to_string(id) + " AND question = '" + question.getQuestion() + "';";
+        vector<ExamQuestion> oldQuestions = oldExam.getQuestions();
+        vector<ExamQuestion> newQuestions = updatedExam.getQuestions();
 
-            updated = updated && executeUpdate(query) != 0; 
-
-            vector<ExamQuestion> oldQuestions = oldExam.getQuestions();
-            vector<ExamQuestion> newQuestions = updatedExam.getQuestions();
-
-            int osize = oldQuestions.size(), nsize = newQuestions.size();
-
-            if (osize <= nsize) {
-                int index = 0;
-                for (int i = 0; i < osize; i++, index++) {
-                    update(oldQuestions[i], newQuestions[i]);
-                }
-
-                for (int i = index; i < nsize; i++) {
-                    add(newQuestions[i]);
-                }
-            } else {
-                throw "Size differences between number of exam questions between old and updated exam";
-            }
+        for (const ExamQuestion &question : newQuestions) {
+            for (int i = 0; i < newQuestions.size(); i++) {
+                ExamQuestion oldQ = oldQuestions[i];
+                updated = updated || update(oldQ, question);
+            } 
 
         }
 
