@@ -1,7 +1,9 @@
 #! /bin/bash
-STUD_SOURCES=/home/pi/Coding/C++/StudSysCpp
 
 COUNT=$#
+user=$(whoami)
+
+STUD_SOURCES="/home/$user/Coding/C++/StudSysCpp"
 
 usage_str="update_student_system [-h*elp|-c*lean]"
 
