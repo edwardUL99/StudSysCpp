@@ -1,6 +1,9 @@
 #! /bin/bash
 
+#get the number of command line arguments passed in
 COUNT=$#
+
+#get the name of the user so that you can find their home directory
 user=$(whoami)
 
 STUD_SOURCES="/home/$user/Coding/C++/StudSysCpp"
@@ -33,7 +36,7 @@ else
 	git pull	
 	
 	echo "Making the executable"
-	make -s -f silent_make
+	make -s -f silent_make #-s suppresses output and -f allows you to choose a different file than the usual makefile. silent_make is used as it doesn't print anything
 
 	exit_status=$?
 

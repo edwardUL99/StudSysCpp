@@ -35,7 +35,7 @@ fi
 
 usage_str="student_system [-d] [database_name] (if not specified, default is student_sys) -u <user_name> -p <password> [-h] [host] (if host not specified, default is localhost)"
 
-if [ -z $file ]; then
+if [ -z $file ]; then #if file is empty, it means there were the actual parameters passed in on command line, not a commandline
    while [ "$COUNT" -gt "0" ];
    	do
     		case "$1" in
@@ -61,6 +61,7 @@ if [ -z $file ]; then
 	done
 fi
 	
+#the location of where "installed" (your own programs) are found
 PROGRAM_LOCATION="/progs/"
 PROGRAM="studsys"
 
@@ -93,6 +94,7 @@ fi
 #call the program
 
 if [ "$COUNT" -eq "0" ]; then
+	#If the count is equals to 0, it means that more than 2 arguments were passed in, as the case statement was executed	
 	$PROGRAM_LOCATION$PROGRAM -d $database -u $user -p $pass -h $host
 else
 	$PROGRAM_LOCATION$PROGRAM $file
