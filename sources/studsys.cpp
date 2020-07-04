@@ -11,6 +11,8 @@
 #include "headers/StudentAccount.h"
 #include "headers/ConfigFileProcessor.h"
 
+#include "headers/ExamEditPage.h"
+
 #include <vector>
 #include <cstring>
 #include <string>
@@ -24,6 +26,7 @@ using ui::WelcomePage;
 
 int main(int argc, char **argv)
 {
+    /* commented out for testing
     string dbname;
     string username;
     string password;
@@ -74,7 +77,13 @@ int main(int argc, char **argv)
     StudentSystem system(dbname, username, password, host);
     //have a UI class/library which holds globals/data members and have ui.start() to abstract out that you have a welcome screen like her
     WelcomePage welcome(system);
-    welcome.show();
+    welcome.show(); */
+
+    StudentSystem system("student_sys", "studsys", "systemPass", "pi");
+    Exam exam = system.getExam(1);
+
+    ui::ExamEditPage edit(exam, system);
+    edit.show();
 
     return 0;
 }

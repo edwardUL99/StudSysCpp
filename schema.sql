@@ -91,7 +91,7 @@ CREATE TABLE IF NOT EXISTS exam_questions (
 CREATE TABLE IF NOT EXISTS exam_answers (
 	exam INTEGER,
 	question VARCHAR(100),
-	answer VARCHAR(50),
+	answer VARCHAR(100),
 	PRIMARY KEY (exam, question, answer),
 	FOREIGN KEY (exam, question) REFERENCES exam_questions(exam, question)
 		ON DELETE CASCADE

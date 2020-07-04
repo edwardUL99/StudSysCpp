@@ -720,12 +720,12 @@ bool DatabaseManager::update(const ExamQuestion &oldQuestion, const ExamQuestion
 
         for (int i = 0; i < osize; i++, index++) {
             bool answersUpdated = update(oldAnswers[i], newAnswers[i]);
-            updated = updated && answersUpdated;
+            updated = updated || answersUpdated;
         }
 
-        for (int i = index; i < nsize; i++) {
+        for (int i = index; i < nsize - 1; i++) {
             bool newAnswerAdded = add(newAnswers[i]);
-            updated = updated && newAnswerAdded;
+            updated = updated || newAnswerAdded;
         }
     } else if (nsize < osize) {
         throw "Answer count sizes not equal, thrown from private ExamQuestion update";
@@ -749,7 +749,7 @@ bool DatabaseManager::update(const Exam &oldExam, const Exam &updatedExam)
         bool updated = executeUpdate(query) != 0;
 
         for (const ExamQuestion &question : updatedExam.getQuestions()) {
-            query = "UPDATE questions SET question = '" + question.getQuestion() + "', numberOfAnswers = " + std::to_string(question.getNumberOfAnswers()) + " WHERE exam = " + std::to_string(id) + " AND question = '" + question.getQuestion() + "';";
+            query = "UPDATE exam_questions SET question = '" + question.getQuestion() + "', numberOfAnswers = " + std::to_string(question.getNumberOfAnswers()) + " WHERE exam = " + std::to_string(id) + " AND question = '" + question.getQuestion() + "';";
 
             updated = updated && executeUpdate(query) != 0; 
 
