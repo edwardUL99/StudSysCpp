@@ -33,7 +33,7 @@ if [ "$COUNT" -eq "2" ]; then
     fi
 fi
 
-usage_str="student_system -d <database_name> -u <user_name> -p <password> -h <host>"
+usage_str="student_system [-d] [database_name] (if not specified, default is student_sys) -u <user_name> -p <password> [-h] [host] (if host not specified, default is localhost)"
 
 if [ -z $file ]; then
    while [ "$COUNT" -gt "0" ];
@@ -67,17 +67,21 @@ PROGRAM="studsys"
 if [ "$COUNT" -eq "0" ]; then
 	#you have went through case statement so more than 1 argument was given
 	if [ -z $database ]; then
+   		database="student_sys"
+	fi
+	
+	if [ -z $user ]; then
    		echo $usage_str
    		exit 1
-	elif [ -z $user ]; then
-   		echo $usage_str
-   		exit 1
-	elif [ -z $pass ]; then
-   		echo $usage_str
-   		exit 1
-	elif [ -z $host ]; then
-   		echo $usage_str
-   		exit 1
+	fi	
+	
+	if [ -z $pass ]; then
+   		echo $usage_str   	
+		exit 1
+	fi
+	
+	if [ -z $host ]; then
+   		host="localhost"
    	fi
 elif [ "$COUNT" -eq "2" ]; then
 	if [ -z $file ]; then
