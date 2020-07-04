@@ -9,18 +9,17 @@
 #include "headers/WelcomePage.h"
 #include "headers/LecturerAccount.h"
 #include "headers/StudentAccount.h"
+#include "headers/ConfigFileProcessor.h"
 
 #include <vector>
 #include <cstring>
 #include <string>
-#include <fstream>
 
 using std::cout;
 using std::boolalpha;
 using std::cin;
 using std::endl;
 using std::string;
-using std::ifstream;
 using ui::WelcomePage;
 
 int main(int argc, char **argv)
@@ -37,21 +36,17 @@ int main(int argc, char **argv)
 
             exit(0);
         } else if (argc == 2) {
-            ifstream file;
-            file.open(argv[1]);
+            ConfigFileProcessor processor(argv[1]);
 
-            if (!file.is_open()) {
-                cout << "Error: " << argv[1] << " does not exist, exiting..." << endl;
-
-                exit(-1);
+            if (processor.available()) {
+                dbname = processor.getValue("database");
+                username = processor.getValue("user");
+                password = processor.getValue("pass");
+                host = processor.getValue("host");
             } else {
-                getline(file, dbname);
-                getline(file, username);
-                getline(file, password);
-                getline(file, host);
+                cout << "Error: " << argv[1] << " does not exist" << endl;
+                exit(-1);
             }
-
-            file.close();
         } else if (argc == 9) {
             if (strcmp(argv[1], "-d") == 0 && strcmp(argv[3], "-u") == 0 && strcmp(argv[5], "-p") == 0 && strcmp(argv[7], "-h") == 0) {
                 dbname = argv[2];
