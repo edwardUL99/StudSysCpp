@@ -32,11 +32,16 @@ int main(int argc, char **argv)
     if (argc > 1) {
         if (strcmp(argv[1], "-h") == 0) {
             cout << "Usage 1: ./studsys -d database_name -u username -p password -h host" << endl;
-            cout << "Usage 2: ./studsys login_file" << endl; 
+            cout << "Usage 2: ./studsys login_file -s <property_separator>" << endl; 
 
             exit(0);
-        } else if (argc == 2) {
-            ConfigFileProcessor processor(argv[1]);
+        } else if (argc == 4) {
+            if (strcmp(argv[2], "-s") != 0) {
+                cout << "Invalid flag" << endl;
+                exit(-1);
+            }
+
+            ConfigFileProcessor processor(argv[1], *argv[3]);
 
             if (processor.available()) {
                 dbname = processor.getValue("database");

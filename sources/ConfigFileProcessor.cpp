@@ -6,8 +6,9 @@ using std::string;
 using std::map;
 using std::ifstream;
 
-ConfigFileProcessor::ConfigFileProcessor(std::string file) {
+ConfigFileProcessor::ConfigFileProcessor(std::string file, char separator) {
     configFile.open(file);
+    this->separator = separator;
     read();
 }
 
@@ -23,8 +24,9 @@ string ConfigFileProcessor::trimWhiteSpace(const string &s) {
     string trimmed;
 
     for (int i = 0; i < s.size(); i++) {
-        if (!isspace(s[i])) {
-            trimmed += s[i];
+        char ch = s[i];
+        if (!isspace(ch)) {
+            trimmed += ch;
         }
     }
 
@@ -33,11 +35,9 @@ string ConfigFileProcessor::trimWhiteSpace(const string &s) {
 
 void ConfigFileProcessor::processLine(string line) {
     if (line != "" && line[0] != '#') {
-        //the line isn't a comment
+        //the line isn't a comment or a blank line
 
-        char delim = '=';
-
-        std::size_t eqPos = line.find(delim);
+        std::size_t eqPos = line.find(separator);
         string property = trimWhiteSpace(line.substr(0, eqPos));
 
         string value = trimWhiteSpace(line.substr(eqPos + 1));

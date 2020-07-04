@@ -10,6 +10,11 @@ user=""
 pass=""
 host=""
 file=""
+separator=""
+
+usage_str="student_system [-d] [database_name] (if not specified, default is student_sys) -u <user_name> -p <password> [-h] [host] (if host not specified, default is localhost)"
+
+usage_str_file="student_system -f <file_name>"
 
 if [ "$COUNT" -eq "0" ]; then
     echo "Enter the database name: "
@@ -29,11 +34,9 @@ if [ "$COUNT" -eq "2" ]; then
     if [ "$1" == "-f" ]; then
 		file="$2"
     else
-		echo $usage_str
+		echo $usage_str_file
     fi
 fi
-
-usage_str="student_system [-d] [database_name] (if not specified, default is student_sys) -u <user_name> -p <password> [-h] [host] (if host not specified, default is localhost)"
 
 if [ -z $file ]; then #if file is empty, it means there were the actual parameters passed in on command line, not a commandline
    while [ "$COUNT" -gt "0" ];
@@ -97,5 +100,5 @@ if [ "$COUNT" -eq "0" ]; then
 	#If the count is equals to 0, it means that more than 2 arguments were passed in, as the case statement was executed	
 	$PROGRAM_LOCATION$PROGRAM -d $database -u $user -p $pass -h $host
 else
-	$PROGRAM_LOCATION$PROGRAM $file
+	$PROGRAM_LOCATION$PROGRAM $file -s =
 fi

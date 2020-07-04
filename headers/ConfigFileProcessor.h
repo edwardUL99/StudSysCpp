@@ -15,11 +15,12 @@ class ConfigFileProcessor {
         std::map<std::string, std::string> properties;
         std::ifstream configFile;
         std::string trimWhiteSpace(const std::string &s);
+        char separator; //the separator between property and value, default is = but you can set it to be :
         void processLine(std::string line);
         void read();
 
     public:
-        ConfigFileProcessor(std::string file);
+        ConfigFileProcessor(std::string file, char separator = '=');
         bool available(); //if it's not available, the file couldn't be opened
         std::string getValue(std::string property);
 };
