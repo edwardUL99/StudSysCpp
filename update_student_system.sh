@@ -33,7 +33,7 @@ else
 
 
 	echo "Pulling latest version from GitHub repository prior to making files"
-	git pull --quiet > /dev/null	
+	git pull --quiet > /dev/null #suppress output by redirecting any output to the never ending bit bucket. 
 	
 	echo "Making the executable"
 	make -s -f silent_make #-s suppresses output and -f allows you to choose a different file than the usual makefile. silent_make is used as it doesn't print anything
