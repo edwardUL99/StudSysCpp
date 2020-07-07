@@ -6,7 +6,7 @@
 
 namespace ui
 {
-
+  
   /**
  * Gets user choice from stdin (cin), trims it to 1 letter, capitalises it and returns it
  * E.g. if the options were (L)ecturer, (S)tudent
