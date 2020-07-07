@@ -17,6 +17,7 @@
 #include <fstream>
 #include <sstream>
 
+using std::cerr;
 using std::cout;
 using std::endl;
 using std::map;
@@ -67,7 +68,9 @@ void DatabaseManager::setLastExamID()
         id = res->getInt("id") + 1;
         if (id == 0)
             id = 1;
-    } else {
+    }
+    else
+    {
         id = 1;
     }
 
@@ -75,7 +78,7 @@ void DatabaseManager::setLastExamID()
 }
 
 bool DatabaseManager::add(const Lecturer &lecturer)
-{   
+{
     string query = "INSERT INTO lecturers (email, name, age, department) VALUES ('" + lecturer.getEmail() + "', '" + lecturer.getName() + "', " + std::to_string(lecturer.getAge()) + ", '" + lecturer.getDepartment() + "');";
 
     try
@@ -86,9 +89,11 @@ bool DatabaseManager::add(const Lecturer &lecturer)
     }
     catch (SQLException &e)
     {
-        Warning w(e.what(), query);
+        const char *error = e.what();
+        Warning w(error, query);
         this->warnings.push_back(w);
-        
+        cerr << error << endl;
+
         return false;
     }
 }
@@ -210,7 +215,8 @@ bool DatabaseManager::update(string email, const Lecturer &updatedLecturer)
     {
         throw KeyMismatch(email, email1);
     }
-    else {
+    else
+    {
         string query = "UPDATE lecturers SET name = '" + updatedLecturer.getName() + "', age = " + std::to_string(updatedLecturer.getAge()) + ", department = '" + updatedLecturer.getDepartment() + "' WHERE email = '" + email + "';";
 
         bool updated = executeUpdate(query) != 0;
@@ -231,8 +237,10 @@ bool DatabaseManager::add(const Course &course)
     }
     catch (SQLException &e)
     {
-        Warning w(e.what(), query);
+        const char *error = e.what();
+        Warning w(error, query);
         this->warnings.push_back(w);
+        cerr << error << endl;
 
         return false;
     }
@@ -311,13 +319,15 @@ bool DatabaseManager::add(const Student &student)
     try
     {
         this->stmt->execute(query);
-        
+
         return true;
     }
     catch (SQLException &e)
     {
-        Warning w(e.what(), query);
+        const char *error = e.what();
+        Warning w(error, query);
         this->warnings.push_back(w);
+        cerr << error << endl;
 
         return false;
     }
@@ -402,8 +412,10 @@ bool DatabaseManager::add(const Module &module)
     }
     catch (SQLException &e)
     {
-        Warning w(e.what(), query);
+        const char *error = e.what();
+        Warning w(error, query);
         this->warnings.push_back(w);
+        cerr << error << endl;
 
         return false;
     }
@@ -452,7 +464,7 @@ vector<Module> DatabaseManager::getAllModules()
 bool DatabaseManager::remove(const Module &module)
 {
     string query = "DELETE FROM modules WHERE code = '" + module.getCode() + "';";
-    
+
     bool removed = this->stmt->executeUpdate(query) != 0;
 
     return removed;
@@ -476,22 +488,29 @@ bool DatabaseManager::update(string code, const Module &updatedModule)
     }
 }
 
-bool DatabaseManager::add(const StudentRegistration &registration) {
-    string query = "INSERT INTO student_registrations (student, module) VALUES (" + std::to_string(registration.getStudent().getID()) + ", '" + registration.getModule().getCode() + "');"; 
-    
-    try {
+bool DatabaseManager::add(const StudentRegistration &registration)
+{
+    string query = "INSERT INTO student_registrations (student, module) VALUES (" + std::to_string(registration.getStudent().getID()) + ", '" + registration.getModule().getCode() + "');";
+
+    try
+    {
         this->stmt->execute(query);
 
         return true;
-    } catch (SQLException &e) {
-        Warning w(e.what(), query);
+    }
+    catch (SQLException &e)
+    {
+        const char *error = e.what();
+        Warning w(error, query);
         this->warnings.push_back(w);
+        cerr << error << endl;
 
         return false;
     }
 }
 
-bool DatabaseManager::remove(const StudentRegistration &registration) {
+bool DatabaseManager::remove(const StudentRegistration &registration)
+{
     string query = "DELETE FROM student_registrations WHERE student = " + std::to_string(registration.getStudent().getID()) + " AND module = '" + registration.getModule().getCode() + "';";
 
     bool removed = this->executeUpdate(query) != 0;
@@ -499,12 +518,14 @@ bool DatabaseManager::remove(const StudentRegistration &registration) {
     return removed;
 }
 
-boost::optional<StudentRegistration> DatabaseManager::getStudentRegistration(const Student &student, const Module &module) {
+boost::optional<StudentRegistration> DatabaseManager::getStudentRegistration(const Student &student, const Module &module)
+{
     string query = "SELECT * FROM student_registrations WHERE student = " + std::to_string(student.getID()) + " AND module = '" + module.getCode() + "';";
 
     ResultSet *res = executeQuery(query);
 
-    if (res->next()) {
+    if (res->next())
+    {
         Student s = getStudent(res->getInt("student")).get();
         Module m = getModule(res->getString("module")).get();
 
@@ -516,14 +537,16 @@ boost::optional<StudentRegistration> DatabaseManager::getStudentRegistration(con
     return boost::none;
 }
 
-std::vector<StudentRegistration> DatabaseManager::getAllStudentRegistrations() {
+std::vector<StudentRegistration> DatabaseManager::getAllStudentRegistrations()
+{
     vector<StudentRegistration> registrations;
 
     string query = "SELECT * FROM student_registrations;";
 
     ResultSet *res = executeQuery(query);
 
-    while (res->next()) {
+    while (res->next())
+    {
         registrations.push_back(StudentRegistration(getStudent(res->getInt("student")).get(), getModule(res->getString("module")).get()));
     }
 
@@ -532,31 +555,39 @@ std::vector<StudentRegistration> DatabaseManager::getAllStudentRegistrations() {
     return registrations;
 }
 
-bool DatabaseManager::add(const ExamAnswer &answer) {
-    try {
+bool DatabaseManager::add(const ExamAnswer &answer)
+{
+    try
+    {
         string query = "INSERT INTO exam_answers (exam, question, answer) VALUES (" + std::to_string(answer.getExamID()) + ", '" + answer.getQuestion() + "', '" + answer.getAnswer() + "');";
         this->stmt->execute(query);
-        
+
         return true;
-    } catch (SQLException &e) {
+    }
+    catch (SQLException &e)
+    {
         throw e;
     }
 }
 
-bool DatabaseManager::add(const ExamQuestion &question) {
-    try {
+bool DatabaseManager::add(const ExamQuestion &question)
+{
+    try
+    {
         string query = "INSERT INTO exam_questions (exam, question, answer_key, numberOfAnswers) VALUES (" + std::to_string(question.getExamID()) + ", '" + question.getQuestion() + "', '" + question.getKey().getAnswer() + "', " + std::to_string(question.getNumberOfAnswers()) + ");";
         this->stmt->execute(query);
         bool added = true; //if you reach this line, line above ran ssuccessfully
 
         for (const ExamAnswer &examAnswer : question.getPossibleAnswers())
-        {   
+        {
             bool answerAdded = add(examAnswer);
             added = added && answerAdded;
         }
 
         return added;
-    } catch (SQLException &e) {
+    }
+    catch (SQLException &e)
+    {
         throw e;
     }
 }
@@ -582,8 +613,10 @@ bool DatabaseManager::add(const Exam &exam)
     }
     catch (SQLException &e)
     {
-        Warning w(e.what(), query);
+        const char *error = e.what();
+        Warning w(error, query);
         this->warnings.push_back(w);
+        cerr << error << endl;
 
         return false;
     }
@@ -682,31 +715,24 @@ bool DatabaseManager::remove(const Exam &exam)
 }
 
 //this may not be correct
-bool DatabaseManager::update(const ExamAnswer &oldAnswer, const ExamAnswer &newAnswer) {
+bool DatabaseManager::update(const ExamAnswer &oldAnswer, const ExamAnswer &newAnswer)
+{
     string oid = std::to_string(oldAnswer.getExamID());
     string nid = std::to_string(newAnswer.getExamID());
 
-    string query = "UPDATE exam_answers SET answer = '" + newAnswer.getAnswer()
-                  + "', question = '" + newAnswer.getQuestion() 
-                  + "' WHERE exam = " + oid
-                  + " AND question = '" + oldAnswer.getQuestion()
-                  + "' AND answer = '" + oldAnswer.getAnswer()
-                  + "';";
+    string query = "UPDATE exam_answers SET answer = '" + newAnswer.getAnswer() + "', question = '" + newAnswer.getQuestion() + "' WHERE exam = " + oid + " AND question = '" + oldAnswer.getQuestion() + "' AND answer = '" + oldAnswer.getAnswer() + "';";
 
     return executeUpdate(query) != 0;
 }
 
-bool DatabaseManager::update(const ExamQuestion &oldQuestion, const ExamQuestion &newQuestion) {
+bool DatabaseManager::update(const ExamQuestion &oldQuestion, const ExamQuestion &newQuestion)
+{
     string oid = std::to_string(oldQuestion.getExamID());
     string nid = std::to_string(newQuestion.getExamID());
     bool updated = true;
 
-    string query = "UPDATE exam_questions SET exam = " + nid
-                  + ", question = '" + newQuestion.getQuestion()
-                  + "', answer_key = '" + newQuestion.getKey().getAnswer()
-                  + "', numberOfAnswers = " + std::to_string(newQuestion.getNumberOfAnswers())
-                  + " WHERE exam = " + oid + " AND question = '" + oldQuestion.getQuestion() + "';";
-    
+    string query = "UPDATE exam_questions SET exam = " + nid + ", question = '" + newQuestion.getQuestion() + "', answer_key = '" + newQuestion.getKey().getAnswer() + "', numberOfAnswers = " + std::to_string(newQuestion.getNumberOfAnswers()) + " WHERE exam = " + oid + " AND question = '" + oldQuestion.getQuestion() + "';";
+
     //executeUpdate will always be called since updated is always true when this line is reached
     updated = updated && executeUpdate(query) != 0;
 
@@ -715,7 +741,8 @@ bool DatabaseManager::update(const ExamQuestion &oldQuestion, const ExamQuestion
 
     int osize = oldAnswers.size();
 
-    for (int i = 0; i < osize; i++) {
+    for (int i = 0; i < osize; i++)
+    {
         ExamAnswer oldAnswer = oldAnswers[i];
         ExamAnswer newAnswer = newAnswers[i];
         bool answersUpdated = update(oldAnswer, newAnswer);
@@ -734,7 +761,8 @@ bool DatabaseManager::update(const Exam &oldExam, const Exam &updatedExam)
     {
         throw KeyMismatch(std::to_string(id), std::to_string(id1));
     }
-    else {
+    else
+    {
         string query = "UPDATE exams SET module = '" + updatedExam.getModule().getCode() + "', name = '" + updatedExam.getName() + "', year = " + std::to_string(updatedExam.getYear()) + ", semester = " + std::to_string(updatedExam.getSemester()) + ", numberOfQuestions = " + std::to_string(updatedExam.getNumberOfQuestions()) + ", weightPerQuestion = " + std::to_string(updatedExam.getWeightPerQuestion()) + ", totalWeight = " + std::to_string(updatedExam.getTotalWeight()) + " WHERE id = " + std::to_string(id) + ";";
 
         bool updated = executeUpdate(query) != 0;
@@ -742,12 +770,11 @@ bool DatabaseManager::update(const Exam &oldExam, const Exam &updatedExam)
         vector<ExamQuestion> oldQuestions = oldExam.getQuestions();
         vector<ExamQuestion> newQuestions = updatedExam.getQuestions();
 
-        for (const ExamQuestion &question : newQuestions) {
-            for (int i = 0; i < newQuestions.size(); i++) {
-                ExamQuestion oldQ = oldQuestions[i];
-                updated = updated || update(oldQ, question);
-            } 
-
+        for (int i = 0; i < newQuestions.size(); i++)
+        {
+            ExamQuestion oldQ = oldQuestions[i];
+            ExamQuestion newQ = newQuestions[i];
+            updated = updated || update(oldQ, newQ);
         }
 
         return updated;
@@ -768,8 +795,10 @@ bool DatabaseManager::add(const ExamGrade &examGrade)
     }
     catch (SQLException &e)
     {
-        Warning w(e.what(), query);
+        const char *error = e.what();
+        Warning w(error, query);
         this->warnings.push_back(w);
+        cerr << error << endl;
 
         return false;
     }
@@ -837,7 +866,7 @@ bool DatabaseManager::update(const Student &student, const Exam &exam, const Exa
         throw KeyMismatch(key, key1);
     }
     else
-    {   
+    {
         string query = "UPDATE exam_grades SET grade = " + std::to_string(updatedExamGrade.getGrade()) + " WHERE student = " + std::to_string(sId1) + " AND exam = " + std::to_string(eId1) + ";";
 
         bool updated = executeUpdate(query) != 0;
@@ -856,8 +885,10 @@ void DatabaseManager::calculateModuleGrades(std::string module, const Student &s
     }
     catch (SQLException &e)
     {
-        Warning w(e.what(), query);
-        warnings.push_back(w);
+        const char *error = e.what();
+        Warning w(error, query);
+        this->warnings.push_back(w);
+        cerr << error << endl;
     }
 }
 
@@ -903,7 +934,7 @@ vector<ModuleGrade> DatabaseManager::getAllModuleGrades()
 }
 
 bool DatabaseManager::add(const LecturerAccount &lecturerAccount)
-{   
+{
     string query = "INSERT INTO lecturer_accounts (email, pass) VALUES ('" + lecturerAccount.getEmail() + "', '" + lecturerAccount.getPassword() + "');";
 
     try
@@ -914,8 +945,10 @@ bool DatabaseManager::add(const LecturerAccount &lecturerAccount)
     }
     catch (SQLException &e)
     {
-        Warning w(e.what(), query);
+        const char *error = e.what();
+        Warning w(error, query);
         this->warnings.push_back(w);
+        cerr << error << endl;
 
         return false;
     }
@@ -959,7 +992,7 @@ vector<LecturerAccount> DatabaseManager::getAllLecturerAccounts()
 }
 
 bool DatabaseManager::remove(const LecturerAccount &lecturerAccount)
-{    
+{
     bool removed = executeUpdate("DELETE FROM lecturer_accounts WHERE email = '" + lecturerAccount.getEmail() + "';") != 0;
 
     return removed;
@@ -975,7 +1008,7 @@ bool DatabaseManager::update(const Lecturer &lecturer, const LecturerAccount &up
         throw KeyMismatch(email, email1);
     }
     else
-    {   
+    {
         string query = "UPDATE lecturer_accounts SET pass = '" + updatedLecturerAccount.getPassword() + "' WHERE email = '" + email + "';";
 
         bool updated = executeUpdate(query) != 0;
@@ -991,13 +1024,15 @@ bool DatabaseManager::add(const StudentAccount &studentAccount)
     try
     {
         this->stmt->execute(query);
-       
+
         return true;
     }
     catch (SQLException &e)
     {
-        Warning w(e.what(), query);
+        const char *error = e.what();
+        Warning w(error, query);
         this->warnings.push_back(w);
+        cerr << error << endl;
 
         return false;
     }
@@ -1041,7 +1076,7 @@ vector<StudentAccount> DatabaseManager::getAllStudentAccounts()
 }
 
 bool DatabaseManager::remove(const StudentAccount &studentAccount)
-{  
+{
     bool removed = executeUpdate("DELETE FROM student_accounts WHERE id = " + std::to_string(studentAccount.getStudent().getID()) + ";") != 0;
 
     return removed;
@@ -1074,8 +1109,10 @@ void DatabaseManager::execute(string query)
     }
     catch (SQLException &e)
     {
-        Warning w(e.what(), query);
+        const char *error = e.what();
+        Warning w(error, query);
         this->warnings.push_back(w);
+        cerr << error << endl;
     }
 }
 

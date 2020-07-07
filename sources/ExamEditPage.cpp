@@ -62,8 +62,10 @@ void ExamEditPage::updateQuestions() {
                     }
 
                     int key = ui::getInt(Predicate<int>([numAnswers](const int &x) -> bool { return x < 1 || x > numAnswers; }), "Please enter a number between 1 and " + std::to_string(numAnswers) + ": ");
-
-                    answers[key-1].setKey(true);
+                    
+                    ExamAnswer &answerKey = answers[key-1];
+                    answerKey.setKey(true);
+                    question.setKey(answerKey);
                     if (key-1 != oldKey) answers[oldKey].setKey(false);
 
                     ch = "";
@@ -151,6 +153,7 @@ void ExamEditPage::show() {
                 } else {
                     cout << "The changes have not been successfully submitted, try again later" << endl;
                 }
+                run = false;
             } catch (KeyMismatch &km) {
                 cout << "An error occurred, try again later" << endl;
             }
