@@ -32,7 +32,7 @@ void ModuleHomePage::show() {
             int i = 1;
 
             for (const Student &student : this->system.getStudentsRegisteredOnModule(module)) {
-                cout << "\t" << i << ") " << student.getName() << " - " << student.getID() << " - " << student.getEmail() << endl;
+                cout << "\t" << i++ << ") " << student.getName() << " - " << student.getID() << " - " << student.getEmail() << endl;
             }
         } else if (choice == "L") {
             Lecturer lecturer = module.getLecturer();
