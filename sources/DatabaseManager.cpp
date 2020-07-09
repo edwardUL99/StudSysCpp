@@ -622,6 +622,37 @@ bool DatabaseManager::add(const Exam &exam)
     }
 }
 
+int getExamQuestionNumber(std::string s) {
+    size_t pos = s.find_last_of(" ");
+    
+    if (pos == std::string::npos) {
+        return 0;
+    } else {
+        try {
+            s = s.substr(pos+1);
+            return std::stoi(s);
+        } catch (std::invalid_argument &e) {
+            return 0;
+        }
+    }
+}
+
+void sort(std::vector<ExamQuestion> &vect) {
+    int n = vect.size();
+    for (int i = 0; i < n-1; i++) {
+        int min = i;
+        for (int j = i + 1; j < n; j++) {
+            if (getExamQuestionNumber(vect[j].getQuestion()) < getExamQuestionNumber(vect[min].getQuestion())) {
+                min = j;
+            }
+
+            ExamQuestion temp(vect[i]);
+            vect[i] = vect[min];
+            vect[min] = temp;
+        }
+    } 
+}
+
 vector<ExamQuestion> DatabaseManager::getAllExamQuestions(int examID)
 {
     vector<ExamQuestion> questions;
@@ -650,6 +681,8 @@ vector<ExamQuestion> DatabaseManager::getAllExamQuestions(int examID)
 
         delete res1;
     }
+
+    //sort(questions);
 
     delete res;
 

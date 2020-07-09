@@ -1,0 +1,84 @@
+l
+e
+patrick.healy@staff.mail.ie
+p
+lecturerPass
+s
+v
+m
+1
+e
+c
+e
+n
+Test Exam 1
+y
+2020
+s
+2
+o
+10
+t
+35
+q
+Test Question 1
+2
+True
+False
+1
+Test Question 2
+3
+1
+2
+3
+2
+Test Question 3
+4
+Big-Oh
+Big-Theta
+Big-Omega
+Little-Oh
+1
+Test Question 4
+3
+2.95
+3.00
+3.05
+2
+Test Question 5
+2
+Yes
+No
+2
+Test Question 6
+3
+A data entity with the implementation visible to the user
+A data entity with operations associated with it
+A data entity only considered theoritically
+2
+Test Question 7
+2
+True
+False
+1
+Test Question 8
+3
+O(n)
+O(log n)
+O(n log n)
+1
+Test Question 9
+3
+The ability for an object to be of different forms
+The ability for an object to change state
+The constant state of change in an object
+1
+Test Question 10
+2
+Yes
+No
+1
+d
+s
+c
+q
