@@ -11,6 +11,7 @@
  */
 class ExamQuestion : public DatabaseItem {
     private:
+        int number;
         int examID;
         std::string question;
         ExamAnswer key; //when doing UI and setting up an exam make sure you call ExamANswer("answer", true) to make it a key
@@ -18,13 +19,17 @@ class ExamQuestion : public DatabaseItem {
         int numberOfAnswers;
 
     public:
-        ExamQuestion(int examID, std::string question, ExamAnswer correctAnswer, std::vector<ExamAnswer> possibleAnswers = std::vector<ExamAnswer>(), int numberOfAnswers = 4);
+        ExamQuestion(int examID, int number, std::string question, ExamAnswer correctAnswer, std::vector<ExamAnswer> possibleAnswers = std::vector<ExamAnswer>(), int numberOfAnswers = 4);
         
         virtual ~ExamQuestion() = default;
 
         int getExamID() const;
 
         void setExamID(int examID);
+
+        int getNumber() const;
+
+        void setNumber(int number);
 
         std::string getQuestion() const;
 
@@ -58,7 +63,6 @@ class ExamQuestion : public DatabaseItem {
         virtual Tables getTable() const override;
 
         virtual std::string getDescription() const override;
-
         friend bool operator<(const ExamQuestion &q1, const ExamQuestion &q2);
 };
 

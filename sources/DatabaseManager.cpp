@@ -559,7 +559,7 @@ bool DatabaseManager::add(const ExamAnswer &answer)
 {
     try
     {
-        string query = "INSERT INTO exam_answers (exam, question, answer) VALUES (" + std::to_string(answer.getExamID()) + ", '" + answer.getQuestion() + "', '" + answer.getAnswer() + "');";
+        string query = "INSERT INTO exam_answers (exam, question, answer) VALUES (" + std::to_string(answer.getExamID()) + ", " + std::to_string(answer.getQuestion()) + ", '" + answer.getAnswer() + "');";
         this->stmt->execute(query);
 
         return true;
@@ -574,7 +574,7 @@ bool DatabaseManager::add(const ExamQuestion &question)
 {
     try
     {
-        string query = "INSERT INTO exam_questions (exam, question, answer_key, numberOfAnswers) VALUES (" + std::to_string(question.getExamID()) + ", '" + question.getQuestion() + "', '" + question.getKey().getAnswer() + "', " + std::to_string(question.getNumberOfAnswers()) + ");";
+        string query = "INSERT INTO exam_questions (num, exam, question, answer_key, numberOfAnswers) VALUES (" + std::to_string(question.getNumber()) + ", " + std::to_string(question.getExamID()) + ", '" + question.getQuestion() + "', '" + question.getKey().getAnswer() + "', " + std::to_string(question.getNumberOfAnswers()) + ");";
         this->stmt->execute(query);
         bool added = true; //if you reach this line, line above ran ssuccessfully
 
@@ -621,35 +621,27 @@ bool DatabaseManager::add(const Exam &exam)
         return false;
     }
 }
+//Gets the position of the minimum element in the vector
+int minPosition(int startPos, const std::vector<ExamQuestion> &vect) {
+    int min = startPos;
 
-int getExamQuestionNumber(std::string s) {
-    size_t pos = s.find_last_of(" ");
-    
-    if (pos == std::string::npos) {
-        return 0;
-    } else {
-        try {
-            s = s.substr(pos+1);
-            return std::stoi(s);
-        } catch (std::invalid_argument &e) {
-            return 0;
+    for (int i = startPos; i < vect.size(); i++) {
+        if (vect[i] < vect[min]) {
+            min = i;
         }
     }
+
+    return min;
 }
 
 void sort(std::vector<ExamQuestion> &vect) {
     int n = vect.size();
     for (int i = 0; i < n-1; i++) {
-        int min = i;
-        for (int j = i + 1; j < n; j++) {
-            if (getExamQuestionNumber(vect[j].getQuestion()) < getExamQuestionNumber(vect[min].getQuestion())) {
-                min = j;
-            }
+        int min = minPosition(i, vect); //find the position of the smallest item from the start position i, and this is the item you will want to swap
 
-            ExamQuestion temp(vect[i]);
-            vect[i] = vect[min];
-            vect[min] = temp;
-        }
+        ExamQuestion temp(vect[i]);
+        vect[i] = vect[min];
+        vect[min] = temp;
     } 
 }
 
@@ -661,28 +653,29 @@ vector<ExamQuestion> DatabaseManager::getAllExamQuestions(int examID)
 
     while (res->next())
     {
+        int number = res->getInt("num");
         string question = res->getString("question");
         string answer_key = res->getString("answer_key");
         int numberOfAnswers = res->getInt("numberOfAnswers");
 
         vector<ExamAnswer> answers;
 
-        ResultSet *res1 = executeQuery("SELECT * FROM exam_answers WHERE exam = " + std::to_string(examID) + " AND question = '" + question + "';");
+        ResultSet *res1 = executeQuery("SELECT * FROM exam_answers WHERE exam = " + std::to_string(examID) + " AND question = " + std::to_string(number) + ";");
 
         while (res1->next())
         {
             string answer = res1->getString("answer");
 
-            answers.push_back(ExamAnswer(examID, question, answer));
+            answers.push_back(ExamAnswer(examID, number, answer));
         }
 
-        ExamQuestion examQuestion(examID, question, ExamAnswer(examID, question, answer_key, true), answers, numberOfAnswers);
+        ExamQuestion examQuestion(examID, number, question, ExamAnswer(examID, number, answer_key, true), answers, numberOfAnswers);
         questions.push_back(examQuestion);
 
         delete res1;
     }
 
-    //sort(questions);
+    sort(questions);
 
     delete res;
 
@@ -753,7 +746,7 @@ bool DatabaseManager::update(const ExamAnswer &oldAnswer, const ExamAnswer &newA
     string oid = std::to_string(oldAnswer.getExamID());
     string nid = std::to_string(newAnswer.getExamID());
 
-    string query = "UPDATE exam_answers SET answer = '" + newAnswer.getAnswer() + "', question = '" + newAnswer.getQuestion() + "' WHERE exam = " + oid + " AND question = '" + oldAnswer.getQuestion() + "' AND answer = '" + oldAnswer.getAnswer() + "';";
+    string query = "UPDATE exam_answers SET answer = '" + newAnswer.getAnswer() + "', question = " + std::to_string(newAnswer.getQuestion()) + " WHERE exam = " + oid + " AND question = " + std::to_string(oldAnswer.getQuestion()) + " AND answer = '" + oldAnswer.getAnswer() + "';";
 
     return executeUpdate(query) != 0;
 }
@@ -764,7 +757,7 @@ bool DatabaseManager::update(const ExamQuestion &oldQuestion, const ExamQuestion
     string nid = std::to_string(newQuestion.getExamID());
     bool updated = true;
 
-    string query = "UPDATE exam_questions SET exam = " + nid + ", question = '" + newQuestion.getQuestion() + "', answer_key = '" + newQuestion.getKey().getAnswer() + "', numberOfAnswers = " + std::to_string(newQuestion.getNumberOfAnswers()) + " WHERE exam = " + oid + " AND question = '" + oldQuestion.getQuestion() + "';";
+    string query = "UPDATE exam_questions SET exam = " + nid + ", question = '" + newQuestion.getQuestion() + "', answer_key = '" + newQuestion.getKey().getAnswer() + "', numberOfAnswers = " + std::to_string(newQuestion.getNumberOfAnswers()) + " WHERE exam = " + oid + " AND num = '" + std::to_string(oldQuestion.getNumber()) + "';";
 
     //executeUpdate will always be called since updated is always true when this line is reached
     updated = updated && executeUpdate(query) != 0;

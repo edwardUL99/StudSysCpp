@@ -108,7 +108,7 @@ void ExamCreatePage::edit() {
     }
 }
 
-ExamAnswer ExamCreatePage::createAnswers(int examID, string question, int numberOfAnswers, vector<ExamAnswer> &answers) {
+ExamAnswer ExamCreatePage::createAnswers(int examID, int question, int numberOfAnswers, vector<ExamAnswer> &answers) {
     //ui to create and return answers
     answers.clear();
 
@@ -146,9 +146,9 @@ void ExamCreatePage::createQuestions() {
 
         cout << "Now you can choose the answers: " << endl;
 
-        ExamAnswer key = createAnswers(examID, question, numAnswers, answers);
+        ExamAnswer key = createAnswers(examID, i + 1, numAnswers, answers);
         
-        this->questions.push_back(ExamQuestion(examID, question, key, answers, numAnswers));
+        this->questions.push_back(ExamQuestion(examID, i + 1, question, key, answers, numAnswers));
     }
 } 
 

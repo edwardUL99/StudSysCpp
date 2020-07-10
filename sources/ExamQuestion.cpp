@@ -1,7 +1,7 @@
 #include "headers/ExamQuestion.h"
 #include "headers/NotAnswerKeyException.h"
 
-ExamQuestion::ExamQuestion(int examID, std::string question, ExamAnswer correctAnswer, std::vector<ExamAnswer> possibleAnswers, int numberOfAnswers) : examID(examID), question(question), key(correctAnswer), possibleAnswers(possibleAnswers), numberOfAnswers(numberOfAnswers) {
+ExamQuestion::ExamQuestion(int examID, int number, std::string question, ExamAnswer correctAnswer, std::vector<ExamAnswer> possibleAnswers, int numberOfAnswers) : examID(examID), number(number), question(question), key(correctAnswer), possibleAnswers(possibleAnswers), numberOfAnswers(numberOfAnswers) {
     setKey(correctAnswer);
 }
 
@@ -11,6 +11,15 @@ int ExamQuestion::getExamID() const {
 
 void ExamQuestion::setExamID(int examID) {
     this->examID = examID;
+}
+
+
+int ExamQuestion::getNumber() const {
+    return number;
+}
+
+void ExamQuestion::setNumber(int number) {
+    this->number = number;
 }
 
 std::string ExamQuestion::getQuestion() const
@@ -86,10 +95,10 @@ Tables ExamQuestion::getTable() const {
 }
 
 std::string ExamQuestion::getDescription() const {
-    std::string ret = "Question: " + question + ", Key: " + key.getAnswer() + ", Number of Answers: " + std::to_string(numberOfAnswers);
+    std::string ret = "Number: " + std::to_string(number) + " Question: " + question + ", Key: " + key.getAnswer() + ", Number of Answers: " + std::to_string(numberOfAnswers);
     return ret; 
 }
 
 bool operator<(const ExamQuestion &q1, const ExamQuestion &q2) {
-    return q1.question < q2.question;
+    return q1.number < q2.number;
 }

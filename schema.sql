@@ -78,11 +78,12 @@ CREATE TABLE IF NOT EXISTS exams (
 );
 
 CREATE TABLE IF NOT EXISTS exam_questions (
+	num INTEGER,
 	exam INTEGER NOT NULL,
 	question VARCHAR(100),
 	answer_key VARCHAR(50),
 	numberOfAnswers INTEGER,
-	PRIMARY KEY (exam, question),
+	PRIMARY KEY (num, exam),
 	FOREIGN KEY (exam) REFERENCES exams(id)
 		ON DELETE CASCADE 
 		ON UPDATE CASCADE
@@ -90,10 +91,10 @@ CREATE TABLE IF NOT EXISTS exam_questions (
 
 CREATE TABLE IF NOT EXISTS exam_answers (
 	exam INTEGER,
-	question VARCHAR(100),
+	question INTEGER,
 	answer VARCHAR(100),
 	PRIMARY KEY (exam, question, answer),
-	FOREIGN KEY (exam, question) REFERENCES exam_questions(exam, question)
+	FOREIGN KEY (exam, question) REFERENCES exam_questions(exam, num)
 		ON DELETE CASCADE
 		ON UPDATE CASCADE
 );

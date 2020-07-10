@@ -48,7 +48,7 @@ void ExamEditPage::updateQuestions() {
                         cout << i + 1 << ")" << answer.getAnswer() << endl;
                         string newAns = ui::getString();
                         if (newAns != "") {
-                            answer = ExamAnswer(newExam.getID(), question.getQuestion(), newAns, answer.isKey());    
+                            answer = ExamAnswer(newExam.getID(), question.getNumber(), newAns, answer.isKey());    
                         }    
                     }
 
