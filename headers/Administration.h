@@ -2,6 +2,7 @@
 #define ADMINISTRATION_H
 
 #include "Page.h"
+#include <string>
 
 namespace ui
 {
@@ -16,7 +17,11 @@ namespace ui
         void removeModule();
         void createStudent();
         void removeStudent();
-        void registerStudent();
+        /**
+         * Registers a student on a module
+         * @param module if this is blank, the method asks for the module from stdin
+         */
+        void registerStudent(std::string module="");
         void resetStudentPassword();
         void createLecturer();
         void removeLecturer();
@@ -26,6 +31,7 @@ namespace ui
         Administration(StudentSystem &system);
         virtual ~Administration() = default;
         virtual void show() override;
+        friend class ModuleHomePage;
     };
 
 } // namespace ui

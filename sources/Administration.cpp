@@ -298,7 +298,7 @@ void Administration::resetStudentPassword()
     }
 }
 
-void Administration::registerStudent() {
+void Administration::registerStudent(string module) {
     cout << "Enter the student ID of the student to register: " << endl;
 
     int id = ui::getInt(ui::intltezeropred, ui::ltezeroretrymsg);
@@ -312,14 +312,18 @@ void Administration::registerStudent() {
         Student student = system.getStudent(id);
         containsStudent = true; //if above executed without throwing, the student was found in the system
 
-        cout << "Enter the code of the module to register the student on: " << endl;
+        if (module == "") {
+            cout << "Enter the code of the module to register the student on: " << endl;
 
-        code = ui::getString(ui::emptystrpred, ui::emptystrretrymsg);
+            code = ui::getString(ui::emptystrpred, ui::emptystrretrymsg);
+        } else {
+            code = module;
+        }
 
-        Module module = system.getModule(code);
+        Module registeredModule = system.getModule(code);
         containsModule = true; //if above executed without throwing, the module was found in the system
 
-        if (this->system.registerStudentModule(student, module)) {
+        if (this->system.registerStudentModule(student, registeredModule)) {
             cout << "Student " << id << " has been registered on Module " << code << "." << endl;
         } else {
             cout << "Registration was not successful, please try again later" << endl;

@@ -3,4 +3,4 @@ workspace.code-workspace
 studsys
 studsysdbadmin
 examCreateTest
-*.dump
+*.test

@@ -1,6 +1,8 @@
 #include "headers/ModuleHomePage.h"
 #include "headers/ExamSelectorPage.h"
 #include "headers/UIUtils.h"
+#include "headers/Administration.h"
+#include "headers/NotFoundException.h"
 
 using ui::ModuleHomePage;
 using std::string;
@@ -33,6 +35,48 @@ void ModuleHomePage::show() {
 
             for (const Student &student : this->system.getStudentsRegisteredOnModule(module)) {
                 cout << "\t" << i++ << ") " << student.getName() << " - " << student.getID() << " - " << student.getEmail() << endl;
+            }
+
+            bool lecturer = false;
+
+            try {
+                LecturerAccount &lecturerAccount = dynamic_cast<LecturerAccount&>(account);
+                lecturer = true; //if the cast succeeded, it is a lecturer account
+            } catch (std::bad_cast &e) {
+            }
+
+            if (lecturer) {
+                while (true) {
+                    cout << "Would you like to register a student on the module? (R)egister, (D)e-register, (N)o" << endl;
+
+                    choice = ui::getChoice();
+
+                    if (choice == "R") {
+                        Administration admin(this->system);
+                        admin.registerStudent(module.getCode());
+                        break;
+                    } else if (choice == "D") {
+                        cout << "Enter the Student ID for the student to de-register: " << endl;
+
+                        int id = ui::getInt(ui::intltezeropred, ui::ltezeroretrymsg);
+
+                        try {
+                            Student student = this->system.getStudent(id);
+                            
+                            if (this->system.unregisterStudentModule(student, module)) {
+                                cout << "Student " << id << " de-registered from module " << module.getCode() << " successfully" << endl;
+                            } else {
+                                cout << "Student " << id << " de-registered from module " << module.getCode() << " unsuccessfully, please try again later" << endl;
+                            }
+                        } catch (NotFoundException &nf) {
+                            cout << "Student " << id << " does not exist" << endl;
+                        }
+
+                        break;
+                    } else if (choice == "N") {
+                        break;
+                    }
+                }
             }
         } else if (choice == "L") {
             Lecturer lecturer = module.getLecturer();
