@@ -26,8 +26,9 @@ void ModuleHomePage::show() {
         } else if (choice == "T") {
             cout << "Not implemented yet" << endl;
         } else if (choice == "E") {
-            ExamSelectorPage selectorPage(this->account, this->module, this->system);
-            selectorPage.show();
+            ExamSelectorPage *selectorPage = new ExamSelectorPage(this->account, this->module, this->system);
+            ui::pageManager.setNextPage(selectorPage);
+            run = false;
         } else if (choice == "S") {
             cout << "Students registered on Module " << code << ":" << endl;
             
@@ -90,6 +91,7 @@ void ModuleHomePage::show() {
         } else if (choice == "B") {
             cout << "Going back to module selector page\n" << endl;
             run = false;
+            ui::pageManager.popCurrentPage();
         } else if (choice == "Q") {
             ui::quit();
         }

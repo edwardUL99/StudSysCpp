@@ -159,6 +159,7 @@ void ExamEditPage::show() {
             }
         } else if (choice == "C") {
             run = false;
+            ui::pageManager.popCurrentPage(); //get out of this paege
         }
     }
 }

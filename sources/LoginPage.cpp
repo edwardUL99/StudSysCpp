@@ -1,6 +1,8 @@
 #include "headers/LoginPage.h"
 #include "headers/NotFoundException.h"
 #include "headers/NotLoggedInException.h"
+#include "headers/AccountPage.h"
+#include "headers/UIUtils.h"
 
 using std::string;
 using ui::LoginPage;
@@ -119,6 +121,19 @@ void LoginPage::show()
                     cout << "This is " + email + "'s first login\n"
                          << endl;
                 }
+
+                AccountPage *accountPage = nullptr;
+
+                if (isStudentLogin()) {
+                    StudentAccount studentAccount = getStudentAccount(); //this will always be in scope for any pages since WelcomePage is the parent page and if WelcomePage whule loop ends and leaves show, no other page should be open
+                    accountPage = new AccountPage(system, studentAccount);
+                } else {
+                    LecturerAccount lecturerAccount = getLecturerAccount(); //this will always be in scope for any pages since WelcomePage is the parent page and if WelcomePage whule loop ends and leaves show, no other page should be open
+                    accountPage = new AccountPage(system, lecturerAccount);
+                }
+                
+                ui::pageManager.setNextPage(accountPage);
+                run = false;
             }
             else if (exists)
                 cout << "The password does not match the account identified by the e-mail " << email << endl;
@@ -131,6 +146,7 @@ void LoginPage::show()
         {
             this->loginSuccessful = false;
             run = false;
+            ui::pageManager.popCurrentPage(); //get out of this page
         }
         else if (choice == "Q")
         {

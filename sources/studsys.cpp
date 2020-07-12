@@ -24,7 +24,7 @@ using std::endl;
 using std::string;
 using ui::WelcomePage;
 
-ui::PageManager pageManager;
+ui::PageManager ui::pageManager;
 
 int main(int argc, char **argv)
 {
@@ -72,8 +72,8 @@ int main(int argc, char **argv)
         exit(-1);
     }
 
-    pageManager = ui::PageManager(dbname, username, password, host);
-    pageManager.start();
+    ui::pageManager.initializeSystem(dbname, username, password, host);
+    ui::pageManager.start();
 
     /*StudentSystem system("student_sys", "studsys", "systemPass", "pi");
     Exam exam = system.getExam(1);

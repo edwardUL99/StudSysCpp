@@ -18,6 +18,13 @@ PageManager::PageManager() {
 }
 
 PageManager::~PageManager() {
+    Page *page;
+
+    while (!pages.empty()) {
+        page = pages.top();
+        pages.pop();
+        delete page;
+    }
     delete system;
 }
 
@@ -31,14 +38,18 @@ void PageManager::showNextPage() {
        run = false;
     } else {
         Page *nextPage = pages.top();
-        pages.pop();
         nextPage->show();
-        delete nextPage; //you don't need it anymore
     }
 }
 
 void PageManager::setNextPage(Page *page) {
     pages.emplace(page);
+}
+
+void PageManager::popCurrentPage() {
+    Page *page = pages.top(); //the page to remove
+    pages.pop();
+    delete page;
 }
 
 Page* PageManager::getNextPage() {

@@ -188,6 +188,7 @@ void ExamCreatePage::show() {
             submit();
         } else if (choice == "C") {
             run = false;
+            ui::pageManager.popCurrentPage(); //get out of this page
         } else if (choice == "Q") {
             ui::quit();
         }

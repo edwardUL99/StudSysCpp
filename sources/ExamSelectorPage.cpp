@@ -77,8 +77,9 @@ void ExamSelectorPage::show() {
             } catch (NotFoundException &nf) {}
             
             if (!tookExam) {
-                ExamPage examPage(student, exam, this->system);
-                examPage.show();
+                ExamPage *examPage = new ExamPage(student, exam, this->system);
+                ui::pageManager.setNextPage(examPage);
+                break;
             } else {
                 cout << "You already took this exam, so you cannot take it again. If this is an error, contact your lecturer" << endl;
             }
@@ -90,16 +91,19 @@ void ExamSelectorPage::show() {
             Exam &exam = exams[num-1];
 
             if (!this->system.examTaken(exam)) {
-                ExamEditPage editPage(exams[num-1], system);
-                editPage.show();
+                ExamEditPage *editPage = new ExamEditPage(exams[num-1], system);
+                ui::pageManager.setNextPage(editPage);
+                break;
             } else {
                 cout << "This exam has already been taken by students so you cannot edit it" << endl;
             }
         } else if (choice == "C" && lecturer) {
-            ExamCreatePage createPage(this->module, this->system);
-            createPage.show();
+            ExamCreatePage *createPage = new ExamCreatePage(this->module, this->system);
+            ui::pageManager.setNextPage(createPage);
+            break;
         } else if (choice == "B") {
             run = false;
+            ui::pageManager.popCurrentPage(); //want to get out of this page to the previous one
         } else if (choice == "Q") {
             ui::quit();
         }

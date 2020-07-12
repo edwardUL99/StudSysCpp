@@ -45,6 +45,11 @@ namespace ui
              */
             void setNextPage(Page *page);
             /**
+             * Call this method to remove the page currently being displayed in the manager
+             * This essentially removes the current pge and goes to the previous one that was in the manager before the current one
+             */
+            void popCurrentPage();
+            /**
              * Returns the next page that will be displayed after the current one
              */
             Page* getNextPage();

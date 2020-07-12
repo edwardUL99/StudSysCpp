@@ -1,7 +1,7 @@
 #include "headers/WelcomePage.h"
 #include "headers/LoginPage.h"
-#include "headers/AccountPage.h"
 #include "headers/Administration.h"
+#include "headers/UIUtils.h"
 
 using std::string;
 using ui::WelcomePage;
@@ -25,14 +25,16 @@ void WelcomePage::show() {
         LoginPage *loginPage = NULL;
 
         if (choice == "A") {
-            Administration admin(this->system);
-            admin.show();
+            Administration *admin = new Administration(this->system);
+            ui::pageManager.setNextPage(admin);
+            break;
         } else if (choice == "L") {
             loginPage = new LoginPage(this->system, false);
         } else if (choice == "S") {
             loginPage = new LoginPage(this->system, true);
         } else if (choice == "C") {
             run = false;
+            ui::pageManager.popCurrentPage();
         } else if (choice == "Q") {
             ui::quit();
         }
@@ -40,23 +42,8 @@ void WelcomePage::show() {
 
 
         if (loginPage) {
-            loginPage->show(); //show the login screen
-
-            if (loginPage->login()) {
-                if (loginPage->isStudentLogin()) {
-                    StudentAccount studentAccount = loginPage->getStudentAccount(); //this will always be in scope for any pages since WelcomePage is the parent page and if WelcomePage whule loop ends and leaves show, no other page should be open
-                    AccountPage accountPage(system, studentAccount);
-                    
-                    accountPage.show(); //WelcomePage is parent page, shows accountPage, which then shows other pages and those other pages may show other pages etc, and then when finished will eventually return back here
-                } else {
-                    LecturerAccount lecturerAccount = loginPage->getLecturerAccount(); //this will always be in scope for any pages since WelcomePage is the parent page and if WelcomePage whule loop ends and leaves show, no other page should be open
-                    AccountPage accountPage(system, lecturerAccount);
-
-                    accountPage.show(); //WelcomePage is parent page, shows accountPage, which then shows other pages and those other pages may show other pages etc, and then when finished will eventually return back here
-                }
-            }
+            ui::pageManager.setNextPage(loginPage);
+            break;
         }
-
-        delete loginPage;
     }
 }
