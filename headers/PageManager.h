@@ -17,7 +17,7 @@ namespace ui
     {
         private:
             std::stack<Page*> pages;
-            StudentSystem *system;
+            StudentSystem system;
             bool run;
             //determines which Page to show next and calls its show() method. This method will be returned from as soon as that page is finished
             void showNextPage();

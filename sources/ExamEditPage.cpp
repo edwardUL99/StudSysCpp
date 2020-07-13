@@ -153,10 +153,12 @@ void ExamEditPage::show() {
                 } else {
                     cout << "The changes have not been successfully submitted, try again later" << endl;
                 }
-                run = false;
             } catch (KeyMismatch &km) {
                 cout << "An error occurred, try again later" << endl;
             }
+
+            run = false;
+            ui::pageManager.popCurrentPage();
         } else if (choice == "C") {
             run = false;
             ui::pageManager.popCurrentPage(); //get out of this paege

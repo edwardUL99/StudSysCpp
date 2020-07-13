@@ -87,7 +87,8 @@ void ModuleSelectorPage::show()
 
                 int num = ui::getInt(Predicate<int>([numModules](const int &x) -> bool { return x < 1 || x > numModules; }), "Please re-enter a number between 1 and " + std::to_string(numModules) + ": ");
 
-                ModuleHomePage *modulePage = new ModuleHomePage(account, modules[num - 1], system);
+                static Module module = modules[num - 1];
+                ModuleHomePage *modulePage = new ModuleHomePage(account, module, system);
                 ui::pageManager.setNextPage(modulePage);
                 run = false;
             }

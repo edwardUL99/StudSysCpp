@@ -10,6 +10,7 @@ class string;
 #include <boost/any.hpp>
 #include "Tables.h"
 #include "DatabaseItem.h"
+#include "Warning.h"
 #include <map>
 
 #define DB "student_sys"
@@ -17,7 +18,6 @@ class string;
 #define DB_USER "eddy"
 #define DB_PASS ""
 
-class Warning;
 class Student;
 class Lecturer;
 class Course;

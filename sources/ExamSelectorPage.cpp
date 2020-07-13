@@ -66,8 +66,8 @@ void ExamSelectorPage::show() {
             int num = ui::getInt(Predicate<int>([size](const int &x) -> bool { return x < 1 || x > size; }), msg);
 
             StudentAccount &studentAccount = dynamic_cast<StudentAccount&>(account);
-            Student student = studentAccount.getStudent();
-            Exam exam = exams[num - 1];
+            static Student student = studentAccount.getStudent();
+            static Exam exam = exams[num - 1];
 
             bool tookExam = false;
 
@@ -88,10 +88,10 @@ void ExamSelectorPage::show() {
             cout << msg << endl;
 
             int num = ui::getInt(Predicate<int>([size](const int &x) -> bool { return x < 1 || x > size; }), msg);
-            Exam &exam = exams[num-1];
+            static Exam exam = exams[num-1];
 
             if (!this->system.examTaken(exam)) {
-                ExamEditPage *editPage = new ExamEditPage(exams[num-1], system);
+                ExamEditPage *editPage = new ExamEditPage(exam, system);
                 ui::pageManager.setNextPage(editPage);
                 break;
             } else {

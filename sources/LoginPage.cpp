@@ -125,10 +125,10 @@ void LoginPage::show()
                 AccountPage *accountPage = nullptr;
 
                 if (isStudentLogin()) {
-                    StudentAccount studentAccount = getStudentAccount(); //this will always be in scope for any pages since WelcomePage is the parent page and if WelcomePage whule loop ends and leaves show, no other page should be open
+                    static StudentAccount studentAccount = getStudentAccount(); //this will always be in scope for any pages since WelcomePage is the parent page and if WelcomePage whule loop ends and leaves show, no other page should be open
                     accountPage = new AccountPage(system, studentAccount);
                 } else {
-                    LecturerAccount lecturerAccount = getLecturerAccount(); //this will always be in scope for any pages since WelcomePage is the parent page and if WelcomePage whule loop ends and leaves show, no other page should be open
+                    static LecturerAccount lecturerAccount = getLecturerAccount(); //this will always be in scope for any pages since WelcomePage is the parent page and if WelcomePage whule loop ends and leaves show, no other page should be open
                     accountPage = new AccountPage(system, lecturerAccount);
                 }
                 
