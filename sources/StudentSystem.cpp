@@ -12,6 +12,10 @@ StudentSystem::StudentSystem(const StudentSystem &system) {
     this->database = DatabaseManager(system.database);
 }
 
+void StudentSystem::startSystem() {
+    this->database.connectToDatabase();
+}
+
 string StudentSystem::recordLogin(const Account &account) {
     string date = "FIRST_LOGIN";
 

@@ -46,16 +46,9 @@ DatabaseManager::DatabaseManager(string database, string user, string pass, stri
     this->user = user;
     this->pass = pass;
     this->host = host;
-
-    if (database != "" && user != "" && pass != "" && host != "")
-    {
-        this->driver = get_driver_instance();
-        this->connection = this->driver->connect(host, user, pass);
-        this->connection->setSchema(database);
-        //now connected to the database
-        this->stmt = this->connection->createStatement();
-        setLastExamID();
-    }
+    this->connection = NULL;
+    this->driver = NULL;
+    this->stmt = NULL;
 }
 
 DatabaseManager::DatabaseManager(const DatabaseManager &databaseManager) {
@@ -96,6 +89,13 @@ void DatabaseManager::setLastExamID()
     }
 
     Exam::setLastID(id); //set the last id to use with new exams
+}
+
+void DatabaseManager::connectToDatabase() {
+    this->driver = get_driver_instance();
+    this->connection = this->driver->connect(this->host, this->user, this->pass);
+    this->connection->setSchema(this->database);
+    this->stmt = this->connection->createStatement();
 }
 
 bool DatabaseManager::add(const Lecturer &lecturer)

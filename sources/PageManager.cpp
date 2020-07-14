@@ -75,6 +75,7 @@ Page *PageManager::getNextPage()
 
 void PageManager::start(Page *initialPage)
 {
+    this->system.startSystem();
     setNextPage(initialPage);
 
     while (run)

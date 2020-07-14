@@ -65,7 +65,13 @@ public:
     DatabaseManager(std::string database = DB, std::string user = DB_USER, std::string pass = DB_PASS, std::string host = DB_HOST);
     DatabaseManager(const DatabaseManager &manager);
     ~DatabaseManager();
-    
+    /**
+     * Connects the manager to the actual database server
+     * It is undefined behaviour if any of this class' operations are called without this being called once before
+     * In fact, it will be guaranteed to crash if it's not called
+     */
+    void connectToDatabase();
+
     //Overloaded add methods to add different entities to the database
     bool add(const Lecturer &lecturer);
     bool add(const Course &course);

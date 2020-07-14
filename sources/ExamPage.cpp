@@ -89,6 +89,7 @@ void ExamPage::show() {
                     this->system.addExamGrade(grade);
 
                     run = false;
+                    ui::pageManager.popCurrentPage();
                     break;
                 } else if (choice == "N") {
                     break;
@@ -102,6 +103,7 @@ void ExamPage::show() {
 
                 if (choice == "Y") {
                     run = false;
+                    ui::pageManager.popCurrentPage();
                     break;
                 } else if (choice == "N") {
                     break;

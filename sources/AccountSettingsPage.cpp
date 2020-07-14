@@ -155,6 +155,7 @@ void AccountSettingsPage::show() {
             changePassword();
         } else if (choice == "C") {
             run = false;
+            ui::pageManager.popCurrentPage();
         } else if (choice == "Q") {
             ui::quit();
         }

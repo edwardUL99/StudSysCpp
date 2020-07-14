@@ -54,11 +54,11 @@ namespace ui
              */
             Page* getNextPage();
             /**
-             * Starts the page manager with the specified inital page
+             * Starts the page manager with the specified inital page and starts the StudentSystem
              */
             void start(Page *initialPage); 
             /**
-             * Starts the page manager with the default initial page which is a Welcome Page
+             * Starts the page manager with the default initial page which is a Welcome Page and starts the StudentSystem
              */
             void start();
     };
