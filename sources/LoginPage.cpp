@@ -91,7 +91,7 @@ void LoginPage::show()
             {
                 try
                 {
-                    LecturerAccount lecturerAccount = this->system.getLecturerAccount(email);
+                    LecturerAccount lecturerAccount = this->system.getLecturerAccount(this->email);
 
                     submit = lecturerAccount.getPassword() == password;
                 }

@@ -42,6 +42,11 @@ const map<Tables, string> DatabaseManager::tableNames = {
 
 DatabaseManager::DatabaseManager(string database, string user, string pass, string host)
 {
+    this->database = database;
+    this->user = user;
+    this->pass = pass;
+    this->host = host;
+
     if (database != "" && user != "" && pass != "" && host != "")
     {
         this->driver = get_driver_instance();
@@ -53,12 +58,25 @@ DatabaseManager::DatabaseManager(string database, string user, string pass, stri
     }
 }
 
+DatabaseManager::DatabaseManager(const DatabaseManager &databaseManager) {
+    this->driver = get_driver_instance();
+    this->connection = this->driver->connect(databaseManager.host, databaseManager.user, databaseManager.pass);
+    this->connection->setSchema(databaseManager.database);
+    this->stmt = this->connection->createStatement();
+
+    this->user = databaseManager.user;
+    this->host = databaseManager.host;
+    this->database = databaseManager.database;
+    this->pass = databaseManager.pass;
+
+    setLastExamID();
+}
+
 DatabaseManager::~DatabaseManager()
 {
-    this->connection->close();
     this->writeWarningsToLog();
-    delete this->connection;
     delete this->stmt;
+    delete this->connection;
 }
 
 void DatabaseManager::setLastExamID()
@@ -1213,4 +1231,20 @@ void DatabaseManager::writeWarningsToLog()
         }
         writer.flush();
     }
+}
+
+DatabaseManager &DatabaseManager::operator=(const DatabaseManager &manager) {
+    this->driver = get_driver_instance();
+    this->connection = this->driver->connect(manager.host, manager.user, manager.pass);
+    this->connection->setSchema(manager.database);
+    this->stmt = this->connection->createStatement();
+
+    this->host = manager.host;
+    this->user = manager.user;
+    this->pass = manager.pass;
+    this->database = manager.database;
+
+    setLastExamID();
+    
+    return *this;
 }

@@ -39,6 +39,10 @@ class StudentAccount;
 class DatabaseManager
 {
 private:
+    std::string database;
+    std::string user;
+    std::string pass;
+    std::string host;
     Driver *driver;
     Connection *connection;
     Statement *stmt;               //the statement to be used to execute queries
@@ -59,6 +63,7 @@ public:
     //with remove methods figure out what to do if a foreign key constraint prevents it
     //add methods to perform updates
     DatabaseManager(std::string database = DB, std::string user = DB_USER, std::string pass = DB_PASS, std::string host = DB_HOST);
+    DatabaseManager(const DatabaseManager &manager);
     ~DatabaseManager();
     
     //Overloaded add methods to add different entities to the database
@@ -145,6 +150,7 @@ public:
     std::vector<Warning> getWarnings() const;
     void clearWarnings();
     void writeWarningsToLog();
+    DatabaseManager &operator=(const DatabaseManager &manager);
 };
 
 #endif // DATABASE_MANAGER_H

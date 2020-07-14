@@ -38,6 +38,8 @@ void AccountPage::show() {
         } else if (choice == "L") {
             cout << "Logging out..." << endl;
             run = false;
+            ui::pageManager.popCurrentPage();
+            ui::pageManager.popCurrentPage(); //want to return to welcome screen so pop twice
         } else if (choice == "Q") {
             ui::quit();
         }

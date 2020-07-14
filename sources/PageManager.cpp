@@ -10,7 +10,6 @@ using ui::PageManager;
 
 PageManager::PageManager(string database, string username, string password, string host) : system(database, username, password, host)
 {
-    initializeSystem(database, username, password, host);
     run = true;
 }
 
