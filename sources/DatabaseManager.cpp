@@ -52,7 +52,6 @@ DatabaseManager::DatabaseManager(string database, string user, string pass, stri
 
 DatabaseManager::~DatabaseManager()
 {
-    this->connection->close();
     this->writeWarningsToLog();
     delete this->connection;
     delete this->stmt;
