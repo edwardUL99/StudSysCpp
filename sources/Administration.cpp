@@ -521,6 +521,7 @@ void Administration::show() {
             registerStudent();
         } else if (choice == "L") {
             run = false;
+            ui::pageManager.popCurrentPage(); //get out of the administration page
         } else if (choice == "Q") {
             ui::quit();
         }

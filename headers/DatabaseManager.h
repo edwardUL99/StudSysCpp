@@ -10,6 +10,7 @@ class string;
 #include <boost/any.hpp>
 #include "Tables.h"
 #include "DatabaseItem.h"
+#include "Warning.h"
 #include <map>
 
 #define DB "student_sys"
@@ -17,7 +18,6 @@ class string;
 #define DB_USER "eddy"
 #define DB_PASS ""
 
-class Warning;
 class Student;
 class Lecturer;
 class Course;
@@ -39,6 +39,10 @@ class StudentAccount;
 class DatabaseManager
 {
 private:
+    std::string database;
+    std::string user;
+    std::string pass;
+    std::string host;
     Driver *driver;
     Connection *connection;
     Statement *stmt;               //the statement to be used to execute queries
@@ -59,8 +63,15 @@ public:
     //with remove methods figure out what to do if a foreign key constraint prevents it
     //add methods to perform updates
     DatabaseManager(std::string database = DB, std::string user = DB_USER, std::string pass = DB_PASS, std::string host = DB_HOST);
+    DatabaseManager(const DatabaseManager &manager);
     ~DatabaseManager();
-    
+    /**
+     * Connects the manager to the actual database server
+     * It is undefined behaviour if any of this class' operations are called without this being called once before
+     * In fact, it will be guaranteed to crash if it's not called
+     */
+    void connectToDatabase();
+
     //Overloaded add methods to add different entities to the database
     bool add(const Lecturer &lecturer);
     bool add(const Course &course);
@@ -145,6 +156,7 @@ public:
     std::vector<Warning> getWarnings() const;
     void clearWarnings();
     void writeWarningsToLog();
+    DatabaseManager &operator=(const DatabaseManager &manager);
 };
 
 #endif // DATABASE_MANAGER_H

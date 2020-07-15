@@ -28,14 +28,18 @@ void AccountPage::show() {
         string choice = ui::getChoice();
 
         if (choice == "V") {
-            ModuleSelectorPage selectPage(account, system);
-            selectPage.show();
+            ModuleSelectorPage *selectPage = new ModuleSelectorPage(account, system);
+            ui::pageManager.setNextPage(selectPage);
+            run = false;
         } else if (choice == "S") {
-            AccountSettingsPage settings(system, account);
-            settings.show();
+            AccountSettingsPage *settings = new AccountSettingsPage(system, account);
+            ui::pageManager.setNextPage(settings);
+            run = false;
         } else if (choice == "L") {
             cout << "Logging out..." << endl;
             run = false;
+            ui::pageManager.popCurrentPage();
+            ui::pageManager.popCurrentPage(); //want to return to welcome screen so pop twice
         } else if (choice == "Q") {
             ui::quit();
         }

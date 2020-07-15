@@ -42,19 +42,33 @@ const map<Tables, string> DatabaseManager::tableNames = {
 
 DatabaseManager::DatabaseManager(string database, string user, string pass, string host)
 {
-    this->driver = get_driver_instance();
-    this->connection = this->driver->connect(host, user, pass);
-    this->connection->setSchema(database);
-    //now connected to the database
-    this->stmt = this->connection->createStatement();
+    this->database = database;
+    this->user = user;
+    this->pass = pass;
+    this->host = host;
+    this->connection = NULL;
+    this->driver = NULL;
+    this->stmt = NULL;
+}
+
+DatabaseManager::DatabaseManager(const DatabaseManager &databaseManager) {
+    this->connection = NULL;
+    this->stmt = NULL;
+    this->user = databaseManager.user;
+    this->host = databaseManager.host;
+    this->database = databaseManager.database;
+    this->pass = databaseManager.pass;
+
+    this->connectToDatabase();
+
     setLastExamID();
 }
 
 DatabaseManager::~DatabaseManager()
 {
     this->writeWarningsToLog();
-    delete this->connection;
     delete this->stmt;
+    delete this->connection;
 }
 
 void DatabaseManager::setLastExamID()
@@ -74,6 +88,17 @@ void DatabaseManager::setLastExamID()
     }
 
     Exam::setLastID(id); //set the last id to use with new exams
+
+    delete res;
+}
+
+void DatabaseManager::connectToDatabase() {
+    this->driver = get_driver_instance();
+    delete this->connection;
+    this->connection = this->driver->connect(this->host, this->user, this->pass);
+    this->connection->setSchema(this->database);
+    delete this->stmt;
+    this->stmt = this->connection->createStatement();
 }
 
 bool DatabaseManager::add(const Lecturer &lecturer)
@@ -621,11 +646,14 @@ bool DatabaseManager::add(const Exam &exam)
     }
 }
 //Gets the position of the minimum element in the vector
-int minPosition(int startPos, const std::vector<ExamQuestion> &vect) {
+int minPosition(int startPos, const std::vector<ExamQuestion> &vect)
+{
     int min = startPos;
 
-    for (int i = startPos; i < vect.size(); i++) {
-        if (vect[i] < vect[min]) {
+    for (int i = startPos; i < vect.size(); i++)
+    {
+        if (vect[i] < vect[min])
+        {
             min = i;
         }
     }
@@ -633,15 +661,17 @@ int minPosition(int startPos, const std::vector<ExamQuestion> &vect) {
     return min;
 }
 
-void sort(std::vector<ExamQuestion> &vect) {
+void sort(std::vector<ExamQuestion> &vect)
+{
     int n = vect.size();
-    for (int i = 0; i < n-1; i++) {
+    for (int i = 0; i < n - 1; i++)
+    {
         int min = minPosition(i, vect); //find the position of the smallest item from the start position i, and this is the item you will want to swap
 
         ExamQuestion temp(vect[i]);
         vect[i] = vect[min];
         vect[min] = temp;
-    } 
+    }
 }
 
 vector<ExamQuestion> DatabaseManager::getAllExamQuestions(int examID)
@@ -1204,4 +1234,23 @@ void DatabaseManager::writeWarningsToLog()
         }
         writer.flush();
     }
+}
+
+DatabaseManager &DatabaseManager::operator=(const DatabaseManager &manager) {
+    /*this->driver = get_driver_instance();
+    this->connection = this->driver->connect(manager.host, manager.user, manager.pass);
+    this->connection->setSchema(manager.database);
+    this->stmt = this->connection->createStatement();
+*/
+
+    this->host = manager.host;
+    this->user = manager.user;
+    this->pass = manager.pass;
+    this->database = manager.database;
+
+    this->connectToDatabase();
+
+    setLastExamID();
+    
+    return *this;
 }

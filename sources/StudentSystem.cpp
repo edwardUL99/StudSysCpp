@@ -8,6 +8,14 @@ using std::string;
 
 StudentSystem::StudentSystem(string dbname, string username, string password, string host) : database(dbname, username, password, host) {}
 
+StudentSystem::StudentSystem(const StudentSystem &system) {
+    this->database = DatabaseManager(system.database);
+}
+
+void StudentSystem::startSystem() {
+    this->database.connectToDatabase();
+}
+
 string StudentSystem::recordLogin(const Account &account) {
     string date = "FIRST_LOGIN";
 
@@ -381,4 +389,10 @@ bool StudentSystem::updateAccount(const Student &student, const StudentAccount &
     } catch (KeyMismatch &m) {
         throw m;
     }
+}
+
+StudentSystem& StudentSystem::operator=(const StudentSystem &system) {
+    this->database = DatabaseManager(system.database);
+
+    return *this;
 }
