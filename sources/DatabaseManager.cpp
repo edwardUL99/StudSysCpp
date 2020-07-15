@@ -52,15 +52,14 @@ DatabaseManager::DatabaseManager(string database, string user, string pass, stri
 }
 
 DatabaseManager::DatabaseManager(const DatabaseManager &databaseManager) {
-    this->driver = get_driver_instance();
-    this->connection = this->driver->connect(databaseManager.host, databaseManager.user, databaseManager.pass);
-    this->connection->setSchema(databaseManager.database);
-    this->stmt = this->connection->createStatement();
-
+    this->connection = NULL;
+    this->stmt = NULL;
     this->user = databaseManager.user;
     this->host = databaseManager.host;
     this->database = databaseManager.database;
     this->pass = databaseManager.pass;
+
+    this->connectToDatabase();
 
     setLastExamID();
 }
@@ -89,12 +88,16 @@ void DatabaseManager::setLastExamID()
     }
 
     Exam::setLastID(id); //set the last id to use with new exams
+
+    delete res;
 }
 
 void DatabaseManager::connectToDatabase() {
     this->driver = get_driver_instance();
+    delete this->connection;
     this->connection = this->driver->connect(this->host, this->user, this->pass);
     this->connection->setSchema(this->database);
+    delete this->stmt;
     this->stmt = this->connection->createStatement();
 }
 
@@ -1234,15 +1237,18 @@ void DatabaseManager::writeWarningsToLog()
 }
 
 DatabaseManager &DatabaseManager::operator=(const DatabaseManager &manager) {
-    this->driver = get_driver_instance();
+    /*this->driver = get_driver_instance();
     this->connection = this->driver->connect(manager.host, manager.user, manager.pass);
     this->connection->setSchema(manager.database);
     this->stmt = this->connection->createStatement();
+*/
 
     this->host = manager.host;
     this->user = manager.user;
     this->pass = manager.pass;
     this->database = manager.database;
+
+    this->connectToDatabase();
 
     setLastExamID();
     
