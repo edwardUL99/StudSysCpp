@@ -80,8 +80,9 @@ if [ "$COUNT" -eq "0" ]; then
 	fi	
 	
 	if [ -z $pass ]; then
-   		echo $usage_str   	
-		exit 1
+   		echo -n "Enter password: "
+   		read -s pass	
+		echo 
 	fi
 	
 	if [ -z $host ]; then

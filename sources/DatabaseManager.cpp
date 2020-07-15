@@ -31,6 +31,7 @@ const map<Tables, string> DatabaseManager::tableNames = {
     {STUDENTS, "students"},
     {COURSES, "courses"},
     {MODULES, "modules"},
+    {ANNOUNCEMENTS, "announcements"},
     {STUDENT_REGISTRATIONS, "student_registrations"},
     {EXAMS, "exams"},
     {EXAM_QUESTIONS, "exam_questions"},

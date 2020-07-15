@@ -4,6 +4,10 @@
 #include <string>
 #include "Tables.h"
 
+/**
+ * This is an "interface" (like java Interface) with all abstract methods that any
+ * DatabaseItem must implement
+ */
 class DatabaseItem
 {
 public:
