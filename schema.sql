@@ -49,6 +49,20 @@ CREATE TABLE IF NOT EXISTS modules (
 		ON UPDATE CASCADE
 );
 
+CREATE TABLE IF NOT EXISTS announcements (
+	module CHAR(6),
+	lecturer VARCHAR(100),
+	announcement TEXT,
+	time_created DATETIME DEFAULT CURRENT_TIMESTAMP,
+	PRIMARY KEY (module, lecturer, announcement),
+	FOREIGN KEY (module) REFERENCES modules(code)
+		ON DELETE CASCADE 
+		ON UPDATE CASCADE,
+	FOREIGN KEY (lecturer) REFERENCES lecturers(email)
+		ON DELETE CASCADE
+		ON UPDATE CASCADE  
+);
+
 /*this is only a draft table*/
 CREATE TABLE IF NOT EXISTS student_registrations (
 	student INTEGER,
