@@ -52,7 +52,7 @@ CREATE TABLE IF NOT EXISTS modules (
 CREATE TABLE IF NOT EXISTS announcements (
 	module CHAR(6),
 	lecturer VARCHAR(100),
-	announcement TEXT,
+	announcement VARCHAR(400),
 	time_created DATETIME DEFAULT CURRENT_TIMESTAMP,
 	PRIMARY KEY (module, lecturer, announcement),
 	FOREIGN KEY (module) REFERENCES modules(code)
