@@ -4,6 +4,7 @@
 #include "headers/Lecturer.h"
 #include "headers/Course.h"
 #include "headers/Module.h"
+#include "headers/Announcement.h"
 #include "headers/StudentRegistration.h"
 #include "headers/Exam.h"
 #include "headers/ExamGrade.h"
@@ -172,6 +173,15 @@ bool DatabaseManager::contains(const DatabaseItem &item)
     {
         const Module &module = dynamic_cast<const Module &>(item);
         return (bool)getModule(module.getCode());
+    }
+    case ANNOUNCEMENTS:
+    {
+        const Announcement &announcement = dynamic_cast<const Announcement &>(item);
+
+        ResultSet *res = executeQuery("SELECT * FROM announcments WHERE module = '" + announcement.getModule().getCode() + "' AND lecturer = '" + announcement.getLecturer().getEmail() + "' AND announcement = '" + announcement.getAnnouncementText() + "';");
+        bool containsAnnouncement = res->next();
+        delete res;
+        return containsAnnouncement;
     }
     case EXAMS:
     {
@@ -511,6 +521,56 @@ bool DatabaseManager::update(string code, const Module &updatedModule)
 
         return updated;
     }
+}
+
+bool DatabaseManager::add(const Announcement &announcement) {
+    string query = "INSERT INTO announcements (module, lecturer, announcement) VALUES ('" + announcement.getModule().getCode() + "','" + announcement.getLecturer().getEmail() + "','" + announcement.getAnnouncementText() + "');";
+
+    try
+    {
+        this->stmt->execute(query);
+
+        return true;
+    }
+    catch (SQLException &e)
+    {
+        const char *error = e.what();
+        Warning w(error, query);
+        this->warnings.push_back(w);
+        cerr << error << endl;
+
+        return false;
+    }
+}
+
+bool DatabaseManager::remove(const Announcement &announcement) {
+    string query = "DELETE FROM announcements WHERE module = '" + announcement.getModule().getCode() + "' AND lecturer = '" + announcement.getLecturer().getEmail() + "' AND announcement = '" + announcement.getAnnouncementText() + "';";
+
+    bool removed = this->executeUpdate(query) != 0;
+
+    return removed;
+}
+
+std::vector<Announcement> DatabaseManager::getAllAnnouncements() {
+    std::vector<Announcement> announcements;
+
+    string query = "SELECT * FROM announcements";
+
+    ResultSet *res = executeQuery(query);
+
+    while (res->next()) {
+        string code = res->getString("module");
+        string email = res->getString("lecturer");
+        string text = res->getString("announcement");
+        Module module = getModule(code).value();
+        Lecturer lecturer = getLecturer(code).value();
+
+        announcements.push_back(Announcement(module, lecturer, text));
+    }
+
+    delete res;
+
+    return announcements;
 }
 
 bool DatabaseManager::add(const StudentRegistration &registration)

@@ -12,6 +12,7 @@
 #include "LecturerAccount.h"
 #include "StudentAccount.h"
 #include "DatabaseManager.h"
+#include "Announcement.h"
 
 #include <vector>
 #include <string>
@@ -49,6 +50,10 @@ class StudentSystem {
         bool removeModule(const Module &module);
         bool updateModule(std::string code, const Module &updaredModule);
         std::vector<Module> getModules();
+
+        bool addAnnouncement(const Announcement &announcement);
+        bool removeAnnouncement(const Announcement &announcement);
+        std::vector<Announcement> getModuleAnnouncements(const Module &module);
         /**
          * Method to register a student to the specified module in the System 
          * Note that you can't update a student registration directly, the best route

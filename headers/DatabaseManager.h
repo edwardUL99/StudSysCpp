@@ -22,6 +22,7 @@ class Student;
 class Lecturer;
 class Course;
 class Module;
+class Announcement;
 class StudentRegistration;
 class Exam;
 class ExamQuestion;
@@ -77,6 +78,7 @@ public:
     bool add(const Course &course);
     bool add(const Student &student);
     bool add(const Module &module);
+    bool add(const Announcement &announcement);
     bool add(const StudentRegistration &registration);
     bool add(const Exam &exam);
     bool add(const ExamGrade &examGrade);
@@ -88,6 +90,7 @@ public:
     bool remove(const Course &course);
     bool remove(const Student &student);
     bool remove(const Module &module);
+    bool remove(const Announcement &announcement);
     bool remove(const StudentRegistration &registration);
     bool remove(const Exam &exam); //can't have exam as const has in the removal process, in order to find the exam, the id for that exam needs to be retrieved from the database
     bool remove(const ExamGrade &examGrade);
@@ -123,6 +126,7 @@ public:
     std::vector<Course> getAllCourses();
     std::vector<Student> getAllStudents();
     std::vector<Module> getAllModules();
+    std::vector<Announcement> getAllAnnouncements();
     std::vector<StudentRegistration> getAllStudentRegistrations();
     std::vector<Exam> getAllExams();
     std::vector<ExamGrade> getAllExamGrades();

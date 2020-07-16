@@ -6,6 +6,7 @@
 #include "Lecturer.h"
 
 //will keep time separate and have a struct as part of UI as e.g struct ui__announcement
+//DatabaseManager provides no update method so it's best to remove the current one and add the new announcement when updating
 class Announcement : public DatabaseItem
 {
     private:
@@ -27,4 +28,4 @@ class Announcement : public DatabaseItem
         virtual std::string getDescription() const override;
 };
 
-#endif;
+#endif

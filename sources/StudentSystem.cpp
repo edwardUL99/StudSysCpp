@@ -186,6 +186,31 @@ std::vector<Module> StudentSystem::getModules() {
     return this->database.getAllModules();
 }
 
+bool StudentSystem::addAnnouncement(const Announcement &announcement) {
+    if (this->database.contains(announcement)) {
+        throw DuplicateException(announcement.getDescription());
+    } else {
+        return this->database.add(announcement);
+    }
+}
+
+bool StudentSystem::removeAnnouncement(const Announcement &announcement) {
+    return this->database.remove(announcement);
+}
+
+std::vector<Announcement> StudentSystem::getModuleAnnouncements(const Module &module) {
+    std::vector<Announcement> announcements;
+    std::vector<Announcement> allAnnouncements = this->database.getAllAnnouncements();
+
+    for (const Announcement &announcement : allAnnouncements) {
+        if (announcement.getModule().getCode() == module.getCode()) {
+            announcements.push_back(announcement);
+        }
+    }
+
+    return announcements;
+}
+
 bool StudentSystem::registerStudentModule(const Student &student, const Module &module) {
     StudentRegistration registration(student, module);
 
