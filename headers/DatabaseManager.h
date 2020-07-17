@@ -103,6 +103,7 @@ public:
     bool update(int id, const Student &updatedStudent);
     bool update(std::string id, const Course &updatedCourse);
     bool update(std::string code, const Module &updatedModule);
+    bool update(int id, std::string moduleCode, const Announcement &updatedAnnouncement);
     //must ensure that each question of the exam, it's answer count is >= what it was before and same with question counts
     bool update(const Exam &oldExam, const Exam &updatedExam);
     bool update(const Student &student, const Exam &exam, const ExamGrade &updatedExamGrade);

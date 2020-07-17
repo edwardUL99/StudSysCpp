@@ -191,7 +191,7 @@ bool DatabaseManager::contains(const DatabaseItem &item)
     {
         const Announcement &announcement = dynamic_cast<const Announcement &>(item);
 
-        ResultSet *res = executeQuery("SELECT * FROM announcments WHERE module = '" + announcement.getModule().getCode() + "' AND lecturer = '" + announcement.getLecturer().getEmail() + "' AND announcement = '" + announcement.getAnnouncementText() + "';");
+        ResultSet *res = executeQuery("SELECT * FROM " + tableNames.at(table) + " WHERE module = '" + announcement.getModule().getCode() + "' AND lecturer = '" + announcement.getLecturer().getEmail() + "' AND announcement = '" + announcement.getAnnouncementText() + "';");
         bool containsAnnouncement = res->next();
         delete res;
         return containsAnnouncement;
@@ -564,10 +564,26 @@ bool DatabaseManager::remove(const Announcement &announcement) {
     return removed;
 }
 
+bool DatabaseManager::update(int id, std::string moduleCode, const Announcement &updatedAnnouncement) {
+    string oid = std::to_string(id);
+    string nid = std::to_string(updatedAnnouncement.getID());
+
+    moduleCode = "'" + moduleCode + "'";
+    string nmoduleCode = "'" + updatedAnnouncement.getModule().getCode() + "'";
+
+    if (oid != nid && moduleCode != nmoduleCode) {
+        throw new KeyMismatch(nid + "-" + nmoduleCode, oid + "-" + moduleCode);
+    } else {
+        string query = "UPDATE announcements SET lecturer = '" + updatedAnnouncement.getLecturer().getEmail() + "', announcement = '" + updatedAnnouncement.getAnnouncementText() + "', time_created = CURRENT_TIMESTAMP();";
+
+        return executeUpdate(query) != 0;
+    }
+}
+
 std::vector<Announcement> DatabaseManager::getAllAnnouncements() {
     std::vector<Announcement> announcements;
 
-    string query = "SELECT * FROM announcements";
+    string query = "SELECT * FROM announcements ORDER BY time_created DESC";
 
     ResultSet *res = executeQuery(query);
 
@@ -577,7 +593,7 @@ std::vector<Announcement> DatabaseManager::getAllAnnouncements() {
         string email = res->getString("lecturer");
         string text = res->getString("announcement");
         Module module = getModule(code).value();
-        Lecturer lecturer = getLecturer(code).value();
+        Lecturer lecturer = getLecturer(email).value();
 
         announcements.push_back(Announcement(id, module, lecturer, text));
     }

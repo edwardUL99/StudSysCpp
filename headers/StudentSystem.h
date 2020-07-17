@@ -53,7 +53,9 @@ class StudentSystem {
 
         bool addAnnouncement(const Announcement &announcement);
         bool removeAnnouncement(const Announcement &announcement);
+        bool updateAnnouncement(int announcementNumber, std::string moduleCode, const Announcement &updatedAnnouncement);
         std::vector<Announcement> getModuleAnnouncements(const Module &module);
+        std::string getAnnouncementTime(const Announcement &announcement);
         /**
          * Method to register a student to the specified module in the System 
          * Note that you can't update a student registration directly, the best route

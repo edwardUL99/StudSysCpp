@@ -211,6 +211,27 @@ std::vector<Announcement> StudentSystem::getModuleAnnouncements(const Module &mo
     return announcements;
 }
 
+bool StudentSystem::updateAnnouncement(int announcementNumber, std::string moduleCode, const Announcement &updatedAnnouncement) {
+    try {
+        return this->database.update(announcementNumber, moduleCode, updatedAnnouncement);
+    } catch (KeyMismatch &m) {
+        throw m;
+    }
+}
+
+string StudentSystem::getAnnouncementTime(const Announcement &announcement) {
+    ResultSet *res = this->database.executeQuery("SELECT time_created FROM announcements WHERE id = " + std::to_string(announcement.getID()) + " AND module = '" + announcement.getModule().getCode() + "';");
+
+    string time = "";
+    if (res->next()) {
+        time = res->getString("time_created");
+    }
+
+    delete res;
+
+    return time;
+}
+
 bool StudentSystem::registerStudentModule(const Student &student, const Module &module) {
     StudentRegistration registration(student, module);
 

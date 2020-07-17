@@ -4,6 +4,7 @@
 #include "Page.h"
 #include "Account.h"
 #include "Module.h"
+#include "Announcement.h"
 
 namespace ui
 {
@@ -16,6 +17,8 @@ namespace ui
     private:
         Account &account;
         Module &module;
+        void viewAnnouncement(const Announcement &announcement);
+        void createAnnouncement();
 
     public:
         /**

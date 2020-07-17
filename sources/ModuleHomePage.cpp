@@ -3,11 +3,64 @@
 #include "headers/UIUtils.h"
 #include "headers/Administration.h"
 #include "headers/NotFoundException.h"
+#include "headers/DuplicateException.h"
 
+#include <vector>
 using ui::ModuleHomePage;
 using std::string;
+using std::vector;
 
 ModuleHomePage::ModuleHomePage(Account &account, Module &module, StudentSystem &system) : Page(system), account(account), module(module) {}
+
+void ModuleHomePage::viewAnnouncement(const Announcement &announcement) {
+    string time = system.getAnnouncementTime(announcement);
+
+    Lecturer lecturer = announcement.getLecturer();
+    cout << "Lecturer: " << lecturer.getName() << " <" << lecturer.getEmail() << ">" << endl;
+    cout << "Time: " << time << endl;
+    cout << "Announcement:\n" << announcement.getAnnouncementText() << endl;
+}
+
+void ModuleHomePage::createAnnouncement() {
+    Lecturer lecturer = dynamic_cast<LecturerAccount&>(account).getLecturer();
+
+    cout << "You can now enter the announcement text line by line. Type <!submit> to finish and to create the announcementm or <!cancel> to cancel" << endl;
+
+    string text = "";
+    bool run = true;
+    bool submit = false;
+    bool cancel = false;
+
+    while (run) {
+        string temp = ui::getString();
+
+        if (temp != "<!submit>" && temp != "<!cancel>") {
+            text += temp + "\n";
+        } else if (temp == "<!submit>") {
+            submit = true;
+            run = false;
+        } else if (temp == "<!cancel>") {
+            cancel = true;
+            run = false;
+        }
+    }
+
+    if (cancel) {
+        cout << "Announcement cancelled" << endl;
+    } else {
+        Announcement announcement(module, lecturer, text);
+
+        try {
+           if (this->system.addAnnouncement(announcement)) {
+               cout << "Announcement was created successfully" << endl;
+           } else {
+               cout << "Announcement was not created successfully, please try again later" << endl;
+           }
+        } catch (DuplicateException &d) {
+            cout << "Announcement already exists" << endl;
+        }
+    }
+}
 
 void ModuleHomePage::show() {
     string code = module.getCode();
@@ -22,7 +75,54 @@ void ModuleHomePage::show() {
         string choice = ui::getChoice();
 
         if (choice == "A") {
-            cout << "Not implemented yet" << endl;
+            bool run = true;
+
+            while (run) {
+                bool lecturer = false;
+                try {
+                    LecturerAccount &lecturerAcc = dynamic_cast<LecturerAccount&>(account);
+                    lecturer = true;
+                } catch (std::bad_cast &b) {
+                }
+
+                if (lecturer) cout << "(N)ew announcement, (E)dit announcement, (V)iew announcements, (B)ack, (Q)uit" << endl;
+                else cout << "(V)iew announcements, (B)ack, (Q)uit" << endl;
+
+                string choice = ui::getChoice();
+
+                if (choice == "N" && lecturer) {
+                    createAnnouncement();
+                } else if (choice == "E" && lecturer) {
+                    cout << "Not implemented yet" << endl;
+                } else if (choice == "V" ) {
+                    vector<Announcement> announcements = system.getModuleAnnouncements(module);
+
+                    int length = announcements.size();
+
+                    if (length == 0) {
+                        cout << "There are no announcements" << endl;
+                    } else {
+                        cout << "Choose a number between 1 and " << length << " to choose which announcement to view (1 being the newest): " << endl;
+                        int num = ui::getInt(Predicate<int>([length](const int &x) -> bool { return x < 1 || x > length; }), "Choose a number between 1 and " + std::to_string(length) + ": ");
+
+                        num -= 1;
+
+                        viewAnnouncement(announcements[num]);
+                    }
+                } else if (choice == "B") {
+                    run = false;
+                } else if (choice == "Q") {
+                    ui::quit();
+                }
+
+            }
+            vector<Announcement> announcements = system.getModuleAnnouncements(module);
+
+            if (announcements.size() != 0) {
+                for (const Announcement &announcement : announcements) {
+
+                }
+            }
         } else if (choice == "T") {
             cout << "Not implemented yet" << endl;
         } else if (choice == "E") {
