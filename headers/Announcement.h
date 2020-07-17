@@ -10,13 +10,20 @@
 class Announcement : public DatabaseItem
 {
     private:
+        int id;
+        static int lastID;
         Module module;
         Lecturer lecturer;
         std::string announcement;
 
     public:
         Announcement(const Module &module, const Lecturer &lecturer, std::string announcement);
+        Announcement(int id, const Module &module, const Lecturer &lecturer, std::string announcement);
         virtual ~Announcement() = default;
+        static int getLastID();
+        static void setLastID(int lastID);
+        int getID() const;
+        void setID(int id);
         Module getModule() const;
         void setModule(const Module &module);
         Lecturer getLecturer() const;

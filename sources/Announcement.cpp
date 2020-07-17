@@ -2,8 +2,32 @@
 
 using std::string;
 
+int Announcement::lastID = 1;
+
 Announcement::Announcement(const Module &module, const Lecturer &lecturer, std::string announcement) : module(module), lecturer(lecturer) {
     this->announcement = announcement;
+    this->id = lastID++;
+}
+
+Announcement::Announcement(int id, const Module &module, const Lecturer &lecturer, std::string announcement) : module(module), lecturer(lecturer) {
+    this->announcement = announcement;
+    this->id = id;
+}
+
+int Announcement::getLastID() {
+    return lastID;
+}
+
+void Announcement::setLastID(int lastID) {
+    Announcement::lastID = lastID;
+}
+
+int Announcement::getID() const {
+    return id;
+}
+
+void Announcement::setID(int id) {
+    this->id = id;
 }
 
 Module Announcement::getModule() const {

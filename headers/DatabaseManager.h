@@ -52,6 +52,7 @@ private:
     void clearTable(Tables table);
     std::vector<ExamQuestion> getAllExamQuestions(int examID);
     void setLastExamID();
+    void setLastAnnouncementID();
     //following private methods throw their exceptions to their public callers
     //private add methods for answers and questions
     bool add(const ExamAnswer &answer);

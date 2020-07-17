@@ -94,6 +94,19 @@ void DatabaseManager::setLastExamID()
     delete res;
 }
 
+void DatabaseManager::setLastAnnouncementID() {
+    ResultSet *res = executeQuery("SELECT id FROM announcements WHERE id >= ALL(SELECT id FROM exams);");
+
+    int id = 1;
+    if (res->next()) {
+        id = res->getInt("id");
+    }
+
+    Announcement::setLastID(id);
+
+    delete res;
+}
+
 void DatabaseManager::connectToDatabase() {
     this->driver = get_driver_instance();
     delete this->connection;
@@ -524,7 +537,7 @@ bool DatabaseManager::update(string code, const Module &updatedModule)
 }
 
 bool DatabaseManager::add(const Announcement &announcement) {
-    string query = "INSERT INTO announcements (module, lecturer, announcement) VALUES ('" + announcement.getModule().getCode() + "','" + announcement.getLecturer().getEmail() + "','" + announcement.getAnnouncementText() + "');";
+    string query = "INSERT INTO announcements (id, module, lecturer, announcement) VALUES (" + std::to_string(announcement.getID()) + ", '" + announcement.getModule().getCode() + "','" + announcement.getLecturer().getEmail() + "','" + announcement.getAnnouncementText() + "');";
 
     try
     {
@@ -544,7 +557,7 @@ bool DatabaseManager::add(const Announcement &announcement) {
 }
 
 bool DatabaseManager::remove(const Announcement &announcement) {
-    string query = "DELETE FROM announcements WHERE module = '" + announcement.getModule().getCode() + "' AND lecturer = '" + announcement.getLecturer().getEmail() + "' AND announcement = '" + announcement.getAnnouncementText() + "';";
+    string query = "DELETE FROM announcements WHERE id = " + std::to_string(announcement.getID()) + " AND module = '" + announcement.getModule().getCode() + "';";
 
     bool removed = this->executeUpdate(query) != 0;
 
@@ -559,13 +572,14 @@ std::vector<Announcement> DatabaseManager::getAllAnnouncements() {
     ResultSet *res = executeQuery(query);
 
     while (res->next()) {
+        int id = res->getInt("id");
         string code = res->getString("module");
         string email = res->getString("lecturer");
         string text = res->getString("announcement");
         Module module = getModule(code).value();
         Lecturer lecturer = getLecturer(code).value();
 
-        announcements.push_back(Announcement(module, lecturer, text));
+        announcements.push_back(Announcement(id, module, lecturer, text));
     }
 
     delete res;

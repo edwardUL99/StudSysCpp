@@ -50,11 +50,12 @@ CREATE TABLE IF NOT EXISTS modules (
 );
 
 CREATE TABLE IF NOT EXISTS announcements (
+	id INTEGER,
 	module CHAR(6),
 	lecturer VARCHAR(100),
-	announcement VARCHAR(280),
+	announcement TEXT,
 	time_created DATETIME DEFAULT CURRENT_TIMESTAMP,
-	PRIMARY KEY (module, lecturer, announcement),
+	PRIMARY KEY (id, module),
 	FOREIGN KEY (module) REFERENCES modules(code)
 		ON DELETE CASCADE 
 		ON UPDATE CASCADE,
