@@ -115,6 +115,8 @@ string ui::rejoinString(const std::vector<string> &split, char delim) {
     for (string s : split) {
         if (s.find(delim) != std::string::npos) {
             ret += s + delim;
+        } else {
+            ret += s;
         }
     }
 
