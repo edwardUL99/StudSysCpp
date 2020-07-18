@@ -13,11 +13,12 @@ class Announcement : public DatabaseItem
         static int lastID;
         Module module;
         Lecturer lecturer;
+        std::string subject;
         std::string announcement;
 
     public:
-        Announcement(const Module &module, const Lecturer &lecturer, std::string announcement);
-        Announcement(int id, const Module &module, const Lecturer &lecturer, std::string announcement);
+        Announcement(const Module &module, const Lecturer &lecturer, std::string subject, std::string announcement);
+        Announcement(int id, const Module &module, const Lecturer &lecturer, std::string subject, std::string announcement);
         virtual ~Announcement() = default;
         static int getLastID();
         static void setLastID(int lastID);
@@ -27,6 +28,8 @@ class Announcement : public DatabaseItem
         void setModule(const Module &module);
         Lecturer getLecturer() const;
         void setLecturer(const Lecturer &lecturer);
+        std::string getSubject() const;
+        void setSubject(std::string subject);
         std::string getAnnouncementText() const;
         void setAnnouncementText(std::string announcement);
         virtual std::string getObjectType() const override;

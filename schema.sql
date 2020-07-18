@@ -53,6 +53,7 @@ CREATE TABLE IF NOT EXISTS announcements (
 	id INTEGER,
 	module CHAR(6),
 	lecturer VARCHAR(100),
+	subject VARCHAR(250),
 	announcement TEXT,
 	time_created DATETIME DEFAULT CURRENT_TIMESTAMP,
 	PRIMARY KEY (id, module),

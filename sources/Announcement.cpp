@@ -4,13 +4,15 @@ using std::string;
 
 int Announcement::lastID = 1;
 
-Announcement::Announcement(const Module &module, const Lecturer &lecturer, std::string announcement) : module(module), lecturer(lecturer) {
+Announcement::Announcement(const Module &module, const Lecturer &lecturer, std::string subject, std::string announcement) : module(module), lecturer(lecturer) {
     this->announcement = announcement;
+    this->subject = subject;
     this->id = lastID++;
 }
 
-Announcement::Announcement(int id, const Module &module, const Lecturer &lecturer, std::string announcement) : module(module), lecturer(lecturer) {
+Announcement::Announcement(int id, const Module &module, const Lecturer &lecturer, std::string subject, std::string announcement) : module(module), lecturer(lecturer) {
     this->announcement = announcement;
+    this->subject = subject;
     this->id = id;
 }
 
@@ -44,6 +46,14 @@ Lecturer Announcement::getLecturer() const {
 
 void Announcement::setLecturer(const Lecturer &lecturer) {
     this->lecturer = lecturer;
+}
+
+string Announcement::getSubject() const {
+    return subject;
+}
+
+void Announcement::setSubject(string subject) {
+    this->subject = subject;
 }
 
 string Announcement::getAnnouncementText() const {

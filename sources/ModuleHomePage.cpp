@@ -18,11 +18,15 @@ void ModuleHomePage::viewAnnouncement(const Announcement &announcement) {
     Lecturer lecturer = announcement.getLecturer();
     cout << "Lecturer: " << lecturer.getName() << " <" << lecturer.getEmail() << ">" << endl;
     cout << "Time: " << time << endl;
+    cout << "Subject: " << announcement.getSubject() << endl;
     cout << "Announcement:\n" << announcement.getAnnouncementText() << endl;
 }
 
 void ModuleHomePage::createAnnouncement() {
     Lecturer lecturer = dynamic_cast<LecturerAccount&>(account).getLecturer();
+
+    cout << "Enter the subject for the announcement (max 250 characters): " << endl;
+    string subject = ui::getString(Predicate<string>([](const string &s) -> bool { return s.length() < 1 || s.length() > 250; }), "Please enter a subject that is between 1 and 250 characters:");
 
     cout << "You can now enter the announcement text line by line. Type <!submit> to finish and to create the announcementm or <!cancel> to cancel" << endl;
 
@@ -48,7 +52,7 @@ void ModuleHomePage::createAnnouncement() {
     if (cancel) {
         cout << "Announcement cancelled" << endl;
     } else {
-        Announcement announcement(module, lecturer, text);
+        Announcement announcement(module, lecturer, subject, text);
 
         try {
            if (this->system.addAnnouncement(announcement)) {
@@ -102,6 +106,10 @@ void ModuleHomePage::show() {
                     if (length == 0) {
                         cout << "There are no announcements" << endl;
                     } else {
+                        int i = 1;
+                        for (const Announcement &announcement : announcements) {
+                            cout << i + 1 << ") " << announcement.getSubject();
+                        }
                         cout << "Choose a number between 1 and " << length << " to choose which announcement to view (1 being the newest): " << endl;
                         int num = ui::getInt(Predicate<int>([length](const int &x) -> bool { return x < 1 || x > length; }), "Choose a number between 1 and " + std::to_string(length) + ": ");
 

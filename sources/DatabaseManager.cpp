@@ -537,7 +537,7 @@ bool DatabaseManager::update(string code, const Module &updatedModule)
 }
 
 bool DatabaseManager::add(const Announcement &announcement) {
-    string query = "INSERT INTO announcements (id, module, lecturer, announcement) VALUES (" + std::to_string(announcement.getID()) + ", '" + announcement.getModule().getCode() + "','" + announcement.getLecturer().getEmail() + "','" + announcement.getAnnouncementText() + "');";
+    string query = "INSERT INTO announcements (id, module, lecturer, subject, announcement) VALUES (" + std::to_string(announcement.getID()) + ", '" + announcement.getModule().getCode() + "','" + announcement.getLecturer().getEmail() + "','" + announcement.getSubject() + "','" + announcement.getAnnouncementText() + "');";
 
     try
     {
@@ -574,7 +574,7 @@ bool DatabaseManager::update(int id, std::string moduleCode, const Announcement 
     if (oid != nid && moduleCode != nmoduleCode) {
         throw new KeyMismatch(nid + "-" + nmoduleCode, oid + "-" + moduleCode);
     } else {
-        string query = "UPDATE announcements SET lecturer = '" + updatedAnnouncement.getLecturer().getEmail() + "', announcement = '" + updatedAnnouncement.getAnnouncementText() + "', time_created = CURRENT_TIMESTAMP();";
+        string query = "UPDATE announcements SET lecturer = '" + updatedAnnouncement.getLecturer().getEmail() + "', subject = '" + updatedAnnouncement.getSubject() + "', announcement = '" + updatedAnnouncement.getAnnouncementText() + "', time_created = CURRENT_TIMESTAMP();";
 
         return executeUpdate(query) != 0;
     }
@@ -591,11 +591,12 @@ std::vector<Announcement> DatabaseManager::getAllAnnouncements() {
         int id = res->getInt("id");
         string code = res->getString("module");
         string email = res->getString("lecturer");
+        string subject = res->getString("subject");
         string text = res->getString("announcement");
         Module module = getModule(code).value();
         Lecturer lecturer = getLecturer(email).value();
 
-        announcements.push_back(Announcement(id, module, lecturer, text));
+        announcements.push_back(Announcement(id, module, lecturer, subject, text));
     }
 
     delete res;
