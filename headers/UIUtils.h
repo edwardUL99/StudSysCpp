@@ -2,12 +2,20 @@
 #define UI_H
 
 #include <string>
+#include <vector>
 #include "Predicate.h"
 #include "PageManager.h"
 
 namespace ui
 {
   extern PageManager pageManager;
+
+  /**
+   * Flushes the cin number until the '\n' delimiter is found
+   * 
+   * It is recommended to call this after any numeric get types have been called in case of input failure so that any options strings in while loops don't get displayed twice
+   */
+  void flushCinBuffer();
 
   /**
  * Gets user choice from stdin (cin), trims it to 1 letter, capitalises it and returns it
@@ -66,10 +74,6 @@ namespace ui
   const std::string emptystrretrymsg = "Please re-enter a string that is not empty: ";
 
   /**
-   * Add others here as well as overloaded Int and Float with predicates
-   */
-
-  /**
  * Gets string from stdin but hides the input on the terminal
  * Useful for inputting passwords
  */
@@ -88,6 +92,18 @@ namespace ui
   const Predicate<std::string> passlengthpred([](const std::string &s) -> bool { int length = s.length(); return length < 8 || length > 16; });
 
   const std::string passlengthretrymsg = "Please re-enter a password that is between 8 and 16 characters long: ";
+
+  /**
+   * Splits the provided string into many strings using the specified delimiter (default is new line)
+   * Returns a vector of the split strings
+   */
+  std::vector<std::string> splitString(const std::string &s, char delim = '\n');
+
+  /**
+   * Takes a vector of tokens from a split string and rejoins them into a single string adding the specified delimiter onto the end of each token
+   * Returns all the split tokens as a single string
+   */
+  std::string rejoinString(const std::vector<std::string> &split, char delim = '\n');
 
   /**
  * Gets integer from stdin

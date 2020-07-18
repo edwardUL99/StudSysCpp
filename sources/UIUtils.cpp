@@ -3,15 +3,20 @@
 #include <termios.h>
 #include <unistd.h>
 #include <cstring>
+#include <climits>
 
 using std::cin;
 using std::cout;
 using std::endl;
 using std::string;
 
+void ui::flushCinBuffer() {
+    cin.clear();
+    cin.ignore(INT_MAX, '\n');
+}
+
 string ui::getChoice()
 {
-
     string choice;
 
     getline(cin, choice);
@@ -35,6 +40,7 @@ string ui::getChoice()
 
 string ui::getString()
 {
+    
     string ret;
     getline(cin, ret);
 
@@ -84,6 +90,35 @@ string ui::getSecureString(const Predicate<string> &predicate, const string retr
   }
 
   return pass;
+}
+
+std::vector<string> ui::splitString(const string &s, char delim) {
+    string sCopy = s;
+    std::vector<string> tokens;
+    std::string token;
+
+    std::size_t pos = 0;
+
+    while ((pos = sCopy.find(delim)) != std::string::npos) { //end if there's no string left
+        tokens.push_back(sCopy.substr(0, pos)); //take the tok from start to just before delimiter
+        sCopy = sCopy.substr(pos + 1); //remove first token and delimiter
+    }
+
+    tokens.push_back(sCopy); //add the last token to the vector
+
+    return tokens;
+}
+
+string ui::rejoinString(const std::vector<string> &split, char delim) {
+    string ret = "";
+
+    for (string s : split) {
+        if (s.find(delim) != std::string::npos) {
+            ret += s + delim;
+        }
+    }
+
+    return ret;
 }
 
 int ui::getInt()

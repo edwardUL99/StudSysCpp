@@ -11,6 +11,7 @@
 #include "headers/StudentAccount.h"
 #include "headers/ConfigFileProcessor.h"
 #include "headers/ExamEditPage.h"
+#include "headers/ModuleHomePage.h"
 #include "headers/UIUtils.h"
 
 #include <vector>
@@ -73,13 +74,15 @@ int main(int argc, char **argv)
     }
 
     ui::pageManager.initializeSystem(dbname, username, password, host);
-    ui::pageManager.start();
+    //ui::pageManager.start();
 
-    /*StudentSystem system("student_sys", "studsys", "systemPass", "pi");
-    Exam exam = system.getExam(1);
+    StudentSystem &system = ui::pageManager.getSystem();
 
-    ui::ExamEditPage edit(exam, system);
-    edit.show(); */
+    LecturerAccount lecturer = system.getLecturerAccount("patrick.healy@staff.mail.ie");
+    Module module = system.getModule("CS4115");
+    ui::ModuleHomePage *homePage = new ui::ModuleHomePage(lecturer, module, system);
+
+    ui::pageManager.start(homePage);
 
     return 0;
 }

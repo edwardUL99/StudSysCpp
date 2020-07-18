@@ -35,6 +35,10 @@ void PageManager::initializeSystem(string database, string username, string pass
     this->system = StudentSystem(database, username, password, host);
 }
 
+StudentSystem &PageManager::getSystem() {
+    return system;
+}
+
 void PageManager::showNextPage()
 {
     if (pages.size() == 0)

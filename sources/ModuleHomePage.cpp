@@ -66,6 +66,67 @@ void ModuleHomePage::createAnnouncement() {
     }
 }
 
+void ModuleHomePage::editAnnouncement(const Announcement &announcement) {
+    string announcementLecturer = announcement.getLecturer().getEmail();
+
+    if (announcementLecturer != account.getEmail()) {
+        cout << "You cannot edit another lecturer's announcement, contact " << announcementLecturer << " to request they change it" << endl;
+        return;
+    }
+
+    cout << "Now editing announcement: " << announcement.getSubject() << ", leave any field blank to stay the same" << endl;
+
+    cout << "\nEnnter the new subject: " << endl;
+
+    string subject = ui::getString();
+
+    subject = subject == "" ? announcement.getSubject():subject;
+
+    cout << "\nNow you are editing the text. To leave a line the same, press enter, to submit now and exit edit, type <!submit>, to cancel edits, type <!cancel>" << endl;
+
+    bool submit = false;
+    bool cancel = false;
+
+    std::vector<string> lines = ui::splitString(announcement.getAnnouncementText());
+
+    std::string line;
+
+    int i;
+
+    for (i = 0; i < lines.size(); i++) {
+        cout << lines[i] << endl;
+        line = ui::getString();
+
+        if (line == "!<submit>") {
+            submit = true;
+            break;
+        } else if (line == "<!cancel>") {
+            cancel = true;
+            break;
+        } else if (line == "") {
+            continue;
+        } else {
+            lines[i] = line;
+        }
+    }
+
+    submit = i == lines.size();
+
+    if (submit) {
+        string text = ui::rejoinString(lines);
+        Module announcementModule = announcement.getModule();
+        Announcement updatedAnnouncement(announcement.getID(), announcementModule, announcement.getLecturer(), subject, text);
+
+        if (this->system.updateAnnouncement(updatedAnnouncement.getID(), announcementModule.getCode(), updatedAnnouncement)) {
+            cout << "The announcement has been updated successfully" << endl;
+        } else {
+            cout << "The announcement has not bee unpdated successfully, please try again later" << endl;
+        }
+    } else {
+        cout << "Discarding changes to the announcement..." << endl;
+    }
+}
+
 void ModuleHomePage::show() {
     string code = module.getCode();
 
@@ -80,7 +141,7 @@ void ModuleHomePage::show() {
 
         if (choice == "A") {
             bool run = true;
-            vector<Announcement> announcements = system.getModuleAnnouncements(module);
+            vector<Announcement> announcements;
 
             while (run) {
                 bool lecturer = false;
@@ -98,8 +159,27 @@ void ModuleHomePage::show() {
                 if (choice == "N" && lecturer) {
                     createAnnouncement();
                 } else if (choice == "E" && lecturer) {
-                    cout << "Not implemented yet" << endl;
+                    announcements = this->system.getModuleAnnouncements(module);
+                    int length = announcements.size();
+
+                    if (length == 0) {
+                        cout << "There are no announcements" << endl;
+                    } else {
+                        int i = 1;
+                        for (const Announcement &announcement : announcements) {
+                            cout << i++ << ") " << announcement.getSubject() << endl;
+                        }
+                        cout << "Choose a number between 1 and " << length << " to choose which announcement to edit (1 being the newest): " << endl;
+                        int num = ui::getInt(Predicate<int>([length](const int &x) -> bool { return x < 1 || x > length; }), "Choose a number between 1 and " + std::to_string(length) + ": ");
+
+                        ui::flushCinBuffer();
+
+                        num -= 1;
+
+                        editAnnouncement(announcements[num]);
+                    }
                 } else if (choice == "V" ) {
+                    announcements = this->system.getModuleAnnouncements(module);
                     int length = announcements.size();
 
                     if (length == 0) {
@@ -111,6 +191,8 @@ void ModuleHomePage::show() {
                         }
                         cout << "Choose a number between 1 and " << length << " to choose which announcement to view (1 being the newest): " << endl;
                         int num = ui::getInt(Predicate<int>([length](const int &x) -> bool { return x < 1 || x > length; }), "Choose a number between 1 and " + std::to_string(length) + ": ");
+
+                        ui::flushCinBuffer();
 
                         num -= 1;
 

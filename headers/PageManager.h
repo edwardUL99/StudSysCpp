@@ -39,6 +39,8 @@ namespace ui
 
             void initializeSystem(std::string database, std::string username, std::string password, std::string host);
 
+            StudentSystem &getSystem();
+
             /**
              * Sets the next page to be shown after the current page is shown.
              * If this is not called, after the current page is shown, it will return to the one before it

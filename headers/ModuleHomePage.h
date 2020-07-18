@@ -19,6 +19,7 @@ namespace ui
         Module &module;
         void viewAnnouncement(const Announcement &announcement);
         void createAnnouncement();
+        void editAnnouncement(const Announcement &announcement);
 
     public:
         /**
