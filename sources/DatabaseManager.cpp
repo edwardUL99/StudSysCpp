@@ -574,7 +574,7 @@ bool DatabaseManager::update(int id, std::string moduleCode, const Announcement 
     if (oid != nid && moduleCode != nmoduleCode) {
         throw new KeyMismatch(nid + "-" + nmoduleCode, oid + "-" + moduleCode);
     } else {
-        string query = "UPDATE announcements SET lecturer = '" + updatedAnnouncement.getLecturer().getEmail() + "', subject = '" + updatedAnnouncement.getSubject() + "', announcement = '" + updatedAnnouncement.getAnnouncementText() + "', time_created = CURRENT_TIMESTAMP();";
+        string query = "UPDATE announcements SET lecturer = '" + updatedAnnouncement.getLecturer().getEmail() + "', subject = '" + updatedAnnouncement.getSubject() + "', announcement = '" + updatedAnnouncement.getAnnouncementText() + "', time_created = CURRENT_TIMESTAMP() WHERE id = " + oid + " AND module = " + moduleCode + ";";
 
         return executeUpdate(query) != 0;
     }

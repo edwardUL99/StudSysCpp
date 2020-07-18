@@ -76,7 +76,7 @@ void ModuleHomePage::editAnnouncement(const Announcement &announcement) {
 
     cout << "Now editing announcement: " << announcement.getSubject() << ", leave any field blank to stay the same" << endl;
 
-    cout << "\nEnnter the new subject: " << endl;
+    cout << "\nEnter the new subject: " << endl;
 
     string subject = ui::getString();
 
