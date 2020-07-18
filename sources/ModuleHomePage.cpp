@@ -80,6 +80,7 @@ void ModuleHomePage::show() {
 
         if (choice == "A") {
             bool run = true;
+            vector<Announcement> announcements = system.getModuleAnnouncements(module);
 
             while (run) {
                 bool lecturer = false;
@@ -99,8 +100,6 @@ void ModuleHomePage::show() {
                 } else if (choice == "E" && lecturer) {
                     cout << "Not implemented yet" << endl;
                 } else if (choice == "V" ) {
-                    vector<Announcement> announcements = system.getModuleAnnouncements(module);
-
                     int length = announcements.size();
 
                     if (length == 0) {
@@ -108,7 +107,7 @@ void ModuleHomePage::show() {
                     } else {
                         int i = 1;
                         for (const Announcement &announcement : announcements) {
-                            cout << i + 1 << ") " << announcement.getSubject();
+                            cout << i++ << ") " << announcement.getSubject() << endl;
                         }
                         cout << "Choose a number between 1 and " << length << " to choose which announcement to view (1 being the newest): " << endl;
                         int num = ui::getInt(Predicate<int>([length](const int &x) -> bool { return x < 1 || x > length; }), "Choose a number between 1 and " + std::to_string(length) + ": ");
@@ -123,13 +122,6 @@ void ModuleHomePage::show() {
                     ui::quit();
                 }
 
-            }
-            vector<Announcement> announcements = system.getModuleAnnouncements(module);
-
-            if (announcements.size() != 0) {
-                for (const Announcement &announcement : announcements) {
-
-                }
             }
         } else if (choice == "T") {
             cout << "Not implemented yet" << endl;

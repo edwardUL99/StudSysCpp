@@ -62,8 +62,6 @@ DatabaseManager::DatabaseManager(const DatabaseManager &databaseManager) {
     this->pass = databaseManager.pass;
 
     this->connectToDatabase();
-
-    setLastExamID();
 }
 
 DatabaseManager::~DatabaseManager()
@@ -102,7 +100,7 @@ void DatabaseManager::setLastAnnouncementID() {
         id = res->getInt("id");
     }
 
-    Announcement::setLastID(id);
+    Announcement::setLastID(id + 1);
 
     delete res;
 }
@@ -114,6 +112,8 @@ void DatabaseManager::connectToDatabase() {
     this->connection->setSchema(this->database);
     delete this->stmt;
     this->stmt = this->connection->createStatement();
+    setLastExamID();
+    setLastAnnouncementID();
 }
 
 bool DatabaseManager::add(const Lecturer &lecturer)

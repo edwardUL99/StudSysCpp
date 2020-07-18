@@ -199,16 +199,16 @@ bool StudentSystem::removeAnnouncement(const Announcement &announcement) {
 }
 
 std::vector<Announcement> StudentSystem::getModuleAnnouncements(const Module &module) {
-    std::vector<Announcement> announcements;
+    std::vector<Announcement> moduleAnnouncements;
     std::vector<Announcement> allAnnouncements = this->database.getAllAnnouncements();
 
     for (const Announcement &announcement : allAnnouncements) {
         if (announcement.getModule().getCode() == module.getCode()) {
-            announcements.push_back(announcement);
+            moduleAnnouncements.push_back(announcement);
         }
     }
 
-    return announcements;
+    return moduleAnnouncements;
 }
 
 bool StudentSystem::updateAnnouncement(int announcementNumber, std::string moduleCode, const Announcement &updatedAnnouncement) {
