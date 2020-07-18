@@ -8,12 +8,21 @@
 
 namespace ui
 {
+  /**
+   * A page manager object that is made available to any file that includes the UIUtils class
+   * 
+   * It is recommended to use this for any Page using the UI system as if it is not consistent, it will cause undefined behaviour
+   * 
+   * It only needs to be defined once (preferrably in the main function as that will read in the necessary arguments)
+   */
   extern PageManager pageManager;
 
   /**
    * Flushes the cin number until the '\n' delimiter is found
    * 
    * It is recommended to call this after any numeric get types have been called in case of input failure so that any options strings in while loops don't get displayed twice
+   * 
+   * It is considered a noop if the cin fail flag isn't set
    */
   void flushCinBuffer();
 

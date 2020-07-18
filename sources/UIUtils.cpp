@@ -11,9 +11,11 @@ using std::endl;
 using std::string;
 
 void ui::flushCinBuffer() {
-    cin.clear();
-    cin.ignore(INT_MAX, '\n');
-}
+    if (cin.fail()) {
+        cin.clear();
+        cin.ignore(INT_MAX, '\n');
+    }
+} 
 
 string ui::getChoice()
 {
@@ -40,7 +42,7 @@ string ui::getChoice()
 
 string ui::getString()
 {
-    
+
     string ret;
     getline(cin, ret);
 
@@ -154,7 +156,7 @@ float ui::getFloat()
 }
 
 float ui::getFloat(const Predicate<float> &predicate, const string retryMessage) {
-    float num = getInt();
+    float num = getFloat();
 
     while (predicate(num)) {
         if (retryMessage != "") {

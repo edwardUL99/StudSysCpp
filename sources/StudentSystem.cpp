@@ -6,14 +6,14 @@
 
 using std::string;
 
-StudentSystem::StudentSystem(string dbname, string username, string password, string host) : database(dbname, username, password, host) {}
+StudentSystem::StudentSystem() {}
 
 StudentSystem::StudentSystem(const StudentSystem &system) {
     this->database = DatabaseManager(system.database);
 }
 
-void StudentSystem::startSystem() {
-    this->database.connectToDatabase();
+void StudentSystem::startSystem(string database, string user, string pass, string host) {
+    this->database.connectToDatabase(database, user, pass, host);
 }
 
 string StudentSystem::recordLogin(const Account &account) {

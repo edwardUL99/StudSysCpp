@@ -12,6 +12,12 @@ namespace ui
     /**
      * This class is intended to handle the pages in use by the system and to be the main parent caller of all the pages
      * It is to handle which page to display and to provide the services for pages to call another page
+     * 
+     * PageManager handles all pointers to any pages that are put through it. Any page added by a call to setNextPage() or start(Page*), the page manager
+     * takes ownership of it.
+     * 
+     * This means that on destruction it also releases the memory taken by these pages.
+     * These pages get destroyed whenever popCurrentPage() or the destructor gets called
      */
     class PageManager
     {
@@ -24,14 +30,10 @@ namespace ui
 
         public:
             /**
-             * Constructs the PageManager which then initialises the system with the necessary parameters to access
-             * the database
-             */
-            PageManager(std::string database, std::string username, std::string password, std::string host);
-
-            /**
              * DOES NOTHING JUST USED WHEN NEEDED, I.E. DECLARING AS GLOBAL VARIABLE
-             * TO BE USEFUL CONSTRUCT WITH THE PARAMETERIZED CONSTRUCTOR OR CALL initializeSystem METHOD
+             * CALL initializeSystem METHOD or else the system will not work. This can be left to the driver main function
+             * 
+             * This was done to only initalise the pagemanager object once and not copy two times, connecting to the database each time it does it
              */
             PageManager();
 

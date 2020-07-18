@@ -8,12 +8,7 @@ using std::string;
 using ui::Page;
 using ui::PageManager;
 
-PageManager::PageManager(string database, string username, string password, string host) : system(database, username, password, host)
-{
-    run = true;
-}
-
-PageManager::PageManager() : system("", "", "", "")
+PageManager::PageManager()
 {
     run = true;
 }
@@ -32,7 +27,7 @@ PageManager::~PageManager()
 
 void PageManager::initializeSystem(string database, string username, string password, string host)
 {
-    this->system = StudentSystem(database, username, password, host);
+    this->system.startSystem(database, username, password, host);
 }
 
 StudentSystem &PageManager::getSystem() {
@@ -79,7 +74,6 @@ Page *PageManager::getNextPage()
 
 void PageManager::start(Page *initialPage)
 {
-    this->system.startSystem();
     setNextPage(initialPage);
 
     while (run)

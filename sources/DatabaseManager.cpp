@@ -42,18 +42,15 @@ const map<Tables, string> DatabaseManager::tableNames = {
     {LECTURER_ACCOUNTS, "lecturer_accounts"},
     {STUDENT_ACCOUNTS, "student_accounts"}};
 
-DatabaseManager::DatabaseManager(string database, string user, string pass, string host)
+DatabaseManager::DatabaseManager()
 {
-    this->database = database;
-    this->user = user;
-    this->pass = pass;
-    this->host = host;
     this->connection = NULL;
     this->driver = NULL;
     this->stmt = NULL;
 }
 
 DatabaseManager::DatabaseManager(const DatabaseManager &databaseManager) {
+    this->driver = NULL;
     this->connection = NULL;
     this->stmt = NULL;
     this->user = databaseManager.user;
@@ -61,7 +58,7 @@ DatabaseManager::DatabaseManager(const DatabaseManager &databaseManager) {
     this->database = databaseManager.database;
     this->pass = databaseManager.pass;
 
-    this->connectToDatabase();
+    this->connectToDatabase(this->user, this->host, this->database, this->pass);
 }
 
 DatabaseManager::~DatabaseManager()
@@ -105,7 +102,12 @@ void DatabaseManager::setLastAnnouncementID() {
     delete res;
 }
 
-void DatabaseManager::connectToDatabase() {
+void DatabaseManager::connectToDatabase(string database, string user, string pass, string host) {
+    this->database = database;
+    this->user = user;
+    this->pass = pass;
+    this->host = host;
+
     this->driver = get_driver_instance();
     delete this->connection;
     this->connection = this->driver->connect(this->host, this->user, this->pass);
@@ -1340,7 +1342,7 @@ DatabaseManager &DatabaseManager::operator=(const DatabaseManager &manager) {
     this->pass = manager.pass;
     this->database = manager.database;
 
-    this->connectToDatabase();
+    this->connectToDatabase(this->host, this->user, this->pass, this->database);
 
     setLastExamID();
     

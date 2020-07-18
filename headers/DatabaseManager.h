@@ -64,15 +64,22 @@ private:
 public:
     //with remove methods figure out what to do if a foreign key constraint prevents it
     //add methods to perform updates
-    DatabaseManager(std::string database = DB, std::string user = DB_USER, std::string pass = DB_PASS, std::string host = DB_HOST);
+
+    /**
+     * This just constructs a DatabaseManager object
+     * It does NOT establish a connection to the database.
+     * To do that call connectToDatabase
+     */
+    DatabaseManager();
     DatabaseManager(const DatabaseManager &manager);
     ~DatabaseManager();
     /**
-     * Connects the manager to the actual database server
+     * Connects the manager to the actual database server specified by the database parameters or left to defaults
      * It is undefined behaviour if any of this class' operations are called without this being called once before
      * In fact, it will be guaranteed to crash if it's not called
+     * 
      */
-    void connectToDatabase();
+    void connectToDatabase(std::string database = DB, std::string user = DB_USER, std::string pass = DB_PASS, std::string host = DB_HOST);
 
     //Overloaded add methods to add different entities to the database
     bool add(const Lecturer &lecturer);

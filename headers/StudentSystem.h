@@ -25,13 +25,17 @@ class StudentSystem {
         DatabaseManager database;
 
     public:
-        StudentSystem(std::string dbname, std::string username, std::string password, std::string host);
+        /**
+         * Constructs a StudentSystem object
+         * However, the system isn't available until startSystem is called
+         */
+        StudentSystem();
         StudentSystem(const StudentSystem &system);
         /**
          * Starts the system by making any necessary connections to the database
          * This NEEDS to be called before the system can be used or else the program will crash
          */
-        void startSystem();
+        void startSystem(std::string dbname, std::string username, std::string password, std::string host);
         bool addLecturer(const Lecturer &lecturer);
         Lecturer getLecturer(std::string email);
         bool removeLecturer(const Lecturer &lecturer);

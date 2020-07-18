@@ -140,10 +140,9 @@ void ModuleHomePage::show() {
         string choice = ui::getChoice();
 
         if (choice == "A") {
-            bool run = true;
             vector<Announcement> announcements;
 
-            while (run) {
+            while (true) {
                 bool lecturer = false;
                 try {
                     LecturerAccount &lecturerAcc = dynamic_cast<LecturerAccount&>(account);
@@ -167,7 +166,8 @@ void ModuleHomePage::show() {
                     } else {
                         int i = 1;
                         for (const Announcement &announcement : announcements) {
-                            cout << i++ << ") " << announcement.getSubject() << endl;
+                            cout << i << ") " << announcement.getSubject() << endl;
+                            i++;
                         }
                         cout << "Choose a number between 1 and " << length << " to choose which announcement to edit (1 being the newest): " << endl;
                         int num = ui::getInt(Predicate<int>([length](const int &x) -> bool { return x < 1 || x > length; }), "Choose a number between 1 and " + std::to_string(length) + ": ");
@@ -178,7 +178,7 @@ void ModuleHomePage::show() {
 
                         editAnnouncement(announcements[num]);
                     }
-                } else if (choice == "V" ) {
+                } else if (choice == "V") {
                     announcements = this->system.getModuleAnnouncements(module);
                     int length = announcements.size();
 
@@ -187,7 +187,8 @@ void ModuleHomePage::show() {
                     } else {
                         int i = 1;
                         for (const Announcement &announcement : announcements) {
-                            cout << i++ << ") " << announcement.getSubject() << endl;
+                            cout << i << ") " << announcement.getSubject() << endl;
+                            i++;
                         }
                         cout << "Choose a number between 1 and " << length << " to choose which announcement to view (1 being the newest): " << endl;
                         int num = ui::getInt(Predicate<int>([length](const int &x) -> bool { return x < 1 || x > length; }), "Choose a number between 1 and " + std::to_string(length) + ": ");
@@ -199,7 +200,7 @@ void ModuleHomePage::show() {
                         viewAnnouncement(announcements[num]);
                     }
                 } else if (choice == "B") {
-                    run = false;
+                    break;
                 } else if (choice == "Q") {
                     ui::quit();
                 }
