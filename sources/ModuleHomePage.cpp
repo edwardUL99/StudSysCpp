@@ -93,14 +93,11 @@ void ModuleHomePage::editAnnouncement(const Announcement &announcement) {
     std::vector<string> lines = ui::splitString(announcement.getAnnouncementText());
 
     string line;
+    string text;
 
     bool run = true;
-
     int i = 0;
-
     int numLines = lines.size();
-
-    string text;
 
     cout << "Leave a line blank to leave the same, <!insert> to insert a new line, <!submit> to submit changes, <!cancel> to cancel and discard all changes" << endl;
 
