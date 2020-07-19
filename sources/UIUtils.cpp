@@ -127,6 +127,7 @@ string ui::rejoinString(const std::vector<string> &split, char delim) {
 
 int ui::getInt()
 {
+    flushCinBuffer();
     int ret;
     cin >> ret;
     cin.ignore();
@@ -149,6 +150,7 @@ int ui::getInt(const Predicate<int> &predicate, const string retryMessage) {
 
 float ui::getFloat()
 {
+    flushCinBuffer();
     float ret;
     cin >> ret;
     cin.ignore();

@@ -86,34 +86,76 @@ void ModuleHomePage::editAnnouncement(const Announcement &announcement) {
 
     bool submit = false;
     bool cancel = false;
+    bool endOfOldAnn = false;
 
     std::vector<string> lines = ui::splitString(announcement.getAnnouncementText());
 
-    std::string line;
+    string line;
 
-    int i;
+    bool run = true;
 
-    for (i = 0; i < lines.size(); i++) {
-        cout << lines[i] << endl;
-        line = ui::getString();
+    int i = 0;
 
-        if (line == "!<submit>") {
-            submit = true;
-            break;
-        } else if (line == "<!cancel>") {
-            cancel = true;
-            break;
-        } else if (line == "") {
-            continue;
+    int numLines = lines.size();
+
+    string text;
+
+    cout << "Leave a line blank to leave the same, <!insert> to insert a new line, <!submit> to submit changes, <!cancel> to cancel and discard all changes" << endl;
+
+    while (run) {
+        if (i < numLines) {
+            line = lines[i++];
+
+            if (!endOfOldAnn) cout << line << endl; //only display a line if you didnt not reach the end of the old announcement, or else blank lines will be displayed
+            else cout << "Enter new line here: " << endl; 
+
+            string input = ui::getString();
+
+            if (input == "<!submit>") {
+                submit = true;
+                break;
+            } else if (input == "<!cancel>") {
+                cancel = true;
+                break;
+            } else if (input == "<!insert>") {
+                string newLine = ui::getString();
+
+                if (newLine == "<!insert>") {
+                    text += "\n";
+                } else if (newLine == "<!submit>") {
+                    submit = true;
+                    break;
+                } else if (newLine == "<!cancel>") {
+                    cancel = true;
+                    break;
+                } else {
+                    text += newLine + "\n";
+                }
+            } else if (input == "") {
+                text += line + "\n";
+            } else {
+                text += input + "\n";
+            }
         } else {
-            lines[i] = line;
+            cout << "You are at the end of the original announcement, type <!insert> to insert another line, or <!submit>/<!cancel>" << endl;
+            string input = ui::getString();
+
+            if (input == "<!insert>") {
+                lines.push_back(""); //insert an empty line to be edited
+                numLines += 1;
+                endOfOldAnn = true;
+            } else if (input == "<!submit>") {
+                submit = true;
+                break;
+            } else if (input == "<!cancel>") {
+                cancel = true;
+                break;
+            }
         }
     }
 
-    submit = i == lines.size();
-
     if (submit) {
-        string text = ui::rejoinString(lines);
+        text = text.substr(0, text.length() - 1); // trim off the last new line
         Module announcementModule = announcement.getModule();
         Announcement updatedAnnouncement(announcement.getID(), announcementModule, announcement.getLecturer(), subject, text);
 
@@ -122,7 +164,7 @@ void ModuleHomePage::editAnnouncement(const Announcement &announcement) {
         } else {
             cout << "The announcement has not bee unpdated successfully, please try again later" << endl;
         }
-    } else {
+    } else if (cancel) {
         cout << "Discarding changes to the announcement..." << endl;
     }
 }
