@@ -90,7 +90,7 @@ void DatabaseManager::setLastExamID()
 }
 
 void DatabaseManager::setLastAnnouncementID() {
-    ResultSet *res = executeQuery("SELECT id FROM announcements WHERE id >= ALL(SELECT id FROM exams);");
+    ResultSet *res = executeQuery("SELECT id FROM announcements WHERE id >= ALL(SELECT id FROM announcements);");
 
     int id = 1;
     if (res->next()) {

@@ -28,7 +28,7 @@ void ModuleHomePage::createAnnouncement() {
     cout << "Enter the subject for the announcement (max 250 characters): " << endl;
     string subject = ui::getString(Predicate<string>([](const string &s) -> bool { return s.length() < 1 || s.length() > 250; }), "Please enter a subject that is between 1 and 250 characters:");
 
-    cout << "You can now enter the announcement text line by line. Type <!submit> to finish and to create the announcementm or <!cancel> to cancel" << endl;
+    cout << "You can now enter the announcement text line by line. Type <!submit> to finish and to create the announcement or <!cancel> to cancel" << endl;
 
     string text = "";
     bool run = true;
@@ -52,6 +52,8 @@ void ModuleHomePage::createAnnouncement() {
     if (cancel) {
         cout << "Announcement cancelled" << endl;
     } else {
+        text = text.substr(0, text.length() - 1); //trim off the last \n
+
         Announcement announcement(module, lecturer, subject, text);
 
         try {
