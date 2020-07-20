@@ -193,7 +193,7 @@ bool DatabaseManager::contains(const DatabaseItem &item)
     {
         const Announcement &announcement = dynamic_cast<const Announcement &>(item);
 
-        ResultSet *res = executeQuery("SELECT * FROM " + tableNames.at(table) + " WHERE module = '" + announcement.getModule().getCode() + "' AND lecturer = '" + announcement.getLecturer().getEmail() + "' AND announcement = '" + announcement.getAnnouncementText() + "';");
+        ResultSet *res = executeQuery("SELECT * FROM " + tableNames.at(table) + " WHERE id = " + std::to_string(announcement.getID()) + " AND module = '" + announcement.getModule().getCode() + "';");
         bool containsAnnouncement = res->next();
         delete res;
         return containsAnnouncement;
@@ -539,11 +539,21 @@ bool DatabaseManager::update(string code, const Module &updatedModule)
 }
 
 bool DatabaseManager::add(const Announcement &announcement) {
-    string query = "INSERT INTO announcements (id, module, lecturer, subject, announcement) VALUES (" + std::to_string(announcement.getID()) + ", '" + announcement.getModule().getCode() + "','" + announcement.getLecturer().getEmail() + "','" + announcement.getSubject() + "','" + announcement.getAnnouncementText() + "');";
+    string query = "INSERT INTO announcements (id, module, lecturer, subject, announcement) VALUES (?, ?, ?, ?, ?);";
+
+    PreparedStatement *prepared = this->connection->prepareStatement(query);
 
     try
     {
-        this->stmt->execute(query);
+        prepared->setInt(1, announcement.getID());
+        prepared->setString(2, announcement.getModule().getCode());
+        prepared->setString(3, announcement.getLecturer().getEmail());
+        prepared->setString(4, announcement.getSubject());
+        prepared->setString(5, announcement.getAnnouncementText());
+
+        prepared->execute();
+
+        delete prepared;
 
         return true;
     }
@@ -553,6 +563,8 @@ bool DatabaseManager::add(const Announcement &announcement) {
         Warning w(error, query);
         this->warnings.push_back(w);
         cerr << error << endl;
+
+        delete prepared;
 
         return false;
     }
@@ -570,15 +582,26 @@ bool DatabaseManager::update(int id, std::string moduleCode, const Announcement 
     string oid = std::to_string(id);
     string nid = std::to_string(updatedAnnouncement.getID());
 
-    moduleCode = "'" + moduleCode + "'";
-    string nmoduleCode = "'" + updatedAnnouncement.getModule().getCode() + "'";
+    string nmoduleCode = updatedAnnouncement.getModule().getCode();
 
     if (oid != nid && moduleCode != nmoduleCode) {
         throw new KeyMismatch(nid + "-" + nmoduleCode, oid + "-" + moduleCode);
     } else {
-        string query = "UPDATE announcements SET lecturer = '" + updatedAnnouncement.getLecturer().getEmail() + "', subject = '" + updatedAnnouncement.getSubject() + "', announcement = '" + updatedAnnouncement.getAnnouncementText() + "', time_created = CURRENT_TIMESTAMP() WHERE id = " + oid + " AND module = " + moduleCode + ";";
+        string query = "UPDATE announcements SET lecturer = ?, subject = ?, announcement = ?, time_created = CURRENT_TIMESTAMP() WHERE id = ? AND module = ?;";
 
-        return executeUpdate(query) != 0;
+        PreparedStatement *prepared = this->connection->prepareStatement(query);
+
+        prepared->setString(1, updatedAnnouncement.getLecturer().getEmail());
+        prepared->setString(2, updatedAnnouncement.getSubject());
+        prepared->setString(3, updatedAnnouncement.getAnnouncementText());
+        prepared->setInt(4, id);
+        prepared->setString(5, moduleCode);
+
+        bool updated = prepared->executeUpdate() != 0;
+
+        delete prepared;
+
+        return updated;
     }
 }
 

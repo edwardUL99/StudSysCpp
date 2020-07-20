@@ -161,7 +161,7 @@ void ModuleHomePage::editAnnouncement(const Announcement &announcement) {
         if (this->system.updateAnnouncement(updatedAnnouncement.getID(), announcementModule.getCode(), updatedAnnouncement)) {
             cout << "The announcement has been updated successfully" << endl;
         } else {
-            cout << "The announcement has not bee unpdated successfully, please try again later" << endl;
+            cout << "The announcement has not been updated successfully, please try again later" << endl;
         }
     } else if (cancel) {
         cout << "Discarding changes to the announcement..." << endl;
