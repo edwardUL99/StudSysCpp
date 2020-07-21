@@ -20,6 +20,8 @@ namespace ui
         void viewAnnouncement(const Announcement &announcement);
         void createAnnouncement();
         void editAnnouncement(const Announcement &announcement);
+        //This method can be used to extract inlined commands like <!append> or <!prepend>, it expects them to be found at the start of the line
+        std::string extractCommand(std::string &line);
 
     public:
         /**

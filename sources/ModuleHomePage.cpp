@@ -68,6 +68,29 @@ void ModuleHomePage::createAnnouncement() {
     }
 }
 
+string ModuleHomePage::extractCommand(string &line) {
+    string startTag = "<!";
+    string endTag = ">";
+
+    std::size_t pos = line.find(startTag); //find the start character first;
+
+    if (pos == std::string::npos || pos != 0) {
+        //no command found or its not at the start
+        return "";
+    } else {
+        std::size_t pos1 = line.find(endTag);
+
+        if ((pos1 - pos) > 10) {
+            //no command is longer than 10 between end tag and <!, so this command is most likely badly formed so return no command
+            return "";
+        } else {
+            string command = line.substr(pos, pos1+1);
+            line = line.substr(pos1+1);
+            return command;
+        }
+    }
+}
+
 void ModuleHomePage::editAnnouncement(const Announcement &announcement) {
     string announcementLecturer = announcement.getLecturer().getEmail();
 
@@ -84,7 +107,7 @@ void ModuleHomePage::editAnnouncement(const Announcement &announcement) {
 
     subject = subject == "" ? announcement.getSubject():subject;
 
-    cout << "\nNow you are editing the text. To leave a line the same, press enter, to submit now and exit edit, type <!submit>, to cancel edits, type <!cancel>" << endl;
+    cout << "\nNow you are editing the text. To leave a line the same, press enter, to edit a line, type a new line (you can use <!append> or <!prepend> at the start of the line to append or prepend the existing line onto the new line) to change it or to submit now and exit edit, type <!submit>, to cancel edits, type <!cancel>" << endl;
 
     bool submit = false;
     bool cancel = false;
@@ -131,8 +154,17 @@ void ModuleHomePage::editAnnouncement(const Announcement &announcement) {
                     text += newLine + "\n";
                 }
             } else if (input == "") {
+                
                 text += line + "\n";
             } else {
+                string command = extractCommand(input);
+
+                if (command == "<!append>") {
+                    input = line + input; //add input to the end of the existing line;
+                } else if (command == "<!prepend>") {
+                    input = input + line;
+                }
+
                 text += input + "\n";
             }
         } else {
