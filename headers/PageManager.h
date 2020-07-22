@@ -5,6 +5,8 @@
 #include <stack>
 #include <string>
 
+class DatabaseItem;
+
 namespace ui
 {
     class Page;

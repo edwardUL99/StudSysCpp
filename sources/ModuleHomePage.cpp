@@ -120,6 +120,7 @@ void ModuleHomePage::editAnnouncement(const Announcement &announcement) {
 
     bool run = true;
     int i = 0;
+    int lineNumber = 1;
     int numLines = lines.size();
 
     cout << "Leave a line blank to leave the same, <!insert> to insert a new line, <!submit> to submit changes, <!cancel> to cancel and discard all changes" << endl;
@@ -131,6 +132,8 @@ void ModuleHomePage::editAnnouncement(const Announcement &announcement) {
             if (!endOfOldAnn) cout << line << endl; //only display a line if you didnt not reach the end of the old announcement, or else blank lines will be displayed
             else cout << "Enter new line here: " << endl; 
 
+
+            cout << lineNumber << " ";
             string input = ui::getString();
 
             if (input == "<!submit>") {
@@ -140,10 +143,14 @@ void ModuleHomePage::editAnnouncement(const Announcement &announcement) {
                 cancel = true;
                 break;
             } else if (input == "<!insert>") {
+                cout << ++lineNumber << " ";
                 string newLine = ui::getString();
+
+                text += line + "\n";
 
                 if (newLine == "<!insert>") {
                     text += "\n";
+                    lines.push_back("");
                 } else if (newLine == "<!submit>") {
                     submit = true;
                     break;
@@ -152,9 +159,9 @@ void ModuleHomePage::editAnnouncement(const Announcement &announcement) {
                     break;
                 } else {
                     text += newLine + "\n";
+                    lines.push_back(newLine);
                 }
             } else if (input == "") {
-                
                 text += line + "\n";
             } else {
                 string command = extractCommand(input);
@@ -167,6 +174,8 @@ void ModuleHomePage::editAnnouncement(const Announcement &announcement) {
 
                 text += input + "\n";
             }
+
+            lineNumber++;
         } else {
             cout << "You are at the end of the original announcement, type <!insert> to insert another line, or <!submit>/<!cancel>" << endl;
             string input = ui::getString();
