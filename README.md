@@ -36,7 +36,7 @@ It is programmed with C++ entirely and can be run on Linux with g++
 
 
 ## Dependencies:
-   This program uses Boost's libraries so you will need to have boost libraries installed in the /use/include/boost
+   This program uses Boost's libraries so you will need to have boost libraries installed
    As MySQL server is used, this program requires the MySQL C++ connector version 8.0, it can be downloaded with this link:
         https://dev.mysql.com/downloads/connector/cpp/
         
@@ -45,8 +45,8 @@ It is programmed with C++ entirely and can be run on Linux with g++
            My OS is 64 bit which I developed it in, but you could try it with 32 bit but it's not guaranteed to work
 	3. Ensure you install the correct MySQL C++ connector. Can't install above on Raspberry Pi for example but there are plenty of installation guides on google
 
-   A MySQL server,, configured as of below in Database Setup
-   Also works with mariadb-server-10.0 (this is what you'll need on Raspberry Pi
+   A MySQL server, configured as of below in Database Setup
+   Also works with mariadb-server-10.0 (this is what you'll need on Raspberry Pi)
 
 ## How to compile:
    There are 3 options to compile the program:
@@ -67,12 +67,12 @@ It is programmed with C++ entirely and can be run on Linux with g++
 ## Database Setup:
    You need a MySQL server either MySQL or MariaDB
    Steps:
-       1. Login to MySQL using mysql -u <user-name> -p (this user must be able to create databases and users)
+       1. Login to MySQL using mysql -u [user-name] -p (this user must be able to create databases and users)
        2. Type CREATE DATABASE <database-name>;
        3. Exit the MySQL shell
-       4. Now type mysql -u <user-name> --password=<user-password> <database-name> < <file-name.sql>. You will need to do this with schema.sql, triggers.sql and procedures.sql
+       4. Now type mysql -u [user-name] --password=[user-password] [database-name] < [file-name.sql]. You will need to do this with schema.sql, triggers.sql and procedures.sql
        5. Log back into the mysql shell and create a user for the system to use and password by typing CREATE USER '<user-name>'@'localhost' IDENTIFIED BY 'user-password';
-       6. Then type GRANT ALL PRIVILEGES ON <database-name>.* TO '<user-name>'@'%';
+       6. Then type GRANT ALL PRIVILEGES ON [database-name].* TO '[user-name]'@'%';
        7. Then type FLUSH PRIVILEGES; and then exit
        8. Ensure bind-address in mysql config is set to 0.0.0.0 on the database server machine
    The MySQL server is now set-up and ready to use with the system
@@ -85,7 +85,11 @@ The admin will then be able to give you the IP address to the database server to
       or
    ./<program-name> login_file
 
-   With login_file line containing on line 1 <database_name>, line 2 <user_name>, line 3 <pass_word>, line 4 <host>
+   Example login_file is:
+   	user = [user-name]
+	pass = [pass]
+	host = [hostname/ip]
+	database = [database]
 
 ## studsysdbadmin:
    Very limited program to administrate the database, compile using:
