@@ -36,7 +36,7 @@ It is programmed with C++ entirely and can be run on Linux with g++
 
 
 ## Dependencies:
-   This program uses Boost's libraries so you will need to have boost libraries installed in the /use/include/boost
+   This program uses Boost's libraries so you will need to have boost libraries installed
    As MySQL server is used, this program requires the MySQL C++ connector version 8.0, it can be downloaded with this link:
         https://dev.mysql.com/downloads/connector/cpp/
         
