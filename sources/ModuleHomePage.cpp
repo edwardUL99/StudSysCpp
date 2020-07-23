@@ -6,24 +6,27 @@
 #include "headers/DuplicateException.h"
 
 #include <vector>
-using ui::ModuleHomePage;
 using std::string;
 using std::vector;
+using ui::ModuleHomePage;
 
 ModuleHomePage::ModuleHomePage(Account &account, Module &module, StudentSystem &system) : Page(system), account(account), module(module) {}
 
-void ModuleHomePage::viewAnnouncement(const Announcement &announcement) {
+void ModuleHomePage::viewAnnouncement(const Announcement &announcement)
+{
     string time = system.getAnnouncementTime(announcement);
 
     Lecturer lecturer = announcement.getLecturer();
     cout << "Lecturer: " << lecturer.getName() << " <" << lecturer.getEmail() << ">" << endl;
     cout << "Time: " << time << endl;
     cout << "Subject: " << announcement.getSubject() << endl;
-    cout << "Announcement:\n" << announcement.getAnnouncementText() << endl;
+    cout << "Announcement:\n"
+         << announcement.getAnnouncementText() << endl;
 }
 
-void ModuleHomePage::createAnnouncement() {
-    Lecturer lecturer = dynamic_cast<LecturerAccount&>(account).getLecturer();
+void ModuleHomePage::createAnnouncement()
+{
+    Lecturer lecturer = dynamic_cast<LecturerAccount &>(account).getLecturer();
 
     cout << "Enter the subject for the announcement (max 250 characters): " << endl;
     string subject = ui::getString(Predicate<string>([](const string &s) -> bool { return s.length() < 1 || s.length() > 250; }), "Please enter a subject that is between 1 and 250 characters:");
@@ -35,66 +38,90 @@ void ModuleHomePage::createAnnouncement() {
     bool submit = false;
     bool cancel = false;
 
-    while (run) {
+    while (run)
+    {
         string temp = ui::getString();
 
-        if (temp != "<!submit>" && temp != "<!cancel>") {
+        if (temp != "<!submit>" && temp != "<!cancel>")
+        {
             text += temp + "\n";
-        } else if (temp == "<!submit>") {
+        }
+        else if (temp == "<!submit>")
+        {
             submit = true;
             run = false;
-        } else if (temp == "<!cancel>") {
+        }
+        else if (temp == "<!cancel>")
+        {
             cancel = true;
             run = false;
         }
     }
 
-    if (cancel) {
+    if (cancel)
+    {
         cout << "Announcement cancelled" << endl;
-    } else {
+    }
+    else
+    {
         text = text.substr(0, text.length() - 1); //trim off the last \n
 
         Announcement announcement(module, lecturer, subject, text);
 
-        try {
-           if (this->system.addAnnouncement(announcement)) {
-               cout << "Announcement was created successfully" << endl;
-           } else {
-               cout << "Announcement was not created successfully, please try again later" << endl;
-           }
-        } catch (DuplicateException &d) {
+        try
+        {
+            if (this->system.addAnnouncement(announcement))
+            {
+                cout << "Announcement was created successfully" << endl;
+            }
+            else
+            {
+                cout << "Announcement was not created successfully, please try again later" << endl;
+            }
+        }
+        catch (DuplicateException &d)
+        {
             cout << "Announcement already exists" << endl;
         }
     }
 }
 
-string ModuleHomePage::extractCommand(string &line) {
+string ModuleHomePage::extractCommand(string &line)
+{
     string startTag = "<!";
     string endTag = ">";
 
     std::size_t pos = line.find(startTag); //find the start character first;
 
-    if (pos == std::string::npos || pos != 0) {
+    if (pos == std::string::npos || pos != 0)
+    {
         //no command found or its not at the start
         return "";
-    } else {
+    }
+    else
+    {
         std::size_t pos1 = line.find(endTag);
 
-        if ((pos1 - pos) > 10) {
+        if ((pos1 - pos) > 10)
+        {
             //no command is longer than 10 between end tag and <!, so this command is most likely badly formed so return no command
             return "";
-        } else {
-            string command = line.substr(pos, pos1+1);
-            line = line.substr(pos1+1);
+        }
+        else
+        {
+            string command = line.substr(pos, pos1 + 1);
+            line = line.substr(pos1 + 1);
             return command;
         }
     }
 }
 
-void ModuleHomePage::editAnnouncement(const Announcement &announcement) {
+void ModuleHomePage::editAnnouncement(const Announcement &announcement)
+{
     string announcementLecturer = announcement.getLecturer().getEmail();
 
-    if (announcementLecturer != account.getEmail()) {
+    if (announcementLecturer != account.getEmail())
+    {
         cout << "You cannot edit another lecturer's announcement, contact " << announcementLecturer << " to request they change it" << endl;
         return;
     }
@@ -105,13 +132,12 @@ void ModuleHomePage::editAnnouncement(const Announcement &announcement) {
 
     string subject = ui::getString();
 
-    subject = subject == "" ? announcement.getSubject():subject;
+    subject = subject == "" ? announcement.getSubject() : subject;
 
-    cout << "\nNow you are editing the text. To leave a line the same, press enter, to edit a line, type a new line (you can use <!append> or <!prepend> at the start of the line to append or prepend the existing line onto the new line) to change it or to submit now and exit edit, type <!submit>, to cancel edits, type <!cancel>" << endl;
+    cout << "\nNow you are editing the text. To leave a line the same, press enter, to edit a line, type a new line (you can use <!append> or <!prepend> at the start of the line to append or prepend the existing line onto the new line, <!goto>line to change line) to change it or to submit now and exit edit, type <!submit>, to cancel edits, type <!cancel>" << endl;
 
     bool submit = false;
     bool cancel = false;
-    bool endOfOldAnn = false;
 
     std::vector<string> lines = ui::splitString(announcement.getAnnouncementText());
 
@@ -123,131 +149,231 @@ void ModuleHomePage::editAnnouncement(const Announcement &announcement) {
     int lineNumber = 1;
     int numLines = lines.size();
 
-    cout << "Leave a line blank to leave the same, <!insert> to insert a new line, <!submit> to submit changes, <!cancel> to cancel and discard all changes" << endl;
+    while (run)
+    {
+        if (lineNumber < numLines)
+        {
+            line = lines[lineNumber - 1];
 
-    while (run) {
-        if (i < numLines) {
-            line = lines[i++];
-
-            if (!endOfOldAnn) cout << line << endl; //only display a line if you didnt not reach the end of the old announcement, or else blank lines will be displayed
-            else cout << "Enter new line here: " << endl; 
-
+            cout << line << endl; //only display a line if you didnt not reach the end of the old announcement, or else blank lines will be displayed
 
             cout << lineNumber << " ";
             string input = ui::getString();
 
-            if (input == "<!submit>") {
+            if (input == "<!submit>")
+            {
                 submit = true;
                 break;
-            } else if (input == "<!cancel>") {
+            }
+            else if (input == "<!cancel>")
+            {
                 cancel = true;
                 break;
-            } else if (input == "<!insert>") {
+            }
+            else if (input == "<!insert>")
+            {
                 cout << ++lineNumber << " ";
                 string newLine = ui::getString();
 
-                text += line + "\n";
+                //text += line + "\n";
+                //lines.insert(lines.begin() + (lineNumber - 1), line);
 
-                if (newLine == "<!insert>") {
-                    text += "\n";
+                if (newLine == "<!insert>")
+                {
+                    //text += "\n";
                     lines.push_back("");
-                } else if (newLine == "<!submit>") {
+                }
+                else if (newLine == "<!submit>")
+                {
                     submit = true;
                     break;
-                } else if (newLine == "<!cancel>") {
+                }
+                else if (newLine == "<!cancel>")
+                {
                     cancel = true;
                     break;
-                } else {
-                    text += newLine + "\n";
-                    lines.push_back(newLine);
                 }
-            } else if (input == "") {
-                text += line + "\n";
-            } else {
+                else
+                {
+                    //text += newLine + "\n";
+                    lines.insert(lines.begin() + (lineNumber - 1), newLine);
+                }
+            }
+            else if (input == "")
+            {
+            }
+            else
+            {
                 string command = extractCommand(input);
 
-                if (command == "<!append>") {
+                bool insertInput = true;
+
+                if (command == "<!append>")
+                {
                     input = line + input; //add input to the end of the existing line;
-                } else if (command == "<!prepend>") {
+                }
+                else if (command == "<!prepend>")
+                {
                     input = input + line;
                 }
+                else if (command == "<!goto>")
+                {
+                    if (input.size() == 0 || input == "")
+                    {
+                        cout << "No line number specified, continuing with line " << lineNumber << endl;
+                    }
+                    else
+                    {
+                        try
+                        {
+                            int tempLineNumber = stoi(input);
 
-                text += input + "\n";
+                            if (lineNumber <= 0 || lineNumber > numLines)
+                                cout << "The entered line number needs to be greater than 0 and less than " << numLines << "continuing from line " << lineNumber << endl;
+                            else
+                                lineNumber = tempLineNumber;
+                            continue; //skip incrementing lineNumber and go straight back to the start;
+                        }
+                        catch (std::invalid_argument &inv)
+                        {
+                            cout << "Invalid format for <!goto> specified, syntax is <!goto>line-number, continuing from line " << lineNumber << endl;
+                            insertInput = false;
+                        }
+                    }
+                }
+
+                //text += input + "\n";
+                if (insertInput)
+                    lines[lineNumber - 1] = input;
             }
 
             lineNumber++;
-        } else {
+        }
+        else
+        {
             cout << "You are at the end of the original announcement, type <!insert> to insert another line, or <!submit>/<!cancel>" << endl;
             string input = ui::getString();
 
-            if (input == "<!insert>") {
+            if (input == "<!insert>")
+            {
                 lines.push_back(""); //insert an empty line to be edited
                 numLines += 1;
-                endOfOldAnn = true;
-            } else if (input == "<!submit>") {
+            }
+            else if (input == "<!submit>")
+            {
                 submit = true;
                 break;
-            } else if (input == "<!cancel>") {
+            }
+            else if (input == "<!cancel>")
+            {
                 cancel = true;
                 break;
+            }
+            else if (extractCommand(input) == "<!goto>")
+            {
+                if (input.size() == 0 || input == "")
+                {
+                    cout << "No line number specified, continuing with line " << lineNumber << endl;
+                }
+                else
+                {
+                    try
+                    {
+                        int tempLineNumber = stoi(input);
+
+                        if (lineNumber <= 0 || lineNumber > numLines)
+                            cout << "The entered line number needs to be greater than 0 and less than " << numLines << "continuing from line " << lineNumber << endl;
+                        else
+                            lineNumber = tempLineNumber;
+                        continue; //skip incrementing lineNumber and go straight back to the start;
+                    }
+                    catch (std::invalid_argument &inv)
+                    {
+                        cout << "Invalid format for <!goto> specified, syntax is <!goto>line-number, continuing from line " << lineNumber << endl;
+                    }
+                }
             }
         }
     }
 
-    if (submit) {
-        text = text.substr(0, text.length() - 1); // trim off the last new line
+    if (submit)
+    {
+        //text = text.substr(0, text.length() - 1); // trim off the last new line
+        text = ui::rejoinString(lines);
         Module announcementModule = announcement.getModule();
         Announcement updatedAnnouncement(announcement.getID(), announcementModule, announcement.getLecturer(), subject, text);
 
-        if (this->system.updateAnnouncement(updatedAnnouncement.getID(), announcementModule.getCode(), updatedAnnouncement)) {
+        if (this->system.updateAnnouncement(updatedAnnouncement.getID(), announcementModule.getCode(), updatedAnnouncement))
+        {
             cout << "The announcement has been updated successfully" << endl;
-        } else {
+        }
+        else
+        {
             cout << "The announcement has not been updated successfully, please try again later" << endl;
         }
-    } else if (cancel) {
+    }
+    else if (cancel)
+    {
         cout << "Discarding changes to the announcement..." << endl;
     }
 }
 
-void ModuleHomePage::show() {
+void ModuleHomePage::show()
+{
     string code = module.getCode();
 
-    cout << "Welcome to the homepage for Module " << code << "\n" << endl;
+    cout << "Welcome to the homepage for Module " << code << "\n"
+         << endl;
 
     bool run = true;
 
-    while (run) {
+    while (run)
+    {
         cout << "View: (A)nnouncements, (T)asks, (E)xams, (S)tudent list, (L)ecturer details; Change (M)odule settings, (B)ack, (Q)uit" << endl;
 
         string choice = ui::getChoice();
 
-        if (choice == "A") {
+        if (choice == "A")
+        {
             vector<Announcement> announcements;
 
-            while (true) {
+            while (true)
+            {
                 bool lecturer = false;
-                try {
-                    LecturerAccount &lecturerAcc = dynamic_cast<LecturerAccount&>(account);
+                try
+                {
+                    LecturerAccount &lecturerAcc = dynamic_cast<LecturerAccount &>(account);
                     lecturer = true;
-                } catch (std::bad_cast &b) {
+                }
+                catch (std::bad_cast &b)
+                {
                 }
 
-                if (lecturer) cout << "(N)ew announcement, (E)dit announcement, (V)iew announcements, (B)ack, (Q)uit" << endl;
-                else cout << "(V)iew announcements, (B)ack, (Q)uit" << endl;
+                if (lecturer)
+                    cout << "(N)ew announcement, (E)dit announcement, (V)iew announcements, (B)ack, (Q)uit" << endl;
+                else
+                    cout << "(V)iew announcements, (B)ack, (Q)uit" << endl;
 
                 string choice = ui::getChoice();
 
-                if (choice == "N" && lecturer) {
+                if (choice == "N" && lecturer)
+                {
                     createAnnouncement();
-                } else if (choice == "E" && lecturer) {
+                }
+                else if (choice == "E" && lecturer)
+                {
                     announcements = this->system.getModuleAnnouncements(module);
                     int length = announcements.size();
 
-                    if (length == 0) {
+                    if (length == 0)
+                    {
                         cout << "There are no announcements" << endl;
-                    } else {
+                    }
+                    else
+                    {
                         int i = 1;
-                        for (const Announcement &announcement : announcements) {
+                        for (const Announcement &announcement : announcements)
+                        {
                             cout << i << ") " << announcement.getSubject() << endl;
                             i++;
                         }
@@ -260,15 +386,21 @@ void ModuleHomePage::show() {
 
                         editAnnouncement(announcements[num]);
                     }
-                } else if (choice == "V") {
+                }
+                else if (choice == "V")
+                {
                     announcements = this->system.getModuleAnnouncements(module);
                     int length = announcements.size();
 
-                    if (length == 0) {
+                    if (length == 0)
+                    {
                         cout << "There are no announcements" << endl;
-                    } else {
+                    }
+                    else
+                    {
                         int i = 1;
-                        for (const Announcement &announcement : announcements) {
+                        for (const Announcement &announcement : announcements)
+                        {
                             cout << i << ") " << announcement.getSubject() << endl;
                             i++;
                         }
@@ -281,83 +413,118 @@ void ModuleHomePage::show() {
 
                         viewAnnouncement(announcements[num]);
                     }
-                } else if (choice == "B") {
+                }
+                else if (choice == "B")
+                {
                     break;
-                } else if (choice == "Q") {
+                }
+                else if (choice == "Q")
+                {
                     ui::quit();
                 }
-
             }
-        } else if (choice == "T") {
+        }
+        else if (choice == "T")
+        {
             cout << "Not implemented yet" << endl;
-        } else if (choice == "E") {
+        }
+        else if (choice == "E")
+        {
             ExamSelectorPage *selectorPage = new ExamSelectorPage(this->account, this->module, this->system);
             ui::pageManager.setNextPage(selectorPage);
             run = false;
-        } else if (choice == "S") {
+        }
+        else if (choice == "S")
+        {
             cout << "Students registered on Module " << code << ":" << endl;
-            
+
             int i = 1;
 
-            for (const Student &student : this->system.getStudentsRegisteredOnModule(module)) {
+            for (const Student &student : this->system.getStudentsRegisteredOnModule(module))
+            {
                 cout << "\t" << i++ << ") " << student.getName() << " - " << student.getID() << " - " << student.getEmail() << endl;
             }
 
             bool lecturer = false;
 
-            try {
-                LecturerAccount &lecturerAccount = dynamic_cast<LecturerAccount&>(account);
+            try
+            {
+                LecturerAccount &lecturerAccount = dynamic_cast<LecturerAccount &>(account);
                 lecturer = true; //if the cast succeeded, it is a lecturer account
-            } catch (std::bad_cast &e) {
+            }
+            catch (std::bad_cast &e)
+            {
             }
 
-            if (lecturer) {
-                while (true) {
+            if (lecturer)
+            {
+                while (true)
+                {
                     cout << "Would you like to register a student on the module? (R)egister, (D)e-register, (N)o" << endl;
 
                     choice = ui::getChoice();
 
-                    if (choice == "R") {
+                    if (choice == "R")
+                    {
                         Administration admin(this->system);
                         admin.registerStudent(module.getCode());
                         break;
-                    } else if (choice == "D") {
+                    }
+                    else if (choice == "D")
+                    {
                         cout << "Enter the Student ID for the student to de-register: " << endl;
 
                         int id = ui::getInt(ui::intltezeropred, ui::ltezeroretrymsg);
 
-                        try {
+                        try
+                        {
                             Student student = this->system.getStudent(id);
-                            
-                            if (this->system.unregisterStudentModule(student, module)) {
+
+                            if (this->system.unregisterStudentModule(student, module))
+                            {
                                 cout << "Student " << id << " de-registered from module " << module.getCode() << " successfully" << endl;
-                            } else {
+                            }
+                            else
+                            {
                                 cout << "Student " << id << " de-registered from module " << module.getCode() << " unsuccessfully, please try again later" << endl;
                             }
-                        } catch (NotFoundException &nf) {
+                        }
+                        catch (NotFoundException &nf)
+                        {
                             cout << "Student " << id << " does not exist" << endl;
                         }
 
                         break;
-                    } else if (choice == "N") {
+                    }
+                    else if (choice == "N")
+                    {
                         break;
                     }
                 }
             }
-        } else if (choice == "L") {
+        }
+        else if (choice == "L")
+        {
             Lecturer lecturer = module.getLecturer();
 
             cout << "The lecturer for this module is: " << endl;
             cout << "\tName: " << lecturer.getName() << endl;
             cout << "\tDepartment: " << lecturer.getDepartment() << endl;
             cout << "\tE-mail Address: " << lecturer.getEmail() << endl;
-        } else if (choice == "M") {
+        }
+        else if (choice == "M")
+        {
             cout << "Not implemented yet" << endl;
-        } else if (choice == "B") {
-            cout << "Going back to module selector page\n" << endl;
+        }
+        else if (choice == "B")
+        {
+            cout << "Going back to module selector page\n"
+                 << endl;
             run = false;
             ui::pageManager.popCurrentPage();
-        } else if (choice == "Q") {
+        }
+        else if (choice == "Q")
+        {
             ui::quit();
         }
     }

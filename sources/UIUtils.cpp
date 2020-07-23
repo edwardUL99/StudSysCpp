@@ -115,12 +115,14 @@ string ui::rejoinString(const std::vector<string> &split, char delim) {
     string ret = "";
 
     for (string s : split) {
-        if (s.find(delim) != std::string::npos) {
+        if (s.find(delim) == std::string::npos) {
             ret += s + delim;
         } else {
             ret += s;
         }
     }
+
+    ret.substr(0, ret.size() - 1); //trim off last delimiter
 
     return ret;
 }
