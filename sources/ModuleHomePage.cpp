@@ -134,7 +134,7 @@ void ModuleHomePage::editAnnouncement(const Announcement &announcement)
 
     subject = subject == "" ? announcement.getSubject() : subject;
 
-    cout << "\nNow you are editing the text. To leave a line the same, press enter, to edit a line, type a new line (you can use <!append> or <!prepend> at the start of the line to append or prepend the existing line onto the new line, <!goto>line to change line) to change it or to submit now and exit edit, type <!submit>, to cancel edits, type <!cancel>" << endl;
+    cout << "\nNow you are editing the text. To leave a line the same, press enter, to edit a line, type a new line (you can use <!append> or <!prepend> at the start of the line to append or prepend the existing line onto the new line, <!goto>line to change line) to change it, <!clear> to make a line blank or <!delete> to delete the current line, or to submit now and exit edit, type <!submit>, to cancel edits, type <!cancel>" << endl;
 
     bool submit = false;
     bool cancel = false;
@@ -145,13 +145,12 @@ void ModuleHomePage::editAnnouncement(const Announcement &announcement)
     string text;
 
     bool run = true;
-    int i = 0;
     int lineNumber = 1;
     int numLines = lines.size();
 
     while (run)
     {
-        if (lineNumber < numLines)
+        if (lineNumber <= numLines)
         {
             line = lines[lineNumber - 1];
 
@@ -182,6 +181,7 @@ void ModuleHomePage::editAnnouncement(const Announcement &announcement)
                 {
                     //text += "\n";
                     lines.push_back("");
+                    numLines += 1;
                 }
                 else if (newLine == "<!submit>")
                 {
@@ -197,12 +197,28 @@ void ModuleHomePage::editAnnouncement(const Announcement &announcement)
                 {
                     //text += newLine + "\n";
                     lines.insert(lines.begin() + (lineNumber - 1), newLine);
+                    numLines += 1;
                 }
             }
-            else if (input == "")
+            else if (input == "<!delete>")
             {
+                //delete the line you're at, i.e. remove it from the vector of lines, the next lineNumber beneath it will either be the next line, or if the end of the vector, you'll stay at the line
+                lines.erase(lines.begin() + (lineNumber - 1)); //erase the line out of the vector
+                numLines -= 1;
+
+                if (lineNumber >= numLines)
+                    lineNumber = numLines; //if lineNumber is not past the last line, move the "cursor" to the very last line
+                else
+                    lineNumber--;
+
+                continue;
             }
-            else
+            else if (input == "<!clear>") 
+            {
+                //clear the line, don't delete it. i.e. make it a blank line
+                lines[lineNumber - 1] = ""; //clear it by changing it to a blank
+            }
+            else if (input != "")
             {
                 string command = extractCommand(input);
 
@@ -228,8 +244,8 @@ void ModuleHomePage::editAnnouncement(const Announcement &announcement)
                         {
                             int tempLineNumber = stoi(input);
 
-                            if (lineNumber <= 0 || lineNumber > numLines)
-                                cout << "The entered line number needs to be greater than 0 and less than " << numLines << "continuing from line " << lineNumber << endl;
+                            if (tempLineNumber <= 0 || tempLineNumber > numLines)
+                                cout << "The entered line number needs to be greater than 0 and less than " << numLines << " continuing from line " << lineNumber << endl;
                             else
                                 lineNumber = tempLineNumber;
                             continue; //skip incrementing lineNumber and go straight back to the start;
@@ -281,7 +297,7 @@ void ModuleHomePage::editAnnouncement(const Announcement &announcement)
                     {
                         int tempLineNumber = stoi(input);
 
-                        if (lineNumber <= 0 || lineNumber > numLines)
+                        if (tempLineNumber <= 0 || tempLineNumber > numLines)
                             cout << "The entered line number needs to be greater than 0 and less than " << numLines << "continuing from line " << lineNumber << endl;
                         else
                             lineNumber = tempLineNumber;

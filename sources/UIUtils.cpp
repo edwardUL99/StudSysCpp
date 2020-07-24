@@ -122,7 +122,7 @@ string ui::rejoinString(const std::vector<string> &split, char delim) {
         }
     }
 
-    ret.substr(0, ret.size() - 1); //trim off last delimiter
+    ret = ret.substr(0, ret.size() - 1); //trim off last delimiter
 
     return ret;
 }
