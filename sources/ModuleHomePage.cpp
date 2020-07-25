@@ -116,30 +116,233 @@ string ModuleHomePage::extractCommand(string &line)
     }
 }
 
-void ModuleHomePage::editAnnouncement(const Announcement &announcement)
+void ModuleHomePage::insertNewLine(std::vector<string> &lines, int &lineNumber, int &numberOfLines, bool &submit, bool &cancel)
+{
+    cout << ++lineNumber << " ";
+    string newLine = ui::getString();
+
+    //text += line + "\n";
+    //lines.insert(lines.begin() + (lineNumber - 1), line);
+
+    if (newLine == "<!insert>") //need to test this recursion
+    {
+        lines.push_back("");
+        numberOfLines++;
+        insertNewLine(lines, lineNumber, numberOfLines, submit, cancel); //you want to insert again, so recursively call the insertNewLIne subroutine
+    }
+    else if (newLine == "<!submit>")
+    {
+        submit = true;
+        return; //added so that we can break out of recursion if inert was issued numerous times
+    }
+    else if (newLine == "<!cancel>")
+    {
+        cancel = true;
+        return;
+    }
+    else
+    {
+        //text += newLine + "\n";
+        lines.insert(lines.begin() + (lineNumber - 1), newLine);
+        numberOfLines++;
+    }
+}
+
+bool ModuleHomePage::gotoLine(const string &input, int &lineNumber, int numberOfLines)
+{
+    if (input.size() == 0 || input == "")
+    {
+        cout << "No line number specified, continuing with line " << lineNumber << endl;
+        return false;
+    }
+    else
+    {
+        try
+        {
+            int tempLineNumber = stoi(input);
+
+            if (tempLineNumber <= 0 || tempLineNumber > numberOfLines)
+            {
+                cout << "The entered line number needs to be greater than 0 and less than " << numberOfLines << " continuing from line " << lineNumber << endl;
+                return false;
+            }
+            else
+            {
+                lineNumber = tempLineNumber;
+            }
+
+            return true;
+        }
+        catch (std::invalid_argument &inv)
+        {
+            cout << "Invalid format for <!goto> specified, syntax is <!goto>line-number, continuing from line " << lineNumber << endl;
+            return false;
+        }
+    }
+}
+
+bool ModuleHomePage::processNormalEditing(std::vector<string> &lines, int &lineNumber, int &numberOfLines, bool &submit, bool &cancel)
+{
+    string line = lines[lineNumber - 1];
+
+    cout << line << endl;
+
+    cout << lineNumber << " ";
+    string input = ui::getString();
+
+    if (input == "<!submit>")
+    {
+        submit = true;
+        return false;
+    }
+    else if (input == "<!cancel>")
+    {
+        cancel = true;
+        return false;
+    }
+    else if (input == "<!insert>")
+    {
+        insertNewLine(lines, lineNumber, numberOfLines, submit, cancel);
+    }
+    else if (input == "<!delete>")
+    {
+        deleteLine(lines, lineNumber, numberOfLines);
+    }
+    else if (input == "<!clear>")
+    {
+        //clear the line, don't delete it. i.e. make it a blank line
+        lines[lineNumber - 1] = ""; //clear it by changing it to a blank
+    }
+    else if (input != "")
+    {
+        processNormalInput(line, lines, input, lineNumber, numberOfLines);
+    } else {
+        lineNumber++;
+    }
+
+    return true;
+}
+
+bool ModuleHomePage::processEndOfAnnouncement(std::vector<string> &lines, int &lineNumber, int &numberOfLines, bool &submit, bool &cancel)
+{
+    cout << "You are at the end of the original announcement, type <!insert> to insert another line, or <!submit>/<!cancel>" << endl;
+    string input = ui::getString();
+
+    if (input == "<!insert>")
+    {
+        insertNewLine(lines, lineNumber, numberOfLines, submit, cancel);
+    }
+    else if (input == "<!submit>")
+    {
+        submit = true;
+        return false;
+    }
+    else if (input == "<!cancel>")
+    {
+        cancel = true;
+        return false;
+    }
+    else if (extractCommand(input) == "<!goto>")
+    {
+        gotoLine(input, lineNumber, numberOfLines);
+    }
+
+    return true;
+}
+
+void ModuleHomePage::processNormalInput(const string &line, std::vector<string> &lines, string &input, int &lineNumber, int numberOfLines)
+{
+    string command = extractCommand(input);
+
+    bool insertInput = true;
+
+    if (command == "<!append>")
+    {
+        input = line + input; //add input to the end of the existing line;
+    }
+    else if (command == "<!prepend>")
+    {
+        input = input + line;
+    }
+    else if (command == "<!goto>")
+    {
+        gotoLine(input, lineNumber, numberOfLines);
+        insertInput = false;
+    }
+
+    //text += input + "\n";
+    if (insertInput)
+    {
+        lines[lineNumber - 1] = input;
+        lineNumber++;
+    }
+}
+
+void ModuleHomePage::deleteLine(std::vector<string> &lines, int &lineNumber, int numberOfLines)
+{
+    //delete the line you're at, i.e. remove it from the vector of lines, the next lineNumber beneath it will either be the next line, or if the end of the vector, you'll stay at the line
+    lines.erase(lines.begin() + (lineNumber - 1)); //erase the line out of the vector
+    numberOfLines--;
+
+    if (lineNumber >= numberOfLines)
+        lineNumber = numberOfLines; //if lineNumber is not past the last line, move the "cursor" to the very last line
+    else
+        lineNumber--;
+}
+
+bool ModuleHomePage::canEditAnnouncement(const Announcement &announcement)
 {
     string announcementLecturer = announcement.getLecturer().getEmail();
 
     if (announcementLecturer != account.getEmail())
     {
         cout << "You cannot edit another lecturer's announcement, contact " << announcementLecturer << " to request they change it" << endl;
-        return;
+        return false;
     }
+    return true;
+}
 
-    cout << "Now editing announcement: " << announcement.getSubject() << ", leave any field blank to stay the same" << endl;
-
+void ModuleHomePage::editSubject(string &subject, const string &oldSubject)
+{
+    cout << "You are editing Announcement " << oldSubject << endl;
     cout << "\nEnter the new subject: " << endl;
+    string newSubject = ui::getString();
+    subject = newSubject == "" ? oldSubject : newSubject;
+}
 
-    string subject = ui::getString();
-
-    subject = subject == "" ? announcement.getSubject() : subject;
-
+std::vector<string> ModuleHomePage::beginEditing(const Announcement &announcement)
+{
     cout << "\nNow you are editing the text. To leave a line the same, press enter, to edit a line, type a new line (you can use <!append> or <!prepend> at the start of the line to append or prepend the existing line onto the new line, <!goto>line to change line) to change it, <!clear> to make a line blank or <!delete> to delete the current line, or to submit now and exit edit, type <!submit>, to cancel edits, type <!cancel>" << endl;
+    return ui::splitString(announcement.getAnnouncementText());
+}
 
+void ModuleHomePage::submitAnnouncement(std::vector<string> &lines, const Announcement &oldAnnouncement, const std::string &subject)
+{
+    string text = ui::rejoinString(lines);
+    Module announcementModule = oldAnnouncement.getModule();
+    Announcement updatedAnnouncement(oldAnnouncement.getID(), announcementModule, oldAnnouncement.getLecturer(), subject, text);
+
+    if (this->system.updateAnnouncement(updatedAnnouncement.getID(), announcementModule.getCode(), updatedAnnouncement))
+    {
+        cout << "The announcement has been updated successfully" << endl;
+    }
+    else
+    {
+        cout << "The announcement has not been updated successfully, please try again later" << endl;
+    }
+}
+
+void ModuleHomePage::editAnnouncement(const Announcement &announcement)
+{
+    if (!canEditAnnouncement(announcement))
+        return;
+    string subject = "";
     bool submit = false;
     bool cancel = false;
 
-    std::vector<string> lines = ui::splitString(announcement.getAnnouncementText());
+    editSubject(subject, announcement.getSubject());
+
+    std::vector<string> lines = beginEditing(announcement);
 
     string line;
     string text;
@@ -152,181 +355,17 @@ void ModuleHomePage::editAnnouncement(const Announcement &announcement)
     {
         if (lineNumber <= numLines)
         {
-            line = lines[lineNumber - 1];
-
-            cout << line << endl; //only display a line if you didnt not reach the end of the old announcement, or else blank lines will be displayed
-
-            cout << lineNumber << " ";
-            string input = ui::getString();
-
-            if (input == "<!submit>")
-            {
-                submit = true;
-                break;
-            }
-            else if (input == "<!cancel>")
-            {
-                cancel = true;
-                break;
-            }
-            else if (input == "<!insert>")
-            {
-                cout << ++lineNumber << " ";
-                string newLine = ui::getString();
-
-                //text += line + "\n";
-                //lines.insert(lines.begin() + (lineNumber - 1), line);
-
-                if (newLine == "<!insert>")
-                {
-                    //text += "\n";
-                    lines.push_back("");
-                    numLines += 1;
-                }
-                else if (newLine == "<!submit>")
-                {
-                    submit = true;
-                    break;
-                }
-                else if (newLine == "<!cancel>")
-                {
-                    cancel = true;
-                    break;
-                }
-                else
-                {
-                    //text += newLine + "\n";
-                    lines.insert(lines.begin() + (lineNumber - 1), newLine);
-                    numLines += 1;
-                }
-            }
-            else if (input == "<!delete>")
-            {
-                //delete the line you're at, i.e. remove it from the vector of lines, the next lineNumber beneath it will either be the next line, or if the end of the vector, you'll stay at the line
-                lines.erase(lines.begin() + (lineNumber - 1)); //erase the line out of the vector
-                numLines -= 1;
-
-                if (lineNumber >= numLines)
-                    lineNumber = numLines; //if lineNumber is not past the last line, move the "cursor" to the very last line
-                else
-                    lineNumber--;
-
-                continue;
-            }
-            else if (input == "<!clear>") 
-            {
-                //clear the line, don't delete it. i.e. make it a blank line
-                lines[lineNumber - 1] = ""; //clear it by changing it to a blank
-            }
-            else if (input != "")
-            {
-                string command = extractCommand(input);
-
-                bool insertInput = true;
-
-                if (command == "<!append>")
-                {
-                    input = line + input; //add input to the end of the existing line;
-                }
-                else if (command == "<!prepend>")
-                {
-                    input = input + line;
-                }
-                else if (command == "<!goto>")
-                {
-                    if (input.size() == 0 || input == "")
-                    {
-                        cout << "No line number specified, continuing with line " << lineNumber << endl;
-                    }
-                    else
-                    {
-                        try
-                        {
-                            int tempLineNumber = stoi(input);
-
-                            if (tempLineNumber <= 0 || tempLineNumber > numLines)
-                                cout << "The entered line number needs to be greater than 0 and less than " << numLines << " continuing from line " << lineNumber << endl;
-                            else
-                                lineNumber = tempLineNumber;
-                            continue; //skip incrementing lineNumber and go straight back to the start;
-                        }
-                        catch (std::invalid_argument &inv)
-                        {
-                            cout << "Invalid format for <!goto> specified, syntax is <!goto>line-number, continuing from line " << lineNumber << endl;
-                            insertInput = false;
-                        }
-                    }
-                }
-
-                //text += input + "\n";
-                if (insertInput)
-                    lines[lineNumber - 1] = input;
-            }
-
-            lineNumber++;
+            run = processNormalEditing(lines, lineNumber, numLines, submit, cancel);
         }
         else
         {
-            cout << "You are at the end of the original announcement, type <!insert> to insert another line, or <!submit>/<!cancel>" << endl;
-            string input = ui::getString();
-
-            if (input == "<!insert>")
-            {
-                lines.push_back(""); //insert an empty line to be edited
-                numLines += 1;
-            }
-            else if (input == "<!submit>")
-            {
-                submit = true;
-                break;
-            }
-            else if (input == "<!cancel>")
-            {
-                cancel = true;
-                break;
-            }
-            else if (extractCommand(input) == "<!goto>")
-            {
-                if (input.size() == 0 || input == "")
-                {
-                    cout << "No line number specified, continuing with line " << lineNumber << endl;
-                }
-                else
-                {
-                    try
-                    {
-                        int tempLineNumber = stoi(input);
-
-                        if (tempLineNumber <= 0 || tempLineNumber > numLines)
-                            cout << "The entered line number needs to be greater than 0 and less than " << numLines << "continuing from line " << lineNumber << endl;
-                        else
-                            lineNumber = tempLineNumber;
-                        continue; //skip incrementing lineNumber and go straight back to the start;
-                    }
-                    catch (std::invalid_argument &inv)
-                    {
-                        cout << "Invalid format for <!goto> specified, syntax is <!goto>line-number, continuing from line " << lineNumber << endl;
-                    }
-                }
-            }
+            run = processEndOfAnnouncement(lines, lineNumber, numLines, submit, cancel);
         }
     }
 
     if (submit)
     {
-        //text = text.substr(0, text.length() - 1); // trim off the last new line
-        text = ui::rejoinString(lines);
-        Module announcementModule = announcement.getModule();
-        Announcement updatedAnnouncement(announcement.getID(), announcementModule, announcement.getLecturer(), subject, text);
-
-        if (this->system.updateAnnouncement(updatedAnnouncement.getID(), announcementModule.getCode(), updatedAnnouncement))
-        {
-            cout << "The announcement has been updated successfully" << endl;
-        }
-        else
-        {
-            cout << "The announcement has not been updated successfully, please try again later" << endl;
-        }
+        submitAnnouncement(lines, announcement, subject);
     }
     else if (cancel)
     {
