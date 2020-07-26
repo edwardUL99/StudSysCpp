@@ -5,6 +5,7 @@
 #include "headers/UIUtils.h"
 
 using std::string;
+using ui::AccountPage;
 using ui::LoginPage;
 
 LoginPage::LoginPage(StudentSystem &system, bool student) : Page(system)
@@ -35,12 +36,125 @@ void LoginPage::setPasswordText(string passwordText)
     this->password = passwordText;
 }
 
+bool LoginPage::processLoginDetails(bool &exists)
+{
+    bool submit;
+    if (this->student)
+    {
+        try
+        {
+            StudentAccount studentAccount = this->system.getStudentAccount(this->system.getStudentID(email));
+
+            submit = studentAccount.getPassword() == password;
+        }
+        catch (NotFoundException &nf)
+        {
+            exists = false;
+            cout << "E-mail " << email << " does not exist" << endl;
+        }
+    }
+    else
+    {
+        try
+        {
+            LecturerAccount lecturerAccount = this->system.getLecturerAccount(this->email);
+
+            submit = lecturerAccount.getPassword() == password;
+        }
+        catch (NotFoundException &nf)
+        {
+            exists = false;
+            cout << "E-mail " << email << " does not exist" << endl;
+        }
+    }
+
+    return submit;
+}
+
+AccountPage *LoginPage::getAccountPage()
+{
+    AccountPage *accountPage = nullptr;
+
+    if (isStudentLogin())
+    {
+        static StudentAccount studentAccount = getStudentAccount(); //this will always be in scope for any pages since WelcomePage is the parent page and if WelcomePage whule loop ends and leaves show, no other page should be open
+        accountPage = new AccountPage(system, studentAccount);
+    }
+    else
+    {
+        static LecturerAccount lecturerAccount = getLecturerAccount(); //this will always be in scope for any pages since WelcomePage is the parent page and if WelcomePage whule loop ends and leaves show, no other page should be open
+        accountPage = new AccountPage(system, lecturerAccount);
+    }
+}
+
+void LoginPage::loginUser()
+{
+    this->loginSuccessful = true;
+    cout << "You have been logged in successfully" << endl;
+
+    string date = this->student ? this->system.recordLogin(this->getStudentAccount()) : this->system.recordLogin(this->getLecturerAccount());
+
+    if (date != "FIRST_LOGIN")
+    {
+        cout << "Last login for " << email << ": " << date << ". If the time is suspicious contact the ITT Support Centre immediately.\n"
+             << endl;
+    }
+    else
+    {
+        cout << "This is " + email + "'s first login\n"
+             << endl;
+    }
+
+    ui::pageManager.setNextPage(getAccountPage());
+}
+
+void LoginPage::setEmailAddress()
+{
+    string email = "";
+    string format = student ? "id@student.mail.ie" : "first.lastName@staff.mail.ie";
+
+    do
+    {
+        cout << "Please enter your e-mail address in the format (" << format << "): " << endl;
+        email = ui::getString();
+    } while (email == "");
+
+    this->email = email;
+}
+
+void LoginPage::setPassword()
+{
+    string password = "";
+
+    cout << "Please enter your password:" << endl;
+
+    this->password = ui::getSecureString(ui::passlengthpred, ui::passlengthretrymsg);
+}
+
+bool LoginPage::submit()
+{
+    bool exists = true;
+    bool submit = processLoginDetails(exists);
+
+    //here find a way to call next page->show()
+    if (submit)
+    {
+        loginUser();
+        return false;
+    }
+    else if (exists)
+    {
+        cout << "Password does not match that of " << email << endl;
+    }
+
+    return true;
+}
+
 void LoginPage::show()
 {
     bool run = true;
 
     string loginType = student ? "Student " : "Lecturer ";
-    string format = student ? "id@student.mail.ie" : "first.lastName@staff.mail.ie";
 
     while (run)
     {
@@ -50,93 +164,15 @@ void LoginPage::show()
 
         if (choice == "E")
         {
-            string email = "";
-
-            do
-            {
-                cout << "Please enter your e-mail address in the format (" << format << "): " << endl;
-                email = ui::getString();
-            } while (email == "");
-
-            this->email = email;
+            setEmailAddress();
         }
         else if (choice == "P")
         {
-            string password = "";
-
-            cout << "Please enter your password:" << endl;
-
-            this->password = ui::getSecureString(ui::passlengthpred, ui::passlengthretrymsg);
+            setPassword();
         }
         else if (choice == "S")
         {
-            bool submit = false;
-            bool exists = true;
-
-            if (this->student)
-            {
-                try
-                {
-                    StudentAccount studentAccount = this->system.getStudentAccount(this->system.getStudentID(email));
-
-                    submit = studentAccount.getPassword() == password;
-                }
-                catch (NotFoundException &nf)
-                {
-                    exists = false;
-                    cout << "E-mail " << email << " does not exist" << endl;
-                }
-            }
-            else
-            {
-                try
-                {
-                    LecturerAccount lecturerAccount = this->system.getLecturerAccount(this->email);
-
-                    submit = lecturerAccount.getPassword() == password;
-                }
-                catch (NotFoundException &nf)
-                {
-                    exists = false;
-                    cout << "E-mail " << email << " does not exist" << endl;
-                }
-            }
-
-            //here find a way to call next page->show()
-            if (submit)
-            {
-                this->loginSuccessful = true;
-                run = false; //bring up next page here, if email matches password, the program returns from login page and the caller of login->show should check if (login.login()) should proceed to page after
-                cout << "You have been logged in successfully" << endl;
-
-                string date = this->student ? this->system.recordLogin(this->getStudentAccount()) : this->system.recordLogin(this->getLecturerAccount());
-
-                if (date != "FIRST_LOGIN")
-                {
-                    cout << "Last login for " << email << ": " << date << ". If the time is suspicious contact the ITT Support Centre immediately.\n"
-                         << endl;
-                }
-                else
-                {
-                    cout << "This is " + email + "'s first login\n"
-                         << endl;
-                }
-
-                AccountPage *accountPage = nullptr;
-
-                if (isStudentLogin()) {
-                    static StudentAccount studentAccount = getStudentAccount(); //this will always be in scope for any pages since WelcomePage is the parent page and if WelcomePage whule loop ends and leaves show, no other page should be open
-                    accountPage = new AccountPage(system, studentAccount);
-                } else {
-                    static LecturerAccount lecturerAccount = getLecturerAccount(); //this will always be in scope for any pages since WelcomePage is the parent page and if WelcomePage whule loop ends and leaves show, no other page should be open
-                    accountPage = new AccountPage(system, lecturerAccount);
-                }
-                
-                ui::pageManager.setNextPage(accountPage);
-                run = false;
-            }
-            else if (exists)
-                cout << "The password does not match the account identified by the e-mail " << email << endl;
+            run = submit();
         }
         else if (choice == "F")
         {

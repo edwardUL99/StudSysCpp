@@ -9,6 +9,7 @@
 
 namespace ui
 {
+    class AccountPage;
 
     class LoginPage : public Page
     {
@@ -17,7 +18,34 @@ namespace ui
         std::string password;
         bool student; //true if student, false if lecturer
         bool loginSuccessful;
-
+        /**
+         * @brief this method processes the entered login details to check if they are correct
+         * @param exists this method sets this boolean with the statis of the existance of the account specified by the login details
+         * @return the correctness of the login details
+         */
+        bool processLoginDetails(bool &exists);
+        /**
+         * @brief Gets the account page that will be displayed after login
+         * @return appropriate account page
+         */
+        AccountPage* getAccountPage();
+        /**
+         * @brief This method processes logging in of the user
+         */
+        void loginUser();
+        /**
+         * @brief Gets the email address from the user and sets the pages email field
+         */
+        void setEmailAddress();
+        /**
+         * @brief Gets the password from the user and sets the pages email field
+         */
+        void setPassword();
+        /**
+         * @brief provides the submit functionality to login
+         * @return true if you want the calling while loop to continue, false otherwise
+         */
+        bool submit();
     public:
         //In UI going to LoginPage from previous page, have a button for lecturer login and have student false, have button for Student login and have student true
         LoginPage(StudentSystem &studentSystem, bool student);
