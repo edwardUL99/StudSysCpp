@@ -72,8 +72,12 @@ int main(int argc, char **argv)
         exit(-1);
     }
 
-    ui::pageManager.initializeSystem(dbname, username, password, host);
-    ui::pageManager.start();
+    try {
+        ui::pageManager.initializeSystem(dbname, username, password, host);
+        ui::pageManager.start();
+    } catch (SQLException &sq) {
+        exit(1);
+    }
 
     /*StudentSystem &system = ui::pageManager.getSystem();
 

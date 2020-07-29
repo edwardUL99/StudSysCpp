@@ -4,3 +4,6 @@ studsys
 studsysdbadmin
 examCreateTest
 *.test
+Logs
+.vscode
+.VSCodeCounter

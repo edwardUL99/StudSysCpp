@@ -17,6 +17,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <cstdlib>
 
 using std::cerr;
 using std::cout;
@@ -108,14 +109,23 @@ void DatabaseManager::connectToDatabase(string database, string user, string pas
     this->pass = pass;
     this->host = host;
 
-    this->driver = get_driver_instance();
-    delete this->connection;
-    this->connection = this->driver->connect(this->host, this->user, this->pass);
-    this->connection->setSchema(this->database);
-    delete this->stmt;
-    this->stmt = this->connection->createStatement();
-    setLastExamID();
-    setLastAnnouncementID();
+    try {
+        this->driver = get_driver_instance();
+        delete this->connection;
+        this->connection = this->driver->connect(this->host, this->user, this->pass);
+        this->connection->setSchema(this->database);
+        delete this->stmt;
+        this->stmt = this->connection->createStatement();
+        setLastExamID();
+        setLastAnnouncementID();
+    } catch (SQLException &sq) {
+        const char *error = sq.what();
+        Warning w(error, "DATABASE CONNECTION");
+        this->warnings.push_back(w);
+
+        cerr << "Failed to connect to database, see log for details" << endl;
+        throw sq;
+    }
 }
 
 bool DatabaseManager::add(const Lecturer &lecturer)
@@ -133,7 +143,6 @@ bool DatabaseManager::add(const Lecturer &lecturer)
         const char *error = e.what();
         Warning w(error, query);
         this->warnings.push_back(w);
-        cerr << error << endl;
 
         return false;
     }
@@ -290,7 +299,6 @@ bool DatabaseManager::add(const Course &course)
         const char *error = e.what();
         Warning w(error, query);
         this->warnings.push_back(w);
-        cerr << error << endl;
 
         return false;
     }
@@ -377,7 +385,6 @@ bool DatabaseManager::add(const Student &student)
         const char *error = e.what();
         Warning w(error, query);
         this->warnings.push_back(w);
-        cerr << error << endl;
 
         return false;
     }
@@ -465,7 +472,6 @@ bool DatabaseManager::add(const Module &module)
         const char *error = e.what();
         Warning w(error, query);
         this->warnings.push_back(w);
-        cerr << error << endl;
 
         return false;
     }
@@ -562,7 +568,6 @@ bool DatabaseManager::add(const Announcement &announcement) {
         const char *error = e.what();
         Warning w(error, query);
         this->warnings.push_back(w);
-        cerr << error << endl;
 
         delete prepared;
 
@@ -644,8 +649,7 @@ bool DatabaseManager::add(const StudentRegistration &registration)
         const char *error = e.what();
         Warning w(error, query);
         this->warnings.push_back(w);
-        cerr << error << endl;
-
+        
         return false;
     }
 }
@@ -757,7 +761,6 @@ bool DatabaseManager::add(const Exam &exam)
         const char *error = e.what();
         Warning w(error, query);
         this->warnings.push_back(w);
-        cerr << error << endl;
 
         return false;
     }
@@ -970,8 +973,7 @@ bool DatabaseManager::add(const ExamGrade &examGrade)
         const char *error = e.what();
         Warning w(error, query);
         this->warnings.push_back(w);
-        cerr << error << endl;
-
+    
         return false;
     }
 }
@@ -1060,7 +1062,6 @@ void DatabaseManager::calculateModuleGrades(std::string module, const Student &s
         const char *error = e.what();
         Warning w(error, query);
         this->warnings.push_back(w);
-        cerr << error << endl;
     }
 }
 
@@ -1120,7 +1121,6 @@ bool DatabaseManager::add(const LecturerAccount &lecturerAccount)
         const char *error = e.what();
         Warning w(error, query);
         this->warnings.push_back(w);
-        cerr << error << endl;
 
         return false;
     }
@@ -1204,8 +1204,7 @@ bool DatabaseManager::add(const StudentAccount &studentAccount)
         const char *error = e.what();
         Warning w(error, query);
         this->warnings.push_back(w);
-        cerr << error << endl;
-
+        
         return false;
     }
 }
@@ -1284,7 +1283,6 @@ void DatabaseManager::execute(string query)
         const char *error = e.what();
         Warning w(error, query);
         this->warnings.push_back(w);
-        cerr << error << endl;
     }
 }
 
@@ -1337,19 +1335,33 @@ void DatabaseManager::writeWarningsToLog()
     tm *ltm = localtime(&now);
 
     stringstream s;
-    s << "../Logs/" << ltm->tm_mday << "_" << ltm->tm_mon + 1 << "_" << 1900 + ltm->tm_year << "_" << ltm->tm_hour << ":" << ltm->tm_min << ":" << ltm->tm_sec << "_Database_Warnings.log";
-    string filename;
-    s >> filename;
-    ofstream writer;
-    writer.open(filename, std::ios::out);
+    const char* logDir = std::getenv("STUD_LOGS");
+    if (logDir) {
+        s << logDir << "/" << ltm->tm_mday << "_" << ltm->tm_mon + 1 << "_" << 1900 + ltm->tm_year << "_" << ltm->tm_hour << ":" << ltm->tm_min << ":" << ltm->tm_sec << "_Database_Warnings.log";
+        string filename;
+        s >> filename;
+        ofstream writer;
+        writer.open(filename, std::ios::out);
 
-    if (writer.is_open())
-    {
-        for (const Warning &w : warnings)
+        if (writer.is_open())
         {
-            writer << w.toString() << "\n";
+            for (const Warning &w : warnings)
+            {
+                writer << w.toString() << "\n";
+            }
+
+            if (this->connection) {
+                const SQLWarning *warning = this->connection->getWarnings();
+
+                while (warning != NULL) {
+                    Warning w(warning->getMessage(), "N/A");
+                    writer << w.toString() << "\n";
+                    warning = warning->getNextWarning();
+                }
+            }
+
+            writer.flush();
         }
-        writer.flush();
     }
 }
 
