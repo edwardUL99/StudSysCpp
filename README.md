@@ -103,4 +103,4 @@ The admin will then be able to give you the IP address to the database server to
    
 ## Logging:
 Errors can be logged if the STUD_LOGS environment variable is set to the directory of where to store the logs. If this is not set, no logging of errors will take place
-
+On Linux the variable must be exported using export STUD_LOGS=<log-path>
