@@ -2,7 +2,7 @@
 A personal project implementing a Command Line User Interface
 Student Administration Program. 
 
-It is programmed with C++ entirely and can be run on Linux with g++
+It is programmed with C++ entirely and can be compiled on Linux with g++
 
 ## It allows the following:
    A student to login and browse each module they are registered for
@@ -100,4 +100,7 @@ The admin will then be able to give you the IP address to the database server to
    Use hidden command A from the WelcomeScreen
    Username is adminITT20
    Password is ittAdminPass20
+   
+## Logging:
+Errors can be logged if the STUD_LOGS environment variable is set to the directory of where to store the logs. If this is not set, no logging of errors will take place
 
