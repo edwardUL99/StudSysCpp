@@ -104,13 +104,15 @@ bool ExamSelectorPage::takeExam()
             return true;
         }
     }
+
+    return false;
 }
 
 bool ExamSelectorPage::editExam()
 {
     if (exams.size() != 0 && isLecturer())
     {
-        Exam exam = getExam();
+        static Exam exam = getExam();
         if (!this->system.examTaken(exam))
         {
             ExamEditPage *editPage = new ExamEditPage(exam, system);
@@ -123,12 +125,13 @@ bool ExamSelectorPage::editExam()
             return false;
         }
     }
+
+    return false;
 }
 
 void ExamSelectorPage::show()
 {
     cout << "You are viewing the list of Exams for Module " << module.getCode() << ": " << endl;
-    int size = exams.size();
     bool run = true;
 
     displayExams();
@@ -146,7 +149,7 @@ void ExamSelectorPage::show()
         }
         else if (choice == "E")
         {
-            editExam();
+            run = !editExam();
         }
         else if (choice == "C" && lecturer)
         {

@@ -12,6 +12,27 @@ using ui::ModuleHomePage;
 
 ModuleHomePage::ModuleHomePage(Account &account, Module &module, StudentSystem &system) : Page(system), account(account), module(module) {}
 
+void ModuleHomePage::deRegisterStudent(int id)
+{
+    try
+    {
+        Student student = this->system.getStudent(id);
+
+        if (this->system.unregisterStudentModule(student, module))
+        {
+            cout << "Student " << id << " de-registered from module " << module.getCode() << " successfully" << endl;
+        }
+        else
+        {
+            cout << "Student " << id << " de-registered from module " << module.getCode() << " unsuccessfully, please try again later" << endl;
+        }
+    }
+    catch (NotFoundException &nf)
+    {
+        cout << "Student " << id << " does not exist" << endl;
+    }
+}
+
 void ModuleHomePage::registerStudents()
 {
     while (true)
@@ -32,23 +53,7 @@ void ModuleHomePage::registerStudents()
 
             int id = ui::getInt(ui::intltezeropred, ui::ltezeroretrymsg);
 
-            try
-            {
-                Student student = this->system.getStudent(id);
-
-                if (this->system.unregisterStudentModule(student, module))
-                {
-                    cout << "Student " << id << " de-registered from module " << module.getCode() << " successfully" << endl;
-                }
-                else
-                {
-                    cout << "Student " << id << " de-registered from module " << module.getCode() << " unsuccessfully, please try again later" << endl;
-                }
-            }
-            catch (NotFoundException &nf)
-            {
-                cout << "Student " << id << " does not exist" << endl;
-            }
+            deRegisterStudent(id);
 
             break;
         }
@@ -85,6 +90,16 @@ void ModuleHomePage::displayRegisteredStudents()
         registerStudents();
 }
 
+void ModuleHomePage::displayLecturerDetails()
+{
+    Lecturer lecturer = module.getLecturer();
+
+    cout << "The lecturer for this module is: " << endl;
+    cout << "\tName: " << lecturer.getName() << endl;
+    cout << "\tDepartment: " << lecturer.getDepartment() << endl;
+    cout << "\tE-mail Address: " << lecturer.getEmail() << endl;
+}
+
 void ModuleHomePage::show()
 {
     string code = module.getCode();
@@ -102,8 +117,7 @@ void ModuleHomePage::show()
 
         if (choice == "A")
         {
-            static Account &staticAccount = this->account;
-            AnnouncementPage *announcementPage = new AnnouncementPage(staticAccount, module, system);
+            AnnouncementPage *announcementPage = new AnnouncementPage(this->account, module, system);
             ui::pageManager.setNextPage(announcementPage);
             run = false;
         }
@@ -123,12 +137,7 @@ void ModuleHomePage::show()
         }
         else if (choice == "L")
         {
-            Lecturer lecturer = module.getLecturer();
-
-            cout << "The lecturer for this module is: " << endl;
-            cout << "\tName: " << lecturer.getName() << endl;
-            cout << "\tDepartment: " << lecturer.getDepartment() << endl;
-            cout << "\tE-mail Address: " << lecturer.getEmail() << endl;
+            displayLecturerDetails();
         }
         else if (choice == "M")
         {

@@ -51,7 +51,7 @@ std::vector<Module> ModuleSelectorPage::getModuleList() const
     return modules;
 }
 
-void ModuleSelectorPage::show()
+void ModuleSelectorPage::displayRegisteredModules()
 {
     if (isStudentAccount())
     {
@@ -62,14 +62,43 @@ void ModuleSelectorPage::show()
         cout << "List of modules you are registered as the lecturer for: " << endl;
     }
 
-    bool run = true;
-
     std::vector<Module> modules = getModuleList();
 
     for (int i = 0; i < modules.size(); i++)
     {
         cout << i + 1 << ") " << modules[i].getCode() << " - " << modules[i].getName() << endl;
     }
+}
+
+bool ModuleSelectorPage::viewModule()
+{
+    std::vector<Module> modules = getModuleList();
+
+    int numModules = modules.size();
+
+    if (numModules > 0)
+    {
+        cout << "Please choose a number between 1 and " << numModules << ": " << endl;
+
+        int num = ui::getInt(Predicate<int>([numModules](const int &x) -> bool { return x < 1 || x > numModules; }), "Please re-enter a number between 1 and " + std::to_string(numModules) + ": ");
+
+        static Module module = modules[num - 1];
+        ModuleHomePage *modulePage = new ModuleHomePage(account, module, system);
+        ui::pageManager.setNextPage(modulePage);
+        return true;
+    }
+    else
+    {
+        string msg = isStudentAccount() ? "your Lecturer or ITT" : "ITT";
+        cout << "You are registered for no modules, if this is a mistake contact " << msg << endl;
+        return false;
+    }
+}
+
+void ModuleSelectorPage::show()
+{
+    displayRegisteredModules();
+    bool run = true;
 
     while (run)
     {
@@ -79,24 +108,7 @@ void ModuleSelectorPage::show()
 
         if (choice == "M")
         {
-            int numModules = modules.size();
-
-            if (numModules > 0)
-            {
-                cout << "Please choose a number between 1 and " << numModules << ": " << endl;
-
-                int num = ui::getInt(Predicate<int>([numModules](const int &x) -> bool { return x < 1 || x > numModules; }), "Please re-enter a number between 1 and " + std::to_string(numModules) + ": ");
-
-                static Module module = modules[num - 1];
-                ModuleHomePage *modulePage = new ModuleHomePage(account, module, system);
-                ui::pageManager.setNextPage(modulePage);
-                run = false;
-            }
-            else
-            {
-                string msg = isStudentAccount() ? "your Lecturer or ITT":"ITT";
-                cout << "You are registered for no modules, if this is a mistake contact " << msg << endl;
-            }
+            run = !viewModule();
         }
         else if (choice == "C")
         {

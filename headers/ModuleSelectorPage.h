@@ -16,6 +16,15 @@ namespace ui
         Account &account;
         bool isStudentAccount() const;
         std::vector<Module> getModuleList() const; //gets the module list for either the lecturer teaching them or the student registered with them
+        /**
+         * @brief displays the modules the account is registered on
+         */       
+        void displayRegisteredModules();
+        /**
+         * @brief opens the ModuleHomePage for a module selected by the user
+         * @return true if tou are to exit the calling while loop
+         */
+        bool viewModule();
 
     public:
         ModuleSelectorPage(Account &account, StudentSystem &system);

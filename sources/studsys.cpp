@@ -29,7 +29,6 @@ ui::PageManager ui::pageManager;
 
 int main(int argc, char **argv)
 {
-    //commented out for testing
     string dbname;
     string username;
     string password;
@@ -74,15 +73,15 @@ int main(int argc, char **argv)
     }
 
     ui::pageManager.initializeSystem(dbname, username, password, host);
-    //ui::pageManager.start();
+    ui::pageManager.start();
 
-    StudentSystem &system = ui::pageManager.getSystem();
+    /*StudentSystem &system = ui::pageManager.getSystem();
 
     LecturerAccount lecturer = system.getLecturerAccount("patrick.healy@staff.mail.ie");
     Module module = system.getModule("CS4115");
     ui::ModuleHomePage *homePage = new ui::ModuleHomePage(lecturer, module, system);
 
-    ui::pageManager.start(homePage);
+    ui::pageManager.start(homePage);*/
 
     return 0;
 }

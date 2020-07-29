@@ -457,6 +457,7 @@ void AnnouncementPage::show()
         }
         else if (choice == "B")
         {
+            ui::pageManager.popCurrentPage();
             break;
         }
         else if (choice == "Q")

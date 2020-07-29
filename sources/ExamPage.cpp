@@ -30,7 +30,7 @@ void ExamPage::displayQuestion(const ExamQuestion &examQuestion)
     }
     cout << "Choose from 1 to " << numberOfAnswers << ":" << endl;
 
-    int choice = ui::getInt(Predicate<int>([numberOfAnswers](const int &x) -> bool { return x <= 0 || x > numberOfAnswers }), "Choice must be between 1 and " << numberOfAnswers << ", please try again: ");
+    int choice = ui::getInt(Predicate<int>([numberOfAnswers](const int &x) -> bool { return x <= 0 || x > numberOfAnswers; }), "Choice must be between 1 and " + std::to_string(numberOfAnswers) + ", please try again: ");
 
     this->answers.setAnswer(examQuestion, answers[choice - 1]);
 }
@@ -57,18 +57,16 @@ void ExamPage::answerCurrentQuestion(int index, const std::vector<ExamQuestion> 
     displayQuestion(questions[index]);
 }
 
-void ExamPage::nextQuestion(int &index, const std::vector<ExamQuestion> &questions, bool &answerable)
+void ExamPage::nextQuestion(int &index, const std::vector<ExamQuestion> &questions)
 {
     if (index != questions.size())
     {
         index++;
         cout << "Next question--->" << endl;
-        answerable = true;
     }
     else
     {
         cout << "You are on the last question" << endl;
-        answerable = false;
     }
 }
 

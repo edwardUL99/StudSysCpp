@@ -108,7 +108,7 @@ bool ExamEditPage::submitUpdates(vector<ExamQuestion> &questions)
     {
         return false;
     }
-    else if (consent == "N")
+    else
     {
         newExam.setQuestions(questions);
         return true;

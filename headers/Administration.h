@@ -26,6 +26,18 @@ namespace ui
         void createLecturer();
         void removeLecturer();
         void resetLecturerPassword();
+        /**
+         * @brief This provides the entry point into the createX functions
+         */
+        void create();
+        /**
+         * @brief This provides the entry point into the removeX functions
+         */
+        void remove();
+        /**
+         * @brief This provides the entry point into the resetXPassword functions
+         */
+        void resetPassword();
 
     public:
         Administration(StudentSystem &system);

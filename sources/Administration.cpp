@@ -48,7 +48,8 @@ bool Administration::login()
     }
 }
 
-void Administration::createCourse() {
+void Administration::createCourse()
+{
     cout << "Please enter the course code: " << endl;
 
     string code = ui::getString(ui::ccodepred, ui::ccoderetrymsg);
@@ -94,7 +95,8 @@ void Administration::createCourse() {
     }
 }
 
-void Administration::removeCourse() {
+void Administration::removeCourse()
+{
     cout << "Please enter the course code to remove: " << endl;
 
     string code = ui::getString(ui::emptystrpred, ui::emptystrretrymsg);
@@ -212,7 +214,7 @@ void Administration::createStudent()
         Student student(id, name, age, course);
 
         cout << "Choose a password for this student: " << endl;
-        
+
         string password = ui::getSecureString(ui::passlengthpred, ui::passlengthretrymsg);
 
         StudentAccount account(student, password);
@@ -298,7 +300,8 @@ void Administration::resetStudentPassword()
     }
 }
 
-void Administration::registerStudent(string module) {
+void Administration::registerStudent(string module)
+{
     cout << "Enter the student ID of the student to register: " << endl;
 
     int id = ui::getInt(ui::intltezeropred, ui::ltezeroretrymsg);
@@ -308,29 +311,40 @@ void Administration::registerStudent(string module) {
 
     string code;
 
-    try {
+    try
+    {
         Student student = system.getStudent(id);
         containsStudent = true; //if above executed without throwing, the student was found in the system
 
-        if (module == "") {
+        if (module == "")
+        {
             cout << "Enter the code of the module to register the student on: " << endl;
 
             code = ui::getString(ui::emptystrpred, ui::emptystrretrymsg);
-        } else {
+        }
+        else
+        {
             code = module;
         }
 
         Module registeredModule = system.getModule(code);
         containsModule = true; //if above executed without throwing, the module was found in the system
 
-        if (this->system.registerStudentModule(student, registeredModule)) {
+        if (this->system.registerStudentModule(student, registeredModule))
+        {
             cout << "Student " << id << " has been registered on Module " << code << "." << endl;
-        } else {
+        }
+        else
+        {
             cout << "Registration was not successful, please try again later" << endl;
         }
-    } catch (NotFoundException &nf) {
-        if (!containsStudent) cout << "Student with ID " << id << " not found in the system, exiting registration..." << endl;
-        if (!containsModule && code != "") cout << "Module with code " << code << " not found in the system, exiting registration..." << endl;
+    }
+    catch (NotFoundException &nf)
+    {
+        if (!containsStudent)
+            cout << "Student with ID " << id << " not found in the system, exiting registration..." << endl;
+        if (!containsModule && code != "")
+            cout << "Module with code " << code << " not found in the system, exiting registration..." << endl;
         return;
     }
 }
@@ -348,7 +362,7 @@ void Administration::createLecturer()
     cout << "Please enter the Lecturer's age: " << endl;
 
     int age = ui::getInt(Predicate<int>([](const int &x) -> bool { return x < 24; }), "The age of the lecturer must be 24 or over, please try again: ");
-    
+
     string fnameLower = fname;
     fnameLower[0] = tolower(fname[0]);
     string snameLower = sname;
@@ -448,81 +462,131 @@ void Administration::resetLecturerPassword()
     }
 }
 
-void Administration::show() {
+void Administration::create()
+{
+    while (true)
+    {
+        cout << "Create (C)ourse, (M)odule, (S)tudent, (L)ecturer" << endl;
+
+        string choice1 = ui::getChoice();
+
+        if (choice1 == "C")
+        {
+            createCourse();
+            break;
+        }
+        else if (choice1 == "M")
+        {
+            createModule();
+            break;
+        }
+        else if (choice1 == "S")
+        {
+            createStudent();
+            break;
+        }
+        else if (choice1 == "L")
+        {
+            createLecturer();
+            break;
+        }
+    }
+}
+
+void Administration::remove()
+{
+    while (true)
+    {
+        cout << "Remove (C)ourse, (M)odule, (S)tudent, (L)ecturer" << endl;
+
+        string choice1 = ui::getChoice();
+
+        if (choice1 == "C")
+        {
+            removeCourse();
+            break;
+        }
+        else if (choice1 == "M")
+        {
+            removeModule();
+            break;
+        }
+        else if (choice1 == "S")
+        {
+            removeStudent();
+            break;
+        }
+        else if (choice1 == "L")
+        {
+            removeLecturer();
+            break;
+        }
+    }
+}
+
+void Administration::resetPassword()
+{
+    while (true)
+    {
+        cout << "Reset (L)ecturer/(S)tudent password" << endl;
+
+        string choice1 = ui::getChoice();
+
+        if (choice1 == "L")
+        {
+            resetLecturerPassword();
+            break;
+        }
+        else if (choice1 == "S")
+        {
+            resetStudentPassword();
+            break;
+        }
+    }
+}
+
+void Administration::show()
+{
     bool run = true;
 
-    if (!login()) {
+    if (!login())
+    {
         cout << "You were not logged in successfully, so will be returned to the previous page" << endl;
         return;
     }
 
-    cout << "\nWelcome to the Administration Panel\n" << endl;
+    cout << "\nWelcome to the Administration Panel\n"
+         << endl;
 
-    while (run) {
+    while (run)
+    {
         cout << "(C)reate course/module/student/lecturer, (R)emove course/module/student/lecturer, Reset student/lecturer (P)assword, Register Student on (M)odule, (L)ogout, (Q)uit" << endl;
 
         string choice = ui::getChoice();
 
-        if (choice == "C") {
-            while (true) {
-                cout << "Create (C)ourse, (M)odule, (S)tudent, (L)ecturer" << endl;
-
-                string choice1 = ui::getChoice();
-
-                if (choice1 == "C") {
-                    createCourse();
-                    break;
-                } else if (choice1 == "M") {
-                    createModule();
-                    break;
-                } else if (choice1 == "S") {
-                    createStudent();
-                    break;
-                } else if (choice1 == "L") {
-                    createLecturer();
-                    break;
-                }
-            }
-        } else if (choice == "R") {
-            while (true) {
-                cout << "Remove (C)ourse, (M)odule, (S)tudent, (L)ecturer" << endl;
-
-                string choice1 = ui::getChoice();
-
-                if (choice1 == "C") {
-                    removeCourse();
-                    break;
-                } else if (choice1 == "M") {
-                    removeModule();
-                    break;
-                } else if (choice1 == "S") {
-                    removeStudent();
-                    break;
-                } else if (choice1 == "L") {
-                    removeLecturer();
-                    break;
-                }
-            }
-        } else if (choice == "P" || choice == "p") {
-            while (true) {
-                cout << "Reset (L)ecturer/(S)tudent password" << endl;
-
-                string choice1 = ui::getChoice();
-
-                if (choice1 == "L") {
-                    resetLecturerPassword();
-                    break;
-                } else if (choice1 == "S") {
-                    resetStudentPassword();
-                    break;
-                }
-            }
-        } else if (choice == "M") {
+        if (choice == "C")
+        {
+            create();
+        }
+        else if (choice == "R")
+        {
+            remove();
+        }
+        else if (choice == "P")
+        {
+            resetPassword();
+        }
+        else if (choice == "M")
+        {
             registerStudent();
-        } else if (choice == "L") {
+        }
+        else if (choice == "L")
+        {
             run = false;
             ui::pageManager.popCurrentPage(); //get out of the administration page
-        } else if (choice == "Q") {
+        }
+        else if (choice == "Q")
+        {
             ui::quit();
         }
     }
