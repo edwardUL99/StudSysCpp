@@ -1,6 +1,8 @@
-# StudSysCpp Version 1.0
+# StudSysCppCLI Version 1.0
 A personal project implementing a Command Line User Interface
 Student Administration Program. 
+
+This was all the same repository with the Library before I diverged them so a lot of issues in this repository relate to the library
 
 It is programmed with C++ entirely and can be compiled on Linux with g++
 
