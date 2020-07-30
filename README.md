@@ -1,6 +1,8 @@
-# StudSysCpp Version 1.0
+# StudSysCppCLI Version 1.0
 A personal project implementing a Command Line User Interface
 Student Administration Program. 
+
+This was all the same repository with the Library before I diverged them so a lot of issues in this repository relate to the library
 
 It is programmed with C++ entirely and can be compiled on Linux with g++
 
@@ -37,6 +39,7 @@ It is programmed with C++ entirely and can be compiled on Linux with g++
 
 ## Dependencies:
    This program uses Boost's libraries so you will need to have boost libraries installed
+   The libstudsys library that can be obtained from https://github.com/edwardUL99/StudSysLibrary
    As MySQL server is used, this program requires the MySQL C++ connector version 8.0, it can be downloaded with this link:
         https://dev.mysql.com/downloads/connector/cpp/
         
@@ -49,20 +52,11 @@ It is programmed with C++ entirely and can be compiled on Linux with g++
    Also works with mariadb-server-10.0 (this is what you'll need on Raspberry Pi)
 
 ## How to compile:
-   There are 3 options to compile the program:
-        1. Use compile.sh in the directory, but replace any paths with your path to where it's installed
-        2. Use make with the Makefile provided:
-               do make clean to clean up
-        3. Use g++ compiler:
-               a. in the sources directory type:
-                       g++ *.cpp -c 
-                  to generate the object files. if you want to compile these to a specific folder you could create a folder called bin for example and compile as following while inside bin:
-                       g++ ../sources/*.cpp -c
-               b. Change to the root of the directory and type:
-                       g++ sources/*.o -l mysqlcppconn -o <program-name>
-                  or if you have object files in a separate folder, type:
-                       g++ <object_folder>/*.o -l mysqlcppconn -o <program-name>
-               c. I recommend using studsys as program name
+   Obtain the studsys library from github.com/edwardUL99/StudSysCppLibrary
+   Build the library using instructions from its README
+   Copy the library to the root directory of this directory
+   Obtain the headers from the studsys library and put them in headers/studsys
+   Compile with the make file provided by typing make in the root directory
 
 ## Database Setup:
    You need a MySQL server either MySQL or MariaDB
@@ -103,4 +97,4 @@ The admin will then be able to give you the IP address to the database server to
    
 ## Logging:
 Errors can be logged if the STUD_LOGS environment variable is set to the directory of where to store the logs. If this is not set, no logging of errors will take place
-
+On Linux the variable must be exported using export STUD_LOGS=<log-path>
