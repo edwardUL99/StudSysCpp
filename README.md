@@ -37,6 +37,7 @@ It is programmed with C++ entirely and can be compiled on Linux with g++
 
 ## Dependencies:
    This program uses Boost's libraries so you will need to have boost libraries installed
+   The libstudsys library that can be obtained from https://github.com/edwardUL99/StudSysLibrary
    As MySQL server is used, this program requires the MySQL C++ connector version 8.0, it can be downloaded with this link:
         https://dev.mysql.com/downloads/connector/cpp/
         
@@ -49,20 +50,7 @@ It is programmed with C++ entirely and can be compiled on Linux with g++
    Also works with mariadb-server-10.0 (this is what you'll need on Raspberry Pi)
 
 ## How to compile:
-   There are 3 options to compile the program:
-        1. Use compile.sh in the directory, but replace any paths with your path to where it's installed
-        2. Use make with the Makefile provided:
-               do make clean to clean up
-        3. Use g++ compiler:
-               a. in the sources directory type:
-                       g++ *.cpp -c 
-                  to generate the object files. if you want to compile these to a specific folder you could create a folder called bin for example and compile as following while inside bin:
-                       g++ ../sources/*.cpp -c
-               b. Change to the root of the directory and type:
-                       g++ sources/*.o -l mysqlcppconn -o <program-name>
-                  or if you have object files in a separate folder, type:
-                       g++ <object_folder>/*.o -l mysqlcppconn -o <program-name>
-               c. I recommend using studsys as program name
+   Compile with the make fule provided by typing make in the root directory
 
 ## Database Setup:
    You need a MySQL server either MySQL or MariaDB
