@@ -50,7 +50,11 @@ It is programmed with C++ entirely and can be compiled on Linux with g++
    Also works with mariadb-server-10.0 (this is what you'll need on Raspberry Pi)
 
 ## How to compile:
-   Compile with the make fule provided by typing make in the root directory
+   Obtain the studsys library from github.com/edwardUL99/StudSysCppLibrary
+   Build the library using instructions from its README
+   Copy the library to the root directory of this directory
+   Obtain the headers from the studsys library and put them in headers/studsys
+   Compile with the make file provided by typing make in the root directory
 
 ## Database Setup:
    You need a MySQL server either MySQL or MariaDB
