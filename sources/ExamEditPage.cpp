@@ -1,7 +1,7 @@
 #include "headers/ExamEditPage.h"
 #include "headers/UIUtils.h"
-#include "headers/NotFoundException.h"
-#include "headers/KeyMismatch.h"
+#include "headers/studsys/NotFoundException.h"
+#include "headers/studsys/KeyMismatch.h"
 
 using std::string;
 using std::vector;

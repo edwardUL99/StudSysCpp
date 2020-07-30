@@ -1,7 +1,7 @@
 #ifndef PAGE_H
 #define PAGE_H
 
-#include "StudentSystem.h"
+#include "studsys/StudentSystem.h"
 #include "UIUtils.h"
 #include <iostream>
 

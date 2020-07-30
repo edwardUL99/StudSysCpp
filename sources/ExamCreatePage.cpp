@@ -1,6 +1,6 @@
 #include "headers/ExamCreatePage.h"
 #include "headers/UIUtils.h"
-#include "headers/NotFoundException.h"
+#include "headers/studsys/NotFoundException.h"
 #include <time.h>
 
 using std::string;

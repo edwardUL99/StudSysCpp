@@ -1,7 +1,7 @@
 #include "headers/AnnouncementPage.h"
-#include "headers/DuplicateException.h"
+#include "headers/studsys/DuplicateException.h"
 #include "headers/UIUtils.h"
-#include "headers/Announcement.h"
+#include "headers/studsys/Announcement.h"
 
 using std::string;
 using ui::AnnouncementPage;

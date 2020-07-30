@@ -3,7 +3,7 @@
 
 #include <string>
 #include <vector>
-#include "Predicate.h"
+#include "studsys/Predicate.h"
 #include "PageManager.h"
 
 namespace ui

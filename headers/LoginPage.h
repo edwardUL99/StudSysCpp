@@ -2,8 +2,8 @@
 #define LOGIN_PAGE_H
 
 #include "Page.h"
-#include "LecturerAccount.h"
-#include "StudentAccount.h"
+#include "studsys/LecturerAccount.h"
+#include "studsys/StudentAccount.h"
 
 #include <string>
 

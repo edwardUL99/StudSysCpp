@@ -2,9 +2,9 @@
 #define MODULE_HOME_PAGE_H
 
 #include "Page.h"
-#include "Account.h"
-#include "Module.h"
-#include "Announcement.h"
+#include "studsys/Account.h"
+#include "studsys/Module.h"
+#include "studsys/Announcement.h"
 #include <vector>
 
 namespace ui

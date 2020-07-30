@@ -2,8 +2,8 @@
 #define ANNOUNCEMENT_PAGE_H
 
 #include "Page.h"
-#include "Account.h"
-#include "Module.h"
+#include "studsys/Account.h"
+#include "studsys/Module.h"
 #include <vector>
 
 namespace ui

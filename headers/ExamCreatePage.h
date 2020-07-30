@@ -1,9 +1,9 @@
 #ifndef EXAM_CREATE_PAGE
 #define EXAM_CREATE_PAGE
 
-#include "Exam.h"
+#include "studsys/Exam.h"
 #include "Page.h"
-#include "Module.h"
+#include "studsys/Module.h"
 #include <string>
 #include <vector>
 

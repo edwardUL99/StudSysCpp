@@ -2,8 +2,8 @@
 #include "headers/ExamSelectorPage.h"
 #include "headers/UIUtils.h"
 #include "headers/Administration.h"
-#include "headers/NotFoundException.h"
-#include "headers/DuplicateException.h"
+#include "headers/studsys/NotFoundException.h"
+#include "headers/studsys/DuplicateException.h"
 #include "headers/AnnouncementPage.h"
 
 using std::string;

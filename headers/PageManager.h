@@ -1,7 +1,7 @@
 #ifndef PAGE_MANAGER_H
 #define PAGE_MANAGER_H
 
-#include "StudentSystem.h"
+#include "studsys/StudentSystem.h"
 #include <stack>
 #include <string>
 

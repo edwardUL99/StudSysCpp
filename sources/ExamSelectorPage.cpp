@@ -1,10 +1,10 @@
 #include "headers/ExamSelectorPage.h"
 #include "headers/ExamCreatePage.h"
-#include "headers/StudentAccount.h"
+#include "headers/studsys/StudentAccount.h"
 #include "headers/ExamPage.h"
 #include "headers/ExamEditPage.h"
-#include "headers/Exam.h"
-#include "headers/NotFoundException.h"
+#include "headers/studsys/Exam.h"
+#include "headers/studsys/NotFoundException.h"
 #include "headers/UIUtils.h"
 
 using std::string;

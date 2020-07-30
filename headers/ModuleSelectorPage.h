@@ -2,7 +2,7 @@
 #define MODULE_SELECTOR_PAGE_H
 
 #include "Page.h"
-#include "Account.h"
+#include "studsys/Account.h"
 #include <vector>
 
 class Module;

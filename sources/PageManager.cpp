@@ -1,7 +1,7 @@
 #include "headers/PageManager.h"
 #include "headers/WelcomePage.h"
 #include "headers/Page.h"
-#include "headers/StudentSystem.h"
+#include "headers/studsys/StudentSystem.h"
 
 using std::stack;
 using std::string;

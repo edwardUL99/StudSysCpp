@@ -2,9 +2,9 @@
 #define EXAM_PAGE_H
 
 #include "Page.h"
-#include "Exam.h"
-#include "Student.h"
-#include "ExamSubmission.h"
+#include "studsys/Exam.h"
+#include "studsys/Student.h"
+#include "studsys/ExamSubmission.h"
 #include <vector>
 #include <map>
 

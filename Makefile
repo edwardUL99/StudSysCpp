@@ -1,7 +1,7 @@
 CXX=g++
-CXXFLAGS=-g -Wall -D_GLIBCXX_ASSERTIONS
+CXXFLAGS=-g -Wall -D_GLIBCXX_ASSERTIONS -L$(shell pwd)
 
-LIBS=-lmysqlcppconn
+LIBS=-lstudsys
 
 PROGRAMS=test
 SOURCES=$(shell find ./sources -name "*.cpp")

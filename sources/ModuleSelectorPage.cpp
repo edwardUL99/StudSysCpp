@@ -1,7 +1,7 @@
 #include "headers/ModuleSelectorPage.h"
 #include "headers/ModuleHomePage.h"
-#include "headers/Module.h"
-#include "headers/StudentAccount.h"
+#include "headers/studsys/Module.h"
+#include "headers/studsys/StudentAccount.h"
 #include "headers/UIUtils.h"
 
 using std::string;

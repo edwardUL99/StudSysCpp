@@ -2,7 +2,7 @@
 #define EXAM_EDIT_PAGE_H
 
 #include "Page.h"
-#include "Exam.h"
+#include "studsys/Exam.h"
 #include <string>
 #include <vector>
 

@@ -1,6 +1,6 @@
 #include "headers/LoginPage.h"
-#include "headers/NotFoundException.h"
-#include "headers/NotLoggedInException.h"
+#include "headers/studsys/NotFoundException.h"
+#include "headers/studsys/NotLoggedInException.h"
 #include "headers/AccountPage.h"
 #include "headers/UIUtils.h"
 

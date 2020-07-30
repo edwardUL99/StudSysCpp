@@ -1,11 +1,11 @@
 #include "headers/Administration.h"
-#include "headers/Module.h"
-#include "headers/Student.h"
-#include "headers/StudentAccount.h"
-#include "headers/Lecturer.h"
-#include "headers/LecturerAccount.h"
-#include "headers/NotFoundException.h"
-#include "headers/DuplicateException.h"
+#include "headers/studsys/Module.h"
+#include "headers/studsys/Student.h"
+#include "headers/studsys/StudentAccount.h"
+#include "headers/studsys/Lecturer.h"
+#include "headers/studsys/LecturerAccount.h"
+#include "headers/studsys/NotFoundException.h"
+#include "headers/studsys/DuplicateException.h"
 #include "headers/UIUtils.h"
 
 #include <cstring>

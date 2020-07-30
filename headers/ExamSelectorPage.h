@@ -1,8 +1,8 @@
 #ifndef EXAM_SELECTOR_PAGE_H
 #define EXAM_SELECTOR_PAGE_H
 
-#include "Account.h"
-#include "Module.h"
+#include "studsys/Account.h"
+#include "studsys/Module.h"
 #include "Page.h"
 #include <vector>
 

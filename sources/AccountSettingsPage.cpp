@@ -1,8 +1,8 @@
 #include "headers/AccountSettingsPage.h"
-#include "headers/LecturerAccount.h"
-#include "headers/StudentAccount.h"
-#include "headers/Lecturer.h"
-#include "headers/Student.h"
+#include "headers/studsys/LecturerAccount.h"
+#include "headers/studsys/StudentAccount.h"
+#include "headers/studsys/Lecturer.h"
+#include "headers/studsys/Student.h"
 #include "headers/UIUtils.h"
 
 using std::string;
