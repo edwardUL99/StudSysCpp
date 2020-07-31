@@ -48,7 +48,7 @@ It is programmed with C++ entirely and can be compiled on Linux with g++
            My OS is 64 bit which I developed it in, but you could try it with 32 bit but it's not guaranteed to work
 	3. Ensure you install the correct MySQL C++ connector. Can't install above on Raspberry Pi for example but there are plenty of installation guides on google
 
-   A MySQL server, configured as of below in Database Setup
+   A MySQL server, configured as of Database Setup in the readme of StudSysCppLibrary
    Also works with mariadb-server-10.0 (this is what you'll need on Raspberry Pi)
 
 ## How to compile:
@@ -57,19 +57,6 @@ It is programmed with C++ entirely and can be compiled on Linux with g++
    Copy the library to the root directory of this directory
    Obtain the headers from the studsys library and put them in headers/studsys
    Compile with the make file provided by typing make in the root directory
-
-## Database Setup:
-   You need a MySQL server either MySQL or MariaDB
-   Steps:
-       1. Login to MySQL using mysql -u [user-name] -p (this user must be able to create databases and users)
-       2. Type CREATE DATABASE <database-name>;
-       3. Exit the MySQL shell
-       4. Now type mysql -u [user-name] --password=[user-password] [database-name] < [file-name.sql]. You will need to do this with schema.sql, triggers.sql and procedures.sql
-       5. Log back into the mysql shell and create a user for the system to use and password by typing CREATE USER '<user-name>'@'localhost' IDENTIFIED BY 'user-password';
-       6. Then type GRANT ALL PRIVILEGES ON [database-name].* TO '[user-name]'@'%';
-       7. Then type FLUSH PRIVILEGES; and then exit
-       8. Ensure bind-address in mysql config is set to 0.0.0.0 on the database server machine
-   The MySQL server is now set-up and ready to use with the system
 
 If you don't have access to the database to create databases or users, or don't know the host, contact the database administrator to create a database if not already exists.
 The admin will then be able to give you the IP address to the database server to login to
