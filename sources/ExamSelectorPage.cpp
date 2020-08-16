@@ -101,6 +101,7 @@ bool ExamSelectorPage::takeExam()
         catch (NotFoundException &nf)
         {
             ExamPage *examPage = new ExamPage(student, *exam, this->system);
+            delete exam; 
             ui::pageManager.setNextPage(examPage);
             return true;
         }
