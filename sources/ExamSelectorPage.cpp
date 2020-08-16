@@ -85,7 +85,7 @@ void ExamSelectorPage::printPrompt(bool lecturer)
 
 bool ExamSelectorPage::takeExam()
 {
-    if (exams.size() != 0 && isLecturer())
+    if (exams.size() != 0 && !isLecturer())
     {
         Exam exam = getExam();
         StudentAccount &studentAccount = dynamic_cast<StudentAccount &>(account);

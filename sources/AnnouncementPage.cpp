@@ -380,7 +380,7 @@ Announcement AnnouncementPage::chooseAnnouncement(std::vector<Announcement> &ann
         cout << i << ") " << announcement.getSubject() << endl;
         i++;
     }
-    cout << "Choose a number between 1 and " << length << " to choose which announcement to edit (1 being the newest): " << endl;
+    cout << "Choose a number between 1 and " << length << " to choose the announcement (1 being the newest): " << endl;
     int num = ui::getInt(Predicate<int>([length](const int &x) -> bool { return x < 1 || x > length; }), "Choose a number between 1 and " + std::to_string(length) + ": ");
 
     ui::flushCinBuffer();
