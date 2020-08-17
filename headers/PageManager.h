@@ -2,8 +2,11 @@
 #define PAGE_MANAGER_H
 
 #include "studsys/StudentSystem.h"
+#include "studsys/DatabaseItem.h"
 #include <stack>
 #include <string>
+#include <vector>
+#include <map>
 
 class DatabaseItem;
 
@@ -25,10 +28,17 @@ namespace ui
     {
         private:
             std::stack<Page*> pages;
+            std::map<Page*, std::vector<DatabaseItem*>> sharedEntities; //entities stored by Pages 
+            std::map<DatabaseItem*, int> timesStored; //keeps track of the amount of times the DatabaseItem is stored by pages
             StudentSystem system;
             bool run;
             //determines which Page to show next and calls its show() method. This method will be returned from as soon as that page is finished
             void showNextPage();
+            /**
+             * Attempts to delete the space taken by the entities stored by the specified page
+             * Only uses delete if timesStored[item] == 1
+             */
+            void freeEntities(Page *page);
 
         public:
             /**
@@ -67,6 +77,12 @@ namespace ui
              * Starts the page manager with the default initial page which is a Welcome Page and starts the StudentSystem
              */
             void start();
+            /**
+             * Adds a shared entity to the specified page
+             * When these entities are freed depends on if they are in use by other pages
+             * But they are guaranteed to be freed eventually before program termination
+             */
+            void addSharedEntity(Page *page, DatabaseItem *entity);
     };
 
 } // namespace ui

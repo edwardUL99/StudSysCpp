@@ -7,6 +7,8 @@ using std::stack;
 using std::string;
 using ui::Page;
 using ui::PageManager;
+using std::map;
+using std::vector;
 
 PageManager::PageManager()
 {
@@ -15,6 +17,13 @@ PageManager::PageManager()
 
 PageManager::~PageManager()
 {
+    for (map<Page*, vector<DatabaseItem*>>::iterator it = sharedEntities.begin(); it != sharedEntities.end(); it++) {
+        vector<DatabaseItem*> vect = it->second;
+        for (vector<DatabaseItem*>::iterator vIt = vect.begin(); vIt != vect.end(); vIt++) {
+            delete *vIt;
+        }
+    }
+
     Page *page;
 
     while (!pages.empty())
@@ -22,6 +31,23 @@ PageManager::~PageManager()
         page = pages.top();
         pages.pop();
         delete page;
+    }
+}
+
+void PageManager::freeEntities(Page *page) {
+    if (sharedEntities.find(page) != sharedEntities.end()) {
+        vector<DatabaseItem*> &entities = sharedEntities[page];
+
+        for (vector<DatabaseItem*>::iterator it = entities.begin(); it != entities.end(); it++) {
+            DatabaseItem *item = *it;
+            if (timesStored[item] <= 1) {
+                delete item;
+            } else {
+                timesStored[item]--; //it's stored in a different vector so don't delete it
+            }
+
+            entities.erase(it--);
+        }
     }
 }
 
@@ -56,6 +82,7 @@ void PageManager::setNextPage(Page *page)
 void PageManager::popCurrentPage()
 {
     Page *page = pages.top(); //the page to remove
+    freeEntities(page);
     pages.pop();
     delete page;
 }
@@ -86,4 +113,13 @@ void PageManager::start()
 {
     WelcomePage *welcome = new WelcomePage(this->system);
     start(welcome);
+}
+
+void PageManager::addSharedEntity(Page *page, DatabaseItem *entity) {
+    sharedEntities[page].push_back(entity);
+    if (timesStored[entity] == 0) {
+        timesStored[entity] = 1;
+    } else {
+        timesStored[entity]++;
+    }
 }

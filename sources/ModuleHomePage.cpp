@@ -10,7 +10,7 @@ using std::string;
 using std::vector;
 using ui::ModuleHomePage;
 
-ModuleHomePage::ModuleHomePage(Account &account, Module &module, StudentSystem &system) : Page(system), account(account), module(module) {}
+ModuleHomePage::ModuleHomePage(Account *account, Module *module, StudentSystem &system) : Page(system), account(account), module(module) {}
 
 void ModuleHomePage::deRegisterStudent(int id)
 {
@@ -18,13 +18,13 @@ void ModuleHomePage::deRegisterStudent(int id)
     {
         Student student = this->system.getStudent(id);
 
-        if (this->system.unregisterStudentModule(student, module))
+        if (this->system.unregisterStudentModule(student, *module))
         {
-            cout << "Student " << id << " de-registered from module " << module.getCode() << " successfully" << endl;
+            cout << "Student " << id << " de-registered from module " << module->getCode() << " successfully" << endl;
         }
         else
         {
-            cout << "Student " << id << " de-registered from module " << module.getCode() << " unsuccessfully, please try again later" << endl;
+            cout << "Student " << id << " de-registered from module " << module->getCode() << " unsuccessfully, please try again later" << endl;
         }
     }
     catch (NotFoundException &nf)
@@ -44,7 +44,7 @@ void ModuleHomePage::registerStudents()
         if (choice == "R")
         {
             Administration admin(this->system);
-            admin.registerStudent(module.getCode());
+            admin.registerStudent(module->getCode());
             break;
         }
         else if (choice == "D")
@@ -66,11 +66,11 @@ void ModuleHomePage::registerStudents()
 
 void ModuleHomePage::displayRegisteredStudents()
 {
-    cout << "Students registered on Module " << module.getCode() << ":" << endl;
+    cout << "Students registered on Module " << module->getCode() << ":" << endl;
 
     int i = 1;
 
-    for (const Student &student : this->system.getStudentsRegisteredOnModule(module))
+    for (const Student &student : this->system.getStudentsRegisteredOnModule(*module))
     {
         cout << "\t" << i++ << ") " << student.getName() << " - " << student.getID() << " - " << student.getEmail() << endl;
     }
@@ -79,7 +79,7 @@ void ModuleHomePage::displayRegisteredStudents()
 
     try
     {
-        LecturerAccount &lecturerAccount = dynamic_cast<LecturerAccount &>(account);
+        LecturerAccount *lecturerAccount = dynamic_cast<LecturerAccount*>(account);
         lecturer = true; //if the cast succeeded, it is a lecturer account
     }
     catch (std::bad_cast &e)
@@ -92,7 +92,7 @@ void ModuleHomePage::displayRegisteredStudents()
 
 void ModuleHomePage::displayLecturerDetails()
 {
-    Lecturer lecturer = module.getLecturer();
+    Lecturer lecturer = module->getLecturer();
 
     cout << "The lecturer for this module is: " << endl;
     cout << "\tName: " << lecturer.getName() << endl;
@@ -102,7 +102,7 @@ void ModuleHomePage::displayLecturerDetails()
 
 void ModuleHomePage::show()
 {
-    string code = module.getCode();
+    string code = module->getCode();
 
     cout << "Welcome to the homepage for Module " << code << "\n"
          << endl;
@@ -118,6 +118,8 @@ void ModuleHomePage::show()
         if (choice == "A")
         {
             AnnouncementPage *announcementPage = new AnnouncementPage(this->account, module, system);
+            ui::pageManager.addSharedEntity(announcementPage, account);
+            ui::pageManager.addSharedEntity(announcementPage, module);
             ui::pageManager.setNextPage(announcementPage);
             run = false;
         }
@@ -128,6 +130,8 @@ void ModuleHomePage::show()
         else if (choice == "E")
         {
             ExamSelectorPage *selectorPage = new ExamSelectorPage(this->account, this->module, this->system);
+            ui::pageManager.addSharedEntity(selectorPage, account);
+            ui::pageManager.addSharedEntity(selectorPage, module);
             ui::pageManager.setNextPage(selectorPage);
             run = false;
         }

@@ -14,8 +14,8 @@ namespace ui
     class ExamSelectorPage : public Page
     {
         private:
-            Account &account;
-            Module &module;
+            Account *account;
+            Module *module;
             std::vector<Exam> exams;
             void initialiseExamList();
             /**
@@ -48,7 +48,7 @@ namespace ui
              */
             bool editExam();
         public:
-            ExamSelectorPage(Account &account, Module &module, StudentSystem &system);
+            ExamSelectorPage(Account *account, Module *module, StudentSystem &system);
             virtual ~ExamSelectorPage() = default;
             virtual void show() override;
     };

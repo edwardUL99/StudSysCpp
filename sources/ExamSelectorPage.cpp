@@ -11,14 +11,14 @@ using std::string;
 using std::vector;
 using ui::ExamSelectorPage;
 
-ExamSelectorPage::ExamSelectorPage(Account &account, Module &module, StudentSystem &system) : Page(system), account(account), module(module)
+ExamSelectorPage::ExamSelectorPage(Account *account, Module *module, StudentSystem &system) : Page(system), account(account), module(module)
 {
     initialiseExamList();
 }
 
 void ExamSelectorPage::initialiseExamList()
 {
-    for (const Exam &exam : this->system.retrieveExamsByModule(module))
+    for (const Exam &exam : this->system.retrieveExamsByModule(*module))
     {
         exams.push_back(exam);
     }
@@ -56,7 +56,7 @@ bool ExamSelectorPage::isLecturer()
 {
     try
     {
-        LecturerAccount &lectAcc = dynamic_cast<LecturerAccount &>(account);
+        LecturerAccount* lectAcc = dynamic_cast<LecturerAccount*>(account);
         return true;
     }
     catch (std::bad_cast &bc)
@@ -88,8 +88,8 @@ bool ExamSelectorPage::takeExam()
     if (exams.size() != 0 && !isLecturer())
     {
         Exam exam = getExam();
-        StudentAccount &studentAccount = dynamic_cast<StudentAccount &>(account);
-        Student student = studentAccount.getStudent();
+        StudentAccount* studentAccount = dynamic_cast<StudentAccount*>(account);
+        Student student = studentAccount->getStudent();
 
         try
         {
@@ -132,7 +132,7 @@ bool ExamSelectorPage::editExam()
 
 void ExamSelectorPage::show()
 {
-    cout << "You are viewing the list of Exams for Module " << module.getCode() << ": " << endl;
+    cout << "You are viewing the list of Exams for Module " << module->getCode() << ": " << endl;
     bool run = true;
 
     displayExams();
@@ -154,7 +154,8 @@ void ExamSelectorPage::show()
         }
         else if (choice == "C" && lecturer)
         {
-            ExamCreatePage *createPage = new ExamCreatePage(this->module, this->system);
+            ExamCreatePage *createPage = new ExamCreatePage(*this->module, this->system);
+            ui::pageManager.addSharedEntity(createPage, module);
             ui::pageManager.setNextPage(createPage);
             break;
         }

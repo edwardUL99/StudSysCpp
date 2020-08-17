@@ -11,7 +11,7 @@ namespace ui
     class AnnouncementPage : public Page
     {
     private:
-        Account &account;
+        Account *account;
         Module module;
         void viewAnnouncement(const Announcement &announcement);
         void createAnnouncement();
@@ -118,7 +118,7 @@ namespace ui
         Announcement chooseAnnouncement(std::vector<Announcement> &announcements);
 
     public:
-        AnnouncementPage(Account &account, const Module &module, StudentSystem &system);
+        AnnouncementPage(Account *account, Module *module, StudentSystem &system);
         virtual ~AnnouncementPage() = default;
         virtual void show() override;
     };

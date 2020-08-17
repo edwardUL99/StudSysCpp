@@ -8,14 +8,14 @@
 using std::string;
 using ui::AccountSettingsPage;
 
-AccountSettingsPage::AccountSettingsPage(StudentSystem &system, Account &account) : Page(system), account(account) {}
+AccountSettingsPage::AccountSettingsPage(StudentSystem &system, Account *account) : Page(system), account(account) {}
 
 boost::optional<LecturerAccount> AccountSettingsPage::accToLectAcc()
 {
     try
     {
-        LecturerAccount &lectAcc = dynamic_cast<LecturerAccount &>(account);
-        return LecturerAccount(lectAcc); //copies the lecturerAccount so you don't return a reference to a local variable
+        LecturerAccount *lectAcc = dynamic_cast<LecturerAccount*>(account);
+        return LecturerAccount(*lectAcc);
     }
     catch (std::bad_cast &b)
     {
@@ -27,8 +27,8 @@ boost::optional<StudentAccount> AccountSettingsPage::accToStudAcc()
 {
     try
     {
-        StudentAccount &studAcc = dynamic_cast<StudentAccount &>(account);
-        return StudentAccount(studAcc);
+        StudentAccount *studAcc = dynamic_cast<StudentAccount*>(account);
+        return StudentAccount(*studAcc);
     }
     catch (std::bad_cast &b)
     {
@@ -50,7 +50,7 @@ void AccountSettingsPage::changeName()
 
         if (choice == "Y")
         {
-            account.setName(name);
+            account->setName(name);
             boost::optional<LecturerAccount> lectAcc = accToLectAcc();
             boost::optional<StudentAccount> studAcc = accToStudAcc();
 
@@ -84,7 +84,7 @@ void AccountSettingsPage::changePassword()
 
     string password = ui::getSecureString(ui::passlengthpred, ui::passlengthretrymsg);
 
-    if (password != account.getPassword())
+    if (password != account->getPassword())
     {
         cout << "The password you entered does not match your current password, aborting..." << endl;
     }
@@ -108,7 +108,7 @@ void AccountSettingsPage::changePassword()
 
             if (choice == "Y")
             {
-                account.setPassword(newPass);
+                account->setPassword(newPass);
                 boost::optional<LecturerAccount> lectAcc = accToLectAcc();
                 boost::optional<StudentAccount> studAcc = accToStudAcc();
 
@@ -140,7 +140,7 @@ void AccountSettingsPage::changePassword()
 
 //add more settings as system develops
 void AccountSettingsPage::show() {
-    cout << "\nAccount Settings for: " << account.getName() << "\n" << endl;
+    cout << "\nAccount Settings for: " << account->getName() << "\n" << endl;
 
     bool run = true;
 

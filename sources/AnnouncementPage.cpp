@@ -6,7 +6,7 @@
 using std::string;
 using ui::AnnouncementPage;
 
-AnnouncementPage::AnnouncementPage(Account &account, const Module &module, StudentSystem &system) : Page(system), account(account), module(module) {}
+AnnouncementPage::AnnouncementPage(Account *account, Module *module, StudentSystem &system) : Page(system), account(account), module(*module) {}
 
 void AnnouncementPage::viewAnnouncement(const Announcement &announcement)
 {
@@ -22,7 +22,7 @@ void AnnouncementPage::viewAnnouncement(const Announcement &announcement)
 
 void AnnouncementPage::createAnnouncement()
 {
-    Lecturer lecturer = dynamic_cast<LecturerAccount &>(account).getLecturer();
+    Lecturer lecturer = dynamic_cast<LecturerAccount*>(account)->getLecturer();
 
     cout << "Enter the subject for the announcement (max 250 characters): " << endl;
     string subject = ui::getString(Predicate<string>([](const string &s) -> bool { return s.length() < 1 || s.length() > 250; }), "Please enter a subject that is between 1 and 250 characters:");
@@ -292,7 +292,7 @@ bool AnnouncementPage::canEditAnnouncement(const Announcement &announcement)
 {
     string announcementLecturer = announcement.getLecturer().getEmail();
 
-    if (announcementLecturer != account.getEmail())
+    if (announcementLecturer != account->getEmail())
     {
         cout << "You cannot edit another lecturer's announcement, contact " << announcementLecturer << " to request they change it" << endl;
         return false;
@@ -427,7 +427,7 @@ void AnnouncementPage::show()
         bool lecturer = false;
         try
         {
-            LecturerAccount &lecturerAcc = dynamic_cast<LecturerAccount &>(account);
+            LecturerAccount* lecturerAcc = dynamic_cast<LecturerAccount*>(account);
             lecturer = true;
         }
         catch (std::bad_cast &b)

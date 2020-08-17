@@ -15,14 +15,14 @@ namespace ui
     class AccountSettingsPage : public Page
     {
     private:
-        Account &account;
+        Account *account;
         boost::optional<LecturerAccount> accToLectAcc();
         boost::optional<StudentAccount> accToStudAcc();
         void changeName();
         void changePassword();
 
     public:
-        AccountSettingsPage(StudentSystem &system, Account &account);
+        AccountSettingsPage(StudentSystem &system, Account *account);
         virtual ~AccountSettingsPage() = default;
         virtual void show() override;
     };

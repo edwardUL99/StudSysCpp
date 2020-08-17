@@ -13,7 +13,7 @@ namespace ui
     class ModuleSelectorPage : public Page
     {
     private:
-        Account &account;
+        Account *account;
         bool isStudentAccount() const;
         std::vector<Module> getModuleList() const; //gets the module list for either the lecturer teaching them or the student registered with them
         /**
@@ -27,7 +27,7 @@ namespace ui
         bool viewModule();
 
     public:
-        ModuleSelectorPage(Account &account, StudentSystem &system);
+        ModuleSelectorPage(Account *account, StudentSystem &system);
         virtual ~ModuleSelectorPage() = default;
         virtual void show() override;
     };

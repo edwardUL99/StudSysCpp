@@ -6,17 +6,17 @@
 using std::string;
 using ui::AccountPage;
 
-AccountPage::AccountPage(StudentSystem &system, Account &account) : Page(system), account(account) {}
+AccountPage::AccountPage(StudentSystem &system, Account *account) : Page(system), account(account) {}
 
-Account &AccountPage::getAccount() {
+const Account *AccountPage::getAccount() {
     return account;
 }
 
 void AccountPage::show() {
     bool run = true;
 
-    string name = account.getName();
-    string email = account.getEmail();
+    string name = account->getName();
+    string email = account->getEmail();
 
     cout << "\t\tWelcome\t\t" << endl;
     cout << "\t" << name << "\t" << endl;
@@ -29,10 +29,12 @@ void AccountPage::show() {
 
         if (choice == "V") {
             ModuleSelectorPage *selectPage = new ModuleSelectorPage(account, system);
+            ui::pageManager.addSharedEntity(selectPage, account);
             ui::pageManager.setNextPage(selectPage);
             run = false;
         } else if (choice == "S") {
             AccountSettingsPage *settings = new AccountSettingsPage(system, account);
+            ui::pageManager.addSharedEntity(settings, account);
             ui::pageManager.setNextPage(settings);
             run = false;
         } else if (choice == "L") {

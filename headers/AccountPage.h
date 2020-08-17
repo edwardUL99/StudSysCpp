@@ -11,12 +11,12 @@ namespace ui
     class AccountPage : public Page
     {
     private:
-        Account &account;
+        Account *account;
 
     public:
-        AccountPage(StudentSystem &system, Account &account);
+        AccountPage(StudentSystem &system, Account *account);
         virtual ~AccountPage() = default;
-        Account &getAccount();
+        const Account *getAccount();
         virtual void show() override;
     };
 

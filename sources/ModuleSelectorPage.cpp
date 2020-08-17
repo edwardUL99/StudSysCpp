@@ -7,7 +7,7 @@
 using std::string;
 using ui::ModuleSelectorPage;
 
-ModuleSelectorPage::ModuleSelectorPage(Account &account, StudentSystem &system) : Page(system), account(account) {}
+ModuleSelectorPage::ModuleSelectorPage(Account *account, StudentSystem &system) : Page(system), account(account) {}
 
 bool ModuleSelectorPage::isStudentAccount() const
 {
@@ -15,7 +15,7 @@ bool ModuleSelectorPage::isStudentAccount() const
 
     try
     {
-        StudentAccount &sAccount = dynamic_cast<StudentAccount &>(this->account); //if this is a student account the catch wouldn't run so student is true, else it will throw bad cast and make student false meaning it's a lecturer account
+        StudentAccount *sAccount = dynamic_cast<StudentAccount*>(this->account); //if this is a student account the catch wouldn't run so student is true, else it will throw bad cast and make student false meaning it's a lecturer account
     }
     catch (std::bad_cast &b)
     {
@@ -31,13 +31,13 @@ std::vector<Module> ModuleSelectorPage::getModuleList() const
 
     if (isStudentAccount())
     {
-        Student student = dynamic_cast<StudentAccount &>(this->account).getStudent();
+        Student student = dynamic_cast<StudentAccount*>(this->account)->getStudent();
 
         modules = this->system.getStudentRegisteredModules(student);
     }
     else
     {
-        Lecturer lecturer = dynamic_cast<LecturerAccount &>(this->account).getLecturer();
+        Lecturer lecturer = dynamic_cast<LecturerAccount*>(this->account)->getLecturer();
 
         for (const Module &module : this->system.getModules())
         {
@@ -82,8 +82,9 @@ bool ModuleSelectorPage::viewModule()
 
         int num = ui::getInt(Predicate<int>([numModules](const int &x) -> bool { return x < 1 || x > numModules; }), "Please re-enter a number between 1 and " + std::to_string(numModules) + ": ");
 
-        static Module module = modules[num - 1];
+        Module *module = new Module(modules[num - 1]);
         ModuleHomePage *modulePage = new ModuleHomePage(account, module, system);
+        ui::pageManager.addSharedEntity(modulePage, module);
         ui::pageManager.setNextPage(modulePage);
         return true;
     }

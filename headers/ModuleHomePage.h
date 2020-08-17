@@ -16,8 +16,8 @@ namespace ui
     class ModuleHomePage : public Page
     {
     private:
-        Account &account;
-        Module &module;
+        Account *account;
+        Module *module;
         /**
          * @brief This method is used to (de)register a student on a module
          */
@@ -38,7 +38,7 @@ namespace ui
          * @param module the module that this home page is for
          * @param system the backing system this UI is running on
          */
-        ModuleHomePage(Account &account, Module &module, StudentSystem &system);
+        ModuleHomePage(Account *account, Module *module, StudentSystem &system);
         virtual ~ModuleHomePage() = default;
         virtual void show() override;
     };

@@ -77,13 +77,15 @@ AccountPage *LoginPage::getAccountPage()
 
     if (isStudentLogin())
     {
-        static StudentAccount studentAccount = getStudentAccount(); //this will always be in scope for any pages since WelcomePage is the parent page and if WelcomePage whule loop ends and leaves show, no other page should be open
+        StudentAccount *studentAccount = new StudentAccount(getStudentAccount()); //this will always be in scope for any pages since WelcomePage is the parent page and if WelcomePage whule loop ends and leaves show, no other page should be open
         accountPage = new AccountPage(system, studentAccount);
+        ui::pageManager.addSharedEntity(accountPage, studentAccount);
     }
     else
     {
-        static LecturerAccount lecturerAccount = getLecturerAccount(); //this will always be in scope for any pages since WelcomePage is the parent page and if WelcomePage whule loop ends and leaves show, no other page should be open
+        LecturerAccount *lecturerAccount = new LecturerAccount(getLecturerAccount()); //this will always be in scope for any pages since WelcomePage is the parent page and if WelcomePage whule loop ends and leaves show, no other page should be open
         accountPage = new AccountPage(system, lecturerAccount);
+        ui::pageManager.addSharedEntity(accountPage, lecturerAccount);
     }
 
     return accountPage;
