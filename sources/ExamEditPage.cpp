@@ -7,11 +7,7 @@ using std::string;
 using std::vector;
 using ui::ExamEditPage;
 
-ExamEditPage::ExamEditPage(Exam *exam, StudentSystem &system) : Page(system), exam(exam), newExam(*exam) /*before any edits are made the newExam is the same as the old one*/ {}
-
-ExamEditPage::~ExamEditPage() {
-    delete exam;
-}
+ExamEditPage::ExamEditPage(const Exam &exam, StudentSystem &system) : Page(system), exam(exam), newExam(exam) /*before any edits are made the newExam is the same as the old one*/ {}
 
 ExamQuestion &ExamEditPage::chooseExamQuestion(vector<ExamQuestion> &questions)
 {
@@ -206,7 +202,7 @@ void ExamEditPage::submitChanges()
 
     try
     {
-        if (this->system.updateExam(*exam, newExam))
+        if (this->system.updateExam(exam, newExam))
         {
             cout << "The changes have been submitted successfully" << endl;
         }
@@ -225,7 +221,7 @@ void ExamEditPage::submitChanges()
 
 void ExamEditPage::show()
 {
-    cout << "Welcome to the Edit page for Exam " << (*exam).getName() << endl;
+    cout << "Welcome to the Edit page for Exam " << exam.getName() << endl;
 
     bool run = true;
 

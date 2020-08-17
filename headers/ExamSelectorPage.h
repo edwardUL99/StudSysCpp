@@ -26,7 +26,7 @@ namespace ui
              * @brief allows the user to select an exam from the list displayed by displayExams and returns it
              * @return the chosen exam
              */
-            Exam *getExam();
+            Exam getExam();
             /**
              * @brief Checks if the user using the selector page is a lecturer
              * @return true if the account is that of a lecturer

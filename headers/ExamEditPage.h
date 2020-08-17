@@ -10,7 +10,7 @@ namespace ui
 {
     class ExamEditPage : public Page {
         private:
-            Exam *exam;
+            const Exam exam;
             Exam newExam; //this is this exam you can edit
             /**
              * @brief Asks the user to choose an exam question from a list of them and returns it
@@ -67,8 +67,8 @@ namespace ui
              */
             void submitChanges();
         public:
-            ExamEditPage(Exam *exam, StudentSystem &system);
-            virtual ~ExamEditPage();
+            ExamEditPage(const Exam &exam, StudentSystem &system);
+            virtual ~ExamEditPage() = default;
             virtual void show() override;
     };
 }

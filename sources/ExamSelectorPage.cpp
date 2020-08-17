@@ -41,7 +41,7 @@ void ExamSelectorPage::displayExams()
     }
 }
 
-Exam* ExamSelectorPage::getExam()
+Exam ExamSelectorPage::getExam()
 {
     int size = exams.size();
     string msg = "Please choose a number between 1 and " + std::to_string(size) + ": ";
@@ -49,8 +49,7 @@ Exam* ExamSelectorPage::getExam()
 
     int num = ui::getInt(Predicate<int>([size](const int &x) -> bool { return x < 1 || x > size; }), msg);
 
-    Exam exam = exams[num - 1];
-    return new Exam(exam);
+    return exams[num - 1];
 }
 
 bool ExamSelectorPage::isLecturer()
@@ -88,20 +87,19 @@ bool ExamSelectorPage::takeExam()
 {
     if (exams.size() != 0 && !isLecturer())
     {
-        Exam *exam = getExam();
+        Exam exam = getExam();
         StudentAccount &studentAccount = dynamic_cast<StudentAccount &>(account);
         Student student = studentAccount.getStudent();
 
         try
         {
-            ExamGrade grade = this->system.getExamGrade(student, *exam);
+            ExamGrade grade = this->system.getExamGrade(student, exam);
             cout << "You already took this exam, so you cannot take it again. If this is an error, contact your lecturer" << endl;
             return false;
         }
         catch (NotFoundException &nf)
         {
-            ExamPage *examPage = new ExamPage(student, *exam, this->system);
-            delete exam; 
+            ExamPage *examPage = new ExamPage(student, exam, this->system); 
             ui::pageManager.setNextPage(examPage);
             return true;
         }
@@ -114,9 +112,9 @@ bool ExamSelectorPage::editExam()
 {
     if (exams.size() != 0 && isLecturer())
     {
-        Exam *exam = getExam();
+        Exam exam = getExam();
         
-        if (!this->system.examTaken(*exam))
+        if (!this->system.examTaken(exam))
         {
             ExamEditPage *editPage = new ExamEditPage(exam, system);
             ui::pageManager.setNextPage(editPage);
