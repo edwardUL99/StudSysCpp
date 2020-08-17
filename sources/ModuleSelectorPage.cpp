@@ -11,16 +11,7 @@ ModuleSelectorPage::ModuleSelectorPage(Account *account, StudentSystem &system) 
 
 bool ModuleSelectorPage::isStudentAccount() const
 {
-    bool student = true;
-
-    try
-    {
-        StudentAccount *sAccount = dynamic_cast<StudentAccount*>(this->account); //if this is a student account the catch wouldn't run so student is true, else it will throw bad cast and make student false meaning it's a lecturer account
-    }
-    catch (std::bad_cast &b)
-    {
-        student = false;
-    }
+    bool student = dynamic_cast<StudentAccount*>(this->account); 
 
     return student;
 }

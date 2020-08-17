@@ -12,22 +12,19 @@ AccountSettingsPage::AccountSettingsPage(StudentSystem &system, Account *account
 
 boost::optional<LecturerAccount> AccountSettingsPage::accToLectAcc()
 {
-    try
-    {
-        LecturerAccount *lectAcc = dynamic_cast<LecturerAccount*>(account);
+    LecturerAccount *lectAcc = dynamic_cast<LecturerAccount *>(account);
+
+    if (lectAcc)
         return LecturerAccount(*lectAcc);
-    }
-    catch (std::bad_cast &b)
-    {
+    else
         return boost::none;
-    }
 }
 
 boost::optional<StudentAccount> AccountSettingsPage::accToStudAcc()
 {
     try
     {
-        StudentAccount *studAcc = dynamic_cast<StudentAccount*>(account);
+        StudentAccount *studAcc = dynamic_cast<StudentAccount *>(account);
         return StudentAccount(*studAcc);
     }
     catch (std::bad_cast &b)
@@ -139,24 +136,34 @@ void AccountSettingsPage::changePassword()
 }
 
 //add more settings as system develops
-void AccountSettingsPage::show() {
-    cout << "\nAccount Settings for: " << account->getName() << "\n" << endl;
+void AccountSettingsPage::show()
+{
+    cout << "\nAccount Settings for: " << account->getName() << "\n"
+         << endl;
 
     bool run = true;
 
-    while (run) {
+    while (run)
+    {
         cout << "Do you want to Change (N)ame or (P)assword, (C)ancel, (Q)uit?" << endl;
 
         string choice = ui::getChoice();
 
-        if (choice == "N") {
+        if (choice == "N")
+        {
             changeName();
-        } else if (choice == "P") {
+        }
+        else if (choice == "P")
+        {
             changePassword();
-        } else if (choice == "C") {
+        }
+        else if (choice == "C")
+        {
             run = false;
             ui::pageManager.popCurrentPage();
-        } else if (choice == "Q") {
+        }
+        else if (choice == "Q")
+        {
             ui::quit();
         }
     }

@@ -54,15 +54,7 @@ Exam ExamSelectorPage::getExam()
 
 bool ExamSelectorPage::isLecturer()
 {
-    try
-    {
-        LecturerAccount* lectAcc = dynamic_cast<LecturerAccount*>(account);
-        return true;
-    }
-    catch (std::bad_cast &bc)
-    {
-        return false;
-    }
+    return dynamic_cast<LecturerAccount*>(account);
 }
 
 void ExamSelectorPage::printPrompt(bool lecturer)

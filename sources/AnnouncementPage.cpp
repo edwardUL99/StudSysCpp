@@ -424,15 +424,7 @@ void AnnouncementPage::show()
 
     while (true)
     {
-        bool lecturer = false;
-        try
-        {
-            LecturerAccount* lecturerAcc = dynamic_cast<LecturerAccount*>(account);
-            lecturer = true;
-        }
-        catch (std::bad_cast &b)
-        {
-        }
+        bool lecturer = dynamic_cast<LecturerAccount*>(account);
 
         if (lecturer)
             cout << "(N)ew announcement, (E)dit announcement, (V)iew announcements, (B)ack, (Q)uit" << endl;

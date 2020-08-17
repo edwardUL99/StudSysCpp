@@ -75,16 +75,7 @@ void ModuleHomePage::displayRegisteredStudents()
         cout << "\t" << i++ << ") " << student.getName() << " - " << student.getID() << " - " << student.getEmail() << endl;
     }
 
-    bool lecturer = false;
-
-    try
-    {
-        LecturerAccount *lecturerAccount = dynamic_cast<LecturerAccount*>(account);
-        lecturer = true; //if the cast succeeded, it is a lecturer account
-    }
-    catch (std::bad_cast &e)
-    {
-    }
+    bool lecturer = dynamic_cast<LecturerAccount*>(account);
 
     if (lecturer)
         registerStudents();

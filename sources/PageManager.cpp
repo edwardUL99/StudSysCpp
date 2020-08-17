@@ -17,10 +17,19 @@ PageManager::PageManager()
 
 PageManager::~PageManager()
 {
+    map<DatabaseItem*, bool> dontDelete; //keep track of database items already deleted
+
     for (map<Page*, vector<DatabaseItem*>>::iterator it = sharedEntities.begin(); it != sharedEntities.end(); it++) {
         vector<DatabaseItem*> vect = it->second;
         for (vector<DatabaseItem*>::iterator vIt = vect.begin(); vIt != vect.end(); vIt++) {
-            delete *vIt;
+            DatabaseItem* item = *vIt;
+
+            if (!dontDelete[item])
+                delete *vIt;
+            
+            if (timesStored[item] > 1) {
+                dontDelete[item] = true;
+            }
         }
     }
 
