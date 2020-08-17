@@ -22,15 +22,12 @@ boost::optional<LecturerAccount> AccountSettingsPage::accToLectAcc()
 
 boost::optional<StudentAccount> AccountSettingsPage::accToStudAcc()
 {
-    try
-    {
-        StudentAccount *studAcc = dynamic_cast<StudentAccount *>(account);
+    StudentAccount *studAcc = dynamic_cast<StudentAccount*>(account);
+
+    if (studAcc)
         return StudentAccount(*studAcc);
-    }
-    catch (std::bad_cast &b)
-    {
+    else 
         return boost::none;
-    }
 }
 
 void AccountSettingsPage::changeName()
