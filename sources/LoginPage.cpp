@@ -112,9 +112,22 @@ void LoginPage::loginUser()
     ui::pageManager.setNextPage(getAccountPage());
 }
 
+string LoginPage::trimEmailAddress(string emailAddress) {
+    string str = "";
+
+    for (int i = 0; i < emailAddress.length(); i++) {
+        if (!isspace(emailAddress[i])) {
+            str += emailAddress[i];
+        }
+    }
+
+    return str;
+}
+
 string LoginPage::autoFillEmailAddress(string emailAddress) {
     if (emailAddress.find('@') == std::string::npos) {
         string extension = this->student ? "@student.mail.ie":"@staff.mail.ie";
+        emailAddress = trimEmailAddress(emailAddress);
         return emailAddress += extension;
     } else {
         return emailAddress;

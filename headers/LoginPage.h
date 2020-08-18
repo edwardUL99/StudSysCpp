@@ -34,9 +34,16 @@ namespace ui
          */
         void loginUser();
         /**
+         * @brief Trims ALL whitespace from the provided emailAddress since there isn't supposed to be any in an e-mail address
+         * @param emailAddress the address to trim
+         * @return the trimmed email address
+         */
+        std::string trimEmailAddress(std::string emailAddress);
+        /**
          * @brief Takes the e-mail address and checks if it is shortened i.e. just <username> of <username>@staff.mail.ie for example and depending on the login page appends the correct ending on
          * If the e-mail is fully qualified, it just returns the provided email address
          * @param emailAddress the e-mail to attempt to autofill
+         * @return the fully qualified e-mail address to login with
          */
         std::string autoFillEmailAddress(std::string emailAddress);
         /**
