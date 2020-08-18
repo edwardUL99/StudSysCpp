@@ -112,6 +112,15 @@ void LoginPage::loginUser()
     ui::pageManager.setNextPage(getAccountPage());
 }
 
+string LoginPage::autoFillEmailAddress(string emailAddress) {
+    if (emailAddress.find('@') == std::string::npos) {
+        string extension = this->student ? "@student.mail.ie":"@staff.mail.ie";
+        return emailAddress += extension;
+    } else {
+        return emailAddress;
+    }
+}
+
 void LoginPage::setEmailAddress()
 {
     string email = "";
@@ -119,11 +128,11 @@ void LoginPage::setEmailAddress()
 
     do
     {
-        cout << "Please enter your e-mail address in the format (" << format << "): " << endl;
+        cout << "Please enter your e-mail address in the format (" << format << ", you can just enter the text before @ if you wish): " << endl;
         email = ui::getString();
     } while (email == "");
 
-    this->email = email;
+    this->email = autoFillEmailAddress(email);
 }
 
 void LoginPage::setPassword()

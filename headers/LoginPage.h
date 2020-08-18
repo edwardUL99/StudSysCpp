@@ -34,6 +34,12 @@ namespace ui
          */
         void loginUser();
         /**
+         * @brief Takes the e-mail address and checks if it is shortened i.e. just <username> of <username>@staff.mail.ie for example and depending on the login page appends the correct ending on
+         * If the e-mail is fully qualified, it just returns the provided email address
+         * @param emailAddress the e-mail to attempt to autofill
+         */
+        std::string autoFillEmailAddress(std::string emailAddress);
+        /**
          * @brief Gets the email address from the user and sets the pages email field
          */
         void setEmailAddress();
