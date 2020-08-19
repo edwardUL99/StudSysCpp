@@ -98,6 +98,11 @@ namespace ui
          */
         void submitAnnouncement(std::vector<std::string> &lines, const Announcement &oldAnnouncement, const std::string &subject);
         void editAnnouncement(const Announcement &announcement);
+        /**
+         * @brief this subroutine removes the selected announcement from the system
+         * @param announcement the announcement to remove
+         */
+        void deleteAnnouncement(const Announcement &announcement);
         //This method can be used to extract inlined commands like <!append> or <!prepend>, it expects them to be found at the start of the line
         std::string extractCommand(std::string &line);
         /**

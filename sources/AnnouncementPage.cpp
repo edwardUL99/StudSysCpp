@@ -117,10 +117,7 @@ void AnnouncementPage::insertNewLine(std::vector<string> &lines, int &lineNumber
     cout << ++lineNumber << " ";
     string newLine = ui::getString();
 
-    //text += line + "\n";
-    //lines.insert(lines.begin() + (lineNumber - 1), line);
-
-    if (newLine == "<!insert>") //need to test this recursion
+    if (newLine == "<!insert>") 
     {
         lines.insert(lines.begin() + (lineNumber - 1), "");
         numberOfLines++;
@@ -371,6 +368,17 @@ void AnnouncementPage::editAnnouncement(const Announcement &announcement)
     }
 }
 
+void AnnouncementPage::deleteAnnouncement(const Announcement &announcement) {
+    if (!canEditAnnouncement(announcement))
+        return; //if the lecturer doesn't have edit rights, they also can't delete
+    
+    if (this->system.removeAnnouncement(announcement)) {
+        cout << "Announcement was removed successfully" << endl;
+    } else {
+        cout << "Announcement was not removed successfully, please try again later..." << endl;
+    }
+}
+
 Announcement AnnouncementPage::chooseAnnouncement(std::vector<Announcement> &announcements)
 {
     int length = announcements.size();
@@ -427,7 +435,7 @@ void AnnouncementPage::show()
         bool lecturer = dynamic_cast<LecturerAccount*>(account);
 
         if (lecturer)
-            cout << "(N)ew announcement, (E)dit announcement, (V)iew announcements, (B)ack, (Q)uit" << endl;
+            cout << "(N)ew announcement, (E)dit announcement, (D)elete announcement, (V)iew announcements, (B)ack, (Q)uit" << endl;
         else
             cout << "(V)iew announcements, (B)ack, (Q)uit" << endl;
 
@@ -441,6 +449,12 @@ void AnnouncementPage::show()
         {
             announcements = this->system.getModuleAnnouncements(module);
             editAnnouncements(announcements);
+        }
+        else if (choice == "D" && lecturer)
+        {
+            announcements = this->system.getModuleAnnouncements(module);
+            Announcement announcement = chooseAnnouncement(announcements);
+            deleteAnnouncement(announcement);
         }
         else if (choice == "V")
         {
