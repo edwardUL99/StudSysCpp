@@ -43,7 +43,7 @@ namespace ui
         Administration(StudentSystem &system);
         virtual ~Administration() = default;
         virtual void show() override;
-        friend class ModuleHomePage;
+        friend class ModuleSettingsPage;
     };
 
 } // namespace ui

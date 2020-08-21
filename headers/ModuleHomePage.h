@@ -19,19 +19,12 @@ namespace ui
         Account *account;
         Module *module;
         /**
-         * @brief This method is used to (de)register a student on a module
-         */
-        void registerStudents();
-        /**
-         * @brief unregisters the student from the module
-         * @param id the id of the student
-         */
-        void deRegisterStudent(int id);
-        /**
          * @brief This method displayes students that are registered on this oparticular module
          */
         void displayRegisteredStudents();
         void displayLecturerDetails();
+        void printPrompt() const;
+        bool isLecturerAccount() const ;
     public:
         /**
          * @param account the account that logged into this ModuleHomePage (i.e. account that is logged in)
