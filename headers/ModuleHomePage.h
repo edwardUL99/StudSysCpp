@@ -24,7 +24,9 @@ namespace ui
         void displayRegisteredStudents();
         void displayLecturerDetails();
         void printPrompt() const;
-        bool isLecturerAccount() const ;
+        bool isLecturerAccount() const;
+        void viewExamGrades();
+        void displayGradesInfo();
     public:
         /**
          * @param account the account that logged into this ModuleHomePage (i.e. account that is logged in)

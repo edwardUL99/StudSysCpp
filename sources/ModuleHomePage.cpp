@@ -41,14 +41,71 @@ void ModuleHomePage::displayLecturerDetails()
 
 void ModuleHomePage::printPrompt() const {
     if (isLecturerAccount()) {
-        cout << "View: (A)nnouncements, (E)xams, (S)tudent list, (L)ecturer details, Change (M)odule settings, (B)ack, (Q)uit" << endl;
+        cout << "View: (A)nnouncements, (E)xams, (S)tudent list, (L)ecturer details, (G)rades, Change (M)odule settings, (B)ack, (Q)uit" << endl;
     } else {
-        cout << "View: (A)nnouncements, (E)xams, (S)tudent list, (L)ecturer details, (B)ack, (Q)uit" << endl;
+        cout << "View: (A)nnouncements, (E)xams, (S)tudent list, (L)ecturer details, (G)rades, (B)ack, (Q)uit" << endl;
     }
 }
 
 bool ModuleHomePage::isLecturerAccount() const {
     return dynamic_cast<LecturerAccount*>(account);
+}
+
+void ModuleHomePage::viewExamGrades() {
+    bool lecturer = isLecturerAccount();
+
+    vector<Exam> exams = system.retrieveExamsByModule(*module);
+
+    if (lecturer) {
+        for (const Exam &exam : exams) {
+            cout << exam.getDescription() << ", Total Weight: " << exam.getTotalWeight() << endl;
+            cout << "Student Results: " << endl;
+            for (const Student &student : system.getStudentsRegisteredOnModule(*module)) {
+                try {
+                    ExamGrade examGrade = system.getExamGrade(student, exam);
+                    float grade = examGrade.getGrade();
+                    float totalWeight = exam.getTotalWeight();
+                    cout << "\tStudent ID: " << student.getID() << ", Mark: " << grade << "/" << totalWeight << ", Percentage: " << (grade/totalWeight) * 100 << endl;
+                } catch (NotFoundException &nf) {}
+            }
+        }
+    } else {
+        StudentAccount *studentAccount = dynamic_cast<StudentAccount*>(account);
+        Student student = studentAccount->getStudent();
+        cout << student.getDescription() << endl;
+
+        for (const Exam &exam : exams) {
+            try {
+                ExamGrade examGrade = system.getExamGrade(student, exam);
+                float grade = examGrade.getGrade();
+                float totalWeight = exam.getTotalWeight();
+                cout << "\t" << examGrade.getDescription() << ", Mark: " << grade << "/" << totalWeight << ", Percentage: " << (grade/totalWeight) * 100 << endl;
+            } catch (NotFoundException &nf) {}
+        }
+    }
+}
+
+void ModuleHomePage::displayGradesInfo() {
+    string prompt = "View: (E)xam grades, (C)ancel, (Q)uit";
+    
+    while (true) {
+        cout << prompt << endl;
+
+        string choice = ui::getChoice();
+
+        if (choice == "E")
+        {
+            viewExamGrades();
+        }
+        else if (choice == "C")
+        {
+            break;
+        }
+        else if (choice == "Q")
+        {
+            ui::quit();
+        }
+    }
 }
 
 void ModuleHomePage::show()
@@ -89,6 +146,10 @@ void ModuleHomePage::show()
         else if (choice == "L")
         {
             displayLecturerDetails();
+        }
+        else if (choice == "G")
+        {
+            displayGradesInfo();
         }
         else if (choice == "M" && isLecturerAccount())
         {
