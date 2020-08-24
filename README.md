@@ -8,7 +8,7 @@ It is programmed with C++ entirely and can be compiled on Linux with g++
 
 ## It allows the following:
    A student to login and browse each module they are registered for
-       Each module site has learning resources and also exams that can be taken
+       Each module site has learning resources and also exams that can be taken, grades info and student/lecturer details
               As of version 1.0, the only exam format allowed is a multiple choice exam with each question having equal weights. Also only supports single answers
               his may be updated with further versions
    A lecturer to login and browse the module(s) they are registered as course leader for
@@ -33,7 +33,8 @@ It is programmed with C++ entirely and can be compiled on Linux with g++
       I can't check if it's 0 a user wants to cancel because they may genuinely want to type a 0
    2. There are no features currently implemented for Tasks. This can be circumvented by using Announcements
    3. After saving an exam that was created successfully, the user is left on the prompt they already used to save the exam in the first place, which could mean they could go editing/saving an exam that was already saved. This is a known bug and is going to be fixed ASAP. Also, after cancelling this prompt, to update the list of exams you need to go back to the Module Homepage and go back into exams. This bug-fix should be in the next release
-   3. This list isn't exhaustive with more testing I may add more
+   4. You cannot delete an exam that was created. This will be fixed in future versions
+   5. This list isn't exhaustive with more testing I may add more
 
 ## Information Storage/Database:
    To store artifacts related to the system such as students, lecturers, modules, exams etc. a MySQL server is used to store the info
