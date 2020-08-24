@@ -1,4 +1,4 @@
-# StudSysCppCLI Version 1.0
+# StudSysCppCLI 
 A personal project implementing a Command Line User Interface
 Student Administration Program. 
 
