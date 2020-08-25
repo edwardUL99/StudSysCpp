@@ -254,11 +254,6 @@ void ExamCreatePage::show()
             submit();
             run = false;
             ui::pageManager.popCurrentPage();
-
-            ExamSelectorPage *selectorPage = dynamic_cast<ExamSelectorPage*>(ui::pageManager.getNextPage());
-            if (selectorPage) {
-                selectorPage->initialiseExamList(); //refresh the exam list
-            }
         }
         else if (choice == "C")
         {

@@ -18,6 +18,10 @@ namespace ui
             Module *module;
             std::vector<Exam> exams;
             /**
+             * @brief initialises the exams list for the selector page. Can also be used to refresh it
+             */
+            void initialiseExamList();
+            /**
              * @brief allows the user to select an exam from the list displayed by displayExams and returns it
              * @return the chosen exam
              */
@@ -48,10 +52,6 @@ namespace ui
             bool editExam();
         public:
             ExamSelectorPage(Account *account, Module *module, StudentSystem &system);
-            /**
-             * @brief initialises the exams list for the selector page. Can also be used to refresh it
-             */
-            void initialiseExamList();
             virtual ~ExamSelectorPage() = default;
             virtual void show() override;
     };

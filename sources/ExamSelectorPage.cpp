@@ -128,6 +128,8 @@ void ExamSelectorPage::show()
     cout << "You are viewing the list of Exams for Module " << module->getCode() << ": " << endl;
     bool run = true;
 
+    initialiseExamList();
+
     displayExams();
 
     bool lecturer = isLecturer();
