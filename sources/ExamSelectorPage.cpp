@@ -18,6 +18,7 @@ ExamSelectorPage::ExamSelectorPage(Account *account, Module *module, StudentSyst
 
 void ExamSelectorPage::initialiseExamList()
 {
+    exams.clear();
     for (const Exam &exam : this->system.retrieveExamsByModule(*module))
     {
         exams.push_back(exam);

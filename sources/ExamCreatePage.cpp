@@ -1,11 +1,13 @@
 #include "headers/ExamCreatePage.h"
 #include "headers/UIUtils.h"
 #include "headers/studsys/NotFoundException.h"
+#include "headers/ExamSelectorPage.h"
 #include <time.h>
 
 using std::string;
 using std::vector;
 using ui::ExamCreatePage;
+using ui::ExamSelectorPage;
 
 ExamCreatePage::ExamCreatePage(Module module, StudentSystem &system) : Page(system), module(module)
 {
@@ -207,8 +209,6 @@ void ExamCreatePage::createQuestions()
 
 void ExamCreatePage::submit()
 {
-    //return created exam here
-
     if (checkPopulated())
     {
         Exam exam(this->module, this->name, this->year, this->semester, this->numQuestions, this->totalWeight, this->questions);
@@ -252,6 +252,13 @@ void ExamCreatePage::show()
         else if (choice == "S")
         {
             submit();
+            run = false;
+            ui::pageManager.popCurrentPage();
+
+            ExamSelectorPage *selectorPage = dynamic_cast<ExamSelectorPage*>(ui::pageManager.getNextPage());
+            if (selectorPage) {
+                selectorPage->initialiseExamList(); //refresh the exam list
+            }
         }
         else if (choice == "C")
         {
