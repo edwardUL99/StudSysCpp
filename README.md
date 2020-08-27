@@ -54,13 +54,13 @@ It is programmed with C++ entirely and can be compiled on Linux with g++
    A MySQL server, configured as of Database Setup in the readme of StudSysCppLibrary
    Also works with mariadb-server-10.0 (this is what you'll need on Raspberry Pi)
 
-## How to compile:
-   Obtain the studsys library from github.com/edwardUL99/StudSysCppLibrary
-   Build the library using instructions from its README
-   Copy the library to the root directory of this directory
+## How to compile (linux):
+   Obtain the latest studsys library release from github.com/edwardUL99/StudSysCppLibrary or build the library using instructions from its README
+   Copy the library to a folder in the root of the CLI directory (recommended a folder called lib)
    Obtain the headers from the studsys library and put them in headers/studsys
    Compile with the make file provided by typing make in the root directory
-
+   Run the command: export LD_LIBRARY_PATH=<path_to_root_of_lib>:$LD_LIBRARY_PATH
+   
 If you don't have access to the database to create databases or users, or don't know the host, contact the database administrator to create a database if not already exists.
 The admin will then be able to give you the IP address to the database server to login to
 
