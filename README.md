@@ -58,6 +58,7 @@ It is programmed with C++ entirely and can be compiled on Linux with g++
    Obtain the latest studsys library release from github.com/edwardUL99/StudSysCppLibrary or build the library using instructions from its README
    Copy the library to a folder in the root of the CLI directory (recommended a folder called lib)
    Obtain the headers from the studsys library and put them in headers/studsys
+   In <CLI_ROOT_DIR>/sources ensure there is a symbolic link headers pointing to <CLI_ROOT_DIR>/headers. If not, in the sources directory, run ln -s ../headers headers
    Compile with the make file provided by typing make in the root directory
    Run the command: export LD_LIBRARY_PATH=<path_to_root_of_lib>:$LD_LIBRARY_PATH
    
