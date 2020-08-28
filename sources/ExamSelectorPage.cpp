@@ -45,17 +45,25 @@ void ExamSelectorPage::displayExams()
 Exam ExamSelectorPage::getExam()
 {
     int size = exams.size();
-    string msg = "Please choose a number between 1 and " + std::to_string(size) + ": ";
-    cout << msg << endl;
+    if (size > 1)
+    {
+        string msg = "Please choose a number between 1 and " + std::to_string(size) + ": ";
+        cout << msg << endl;
 
-    int num = ui::getInt(Predicate<int>([size](const int &x) -> bool { return x < 1 || x > size; }), msg);
+        int num = ui::getInt(Predicate<int>([size](const int &x) -> bool { return x < 1 || x > size; }), msg);
 
-    return exams[num - 1];
+        return exams[num - 1];
+    }
+    else 
+    {
+        cout << "Only 1 exam in module, choosing it";
+        return exams[0];
+    }
 }
 
 bool ExamSelectorPage::isLecturer()
 {
-    return dynamic_cast<LecturerAccount*>(account);
+    return dynamic_cast<LecturerAccount *>(account);
 }
 
 void ExamSelectorPage::printPrompt(bool lecturer)
@@ -81,7 +89,7 @@ bool ExamSelectorPage::takeExam()
     if (exams.size() != 0 && !isLecturer())
     {
         Exam exam = getExam();
-        StudentAccount* studentAccount = dynamic_cast<StudentAccount*>(account);
+        StudentAccount *studentAccount = dynamic_cast<StudentAccount *>(account);
         Student student = studentAccount->getStudent();
 
         try
@@ -92,7 +100,7 @@ bool ExamSelectorPage::takeExam()
         }
         catch (NotFoundException &nf)
         {
-            ExamPage *examPage = new ExamPage(student, exam, this->system); 
+            ExamPage *examPage = new ExamPage(student, exam, this->system);
             ui::pageManager.setNextPage(examPage);
             return true;
         }
@@ -106,7 +114,7 @@ bool ExamSelectorPage::editExam()
     if (exams.size() != 0 && isLecturer())
     {
         Exam exam = getExam();
-        
+
         if (!this->system.examTaken(exam))
         {
             ExamEditPage *editPage = new ExamEditPage(exam, system);

@@ -22,7 +22,7 @@ void AnnouncementPage::viewAnnouncement(const Announcement &announcement)
 
 void AnnouncementPage::createAnnouncement()
 {
-    Lecturer lecturer = dynamic_cast<LecturerAccount*>(account)->getLecturer();
+    Lecturer lecturer = dynamic_cast<LecturerAccount *>(account)->getLecturer();
 
     cout << "Enter the subject for the announcement (max 250 characters): " << endl;
     string subject = ui::getString(Predicate<string>([](const string &s) -> bool { return s.length() < 1 || s.length() > 250; }), "Please enter a subject that is between 1 and 250 characters:");
@@ -117,7 +117,7 @@ void AnnouncementPage::insertNewLine(std::vector<string> &lines, int &lineNumber
     cout << ++lineNumber << " ";
     string newLine = ui::getString();
 
-    if (newLine == "<!insert>") 
+    if (newLine == "<!insert>")
     {
         lines.insert(lines.begin() + (lineNumber - 1), "");
         numberOfLines++;
@@ -368,13 +368,17 @@ void AnnouncementPage::editAnnouncement(const Announcement &announcement)
     }
 }
 
-void AnnouncementPage::deleteAnnouncement(const Announcement &announcement) {
+void AnnouncementPage::deleteAnnouncement(const Announcement &announcement)
+{
     if (!canEditAnnouncement(announcement))
         return; //if the lecturer doesn't have edit rights, they also can't delete
-    
-    if (this->system.removeAnnouncement(announcement)) {
+
+    if (this->system.removeAnnouncement(announcement))
+    {
         cout << "Announcement was removed successfully" << endl;
-    } else {
+    }
+    else
+    {
         cout << "Announcement was not removed successfully, please try again later..." << endl;
     }
 }
@@ -382,20 +386,27 @@ void AnnouncementPage::deleteAnnouncement(const Announcement &announcement) {
 Announcement AnnouncementPage::chooseAnnouncement(std::vector<Announcement> &announcements)
 {
     int length = announcements.size();
-    int i = 1;
-    for (const Announcement &announcement : announcements)
+
+    if (length > 1)
     {
-        cout << i << ") " << announcement.getSubject() << endl;
-        i++;
+        int i = 1;
+        for (const Announcement &announcement : announcements)
+        {
+            cout << i << ") " << announcement.getSubject() << endl;
+            i++;
+        }
+        cout << "Choose a number between 1 and " << length << " to choose the announcement (1 being the newest): " << endl;
+        int num = ui::getInt(Predicate<int>([length](const int &x) -> bool { return x < 1 || x > length; }), "Choose a number between 1 and " + std::to_string(length) + ": ");
+
+        ui::flushCinBuffer();
+
+        num--;
+
+        return announcements[num];
+    } else {
+        cout << "Only 1 announcement in module, choosing it" << endl;
+        return announcements[0];
     }
-    cout << "Choose a number between 1 and " << length << " to choose the announcement (1 being the newest): " << endl;
-    int num = ui::getInt(Predicate<int>([length](const int &x) -> bool { return x < 1 || x > length; }), "Choose a number between 1 and " + std::to_string(length) + ": ");
-
-    ui::flushCinBuffer();
-
-    num--;
-
-    return announcements[num];
 }
 
 void AnnouncementPage::editAnnouncements(std::vector<Announcement> &announcements)
@@ -432,7 +443,7 @@ void AnnouncementPage::show()
 
     while (true)
     {
-        bool lecturer = dynamic_cast<LecturerAccount*>(account);
+        bool lecturer = dynamic_cast<LecturerAccount *>(account);
 
         if (lecturer)
             cout << "(N)ew announcement, (E)dit announcement, (D)elete announcement, (V)iew announcements, (B)ack, (Q)uit" << endl;

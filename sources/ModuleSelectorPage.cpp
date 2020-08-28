@@ -69,11 +69,16 @@ bool ModuleSelectorPage::viewModule()
 
     if (numModules > 0)
     {
-        cout << "Please choose a number between 1 and " << numModules << ": " << endl;
+        Module *module = NULL;
+        if (numModules == 1) {
+            cout << "Only 1 module available, choosing it" << endl;
+            module = new Module(modules[0]);
+        } else {
+            cout << "Please choose a number between 1 and " << numModules << ": " << endl;
 
-        int num = ui::getInt(Predicate<int>([numModules](const int &x) -> bool { return x < 1 || x > numModules; }), "Please re-enter a number between 1 and " + std::to_string(numModules) + ": ");
-
-        Module *module = new Module(modules[num - 1]);
+            int num = ui::getInt(Predicate<int>([numModules](const int &x) -> bool { return x < 1 || x > numModules; }), "Please re-enter a number between 1 and " + std::to_string(numModules) + ": ");
+        }
+        
         ModuleHomePage *modulePage = new ModuleHomePage(account, module, system);
         ui::pageManager.addSharedEntity(modulePage, module);
         ui::pageManager.setNextPage(modulePage);
