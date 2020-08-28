@@ -5,6 +5,7 @@
 #include <vector>
 #include "studsys/Predicate.h"
 #include "PageManager.h"
+#include <exception>
 
 namespace ui
 {
@@ -153,13 +154,16 @@ namespace ui
   const Predicate<float> floatltezeropred([](const float &x) -> bool { return x <= 0; });
 
   /**
- * Quits from the UI and ends the program
+ * Quits from the UI, throwing an instance of ui::ExitSignal
+ * This exception must be caught in main to exit gracefully
  */
   void quit();
 
-  //classes and other global functions/variables here
-  //maybe a UI class managing all Pages
-  //make sure you implement any methods/classes in UI.cpp
+
+  class ExitSignal : public std::exception {
+    public:
+      virtual const char * what() const throw() override;
+  };
 } // namespace ui
 
 #endif

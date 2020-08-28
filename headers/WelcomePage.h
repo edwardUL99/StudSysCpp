@@ -14,6 +14,7 @@ namespace ui
 
     public:
         WelcomePage(StudentSystem &system);
+        virtual ~WelcomePage() = default;
         virtual void show() override;
     };
 

@@ -175,5 +175,9 @@ float ui::getFloat(const Predicate<float> &predicate, const string retryMessage)
 
 void ui::quit() {
     std::cout << "Goodbye, quitting..." << std::endl;
-    exit(0);
+    throw ExitSignal();
+}
+
+const char * ui::ExitSignal::what() const throw() {
+    return "Exit Signal not caught";
 }

@@ -77,15 +77,7 @@ int main(int argc, char **argv)
         ui::pageManager.start();
     } catch (SQLException &sq) {
         exit(1);
-    }
-
-    /*StudentSystem &system = ui::pageManager.getSystem();
-
-    LecturerAccount lecturer = system.getLecturerAccount("patrick.healy@staff.mail.ie");
-    Module module = system.getModule("CS4115");
-    ui::ModuleHomePage *homePage = new ui::ModuleHomePage(lecturer, module, system);
-
-    ui::pageManager.start(homePage);*/
+    } catch (ui::ExitSignal &ex) {}
 
     return 0;
 }
