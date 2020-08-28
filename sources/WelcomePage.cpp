@@ -18,7 +18,7 @@ void WelcomePage::show() {
     string choice;
 
     while (run) {
-        cout << "Login as: (L)ecturer or (S)tudent; (C)ancel; (Q)uit" << endl;
+        cout << "Login as: (L)ecturer or (S)tudent; (Q)uit" << endl;
 
         string choice = ui::getChoice();
 
@@ -32,14 +32,9 @@ void WelcomePage::show() {
             loginPage = new LoginPage(this->system, false);
         } else if (choice == "S") {
             loginPage = new LoginPage(this->system, true);
-        } else if (choice == "C") {
-            run = false;
-            ui::pageManager.popCurrentPage();
         } else if (choice == "Q") {
             ui::quit();
         }
-
-
 
         if (loginPage) {
             ui::pageManager.setNextPage(loginPage);
