@@ -77,6 +77,7 @@ bool ModuleSelectorPage::viewModule()
             cout << "Please choose a number between 1 and " << numModules << ": " << endl;
 
             int num = ui::getInt(Predicate<int>([numModules](const int &x) -> bool { return x < 1 || x > numModules; }), "Please re-enter a number between 1 and " + std::to_string(numModules) + ": ");
+            module = new Module(modules[num - 1]);
         }
         
         ModuleHomePage *modulePage = new ModuleHomePage(account, module, system);
