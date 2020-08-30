@@ -347,6 +347,9 @@ void Administration::registerStudent(string module)
             cout << "Module with code " << code << " not found in the system, exiting registration..." << endl;
         return;
     }
+    catch (DuplicateException &dup) {
+        cout << "Student " << id << " has already been registered on Module " << code << "." << endl;
+    }
 }
 
 void Administration::createLecturer()
