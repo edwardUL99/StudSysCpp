@@ -23,7 +23,7 @@ void ModuleHomePage::displayRegisteredStudents()
         cout << "\t" << i++ << ") " << student.getName() << " - " << student.getID() << " - " << student.getEmail() << endl;
     }
 
-    bool lecturer = dynamic_cast<LecturerAccount*>(account);
+    bool lecturer = dynamic_cast<LecturerAccount *>(account);
 
     if (lecturer)
         cout << "\nTo add/remove students from the module, go to the Settings page" << endl;
@@ -39,56 +39,133 @@ void ModuleHomePage::displayLecturerDetails()
     cout << "\tE-mail Address: " << lecturer.getEmail() << endl;
 }
 
-void ModuleHomePage::printPrompt() const {
-    if (isLecturerAccount()) {
+void ModuleHomePage::printPrompt() const
+{
+    if (isLecturerAccount())
+    {
         cout << "View: (A)nnouncements, (E)xams, (S)tudent list, (L)ecturer details, (G)rades, Change (M)odule settings, (B)ack, (Q)uit" << endl;
-    } else {
+    }
+    else
+    {
         cout << "View: (A)nnouncements, (E)xams, (S)tudent list, (L)ecturer details, (G)rades, (B)ack, (Q)uit" << endl;
     }
 }
 
-bool ModuleHomePage::isLecturerAccount() const {
-    return dynamic_cast<LecturerAccount*>(account);
+bool ModuleHomePage::isLecturerAccount() const
+{
+    return dynamic_cast<LecturerAccount *>(account);
 }
 
-void ModuleHomePage::viewExamGrades() {
+vector<ExamGrade> ModuleHomePage::getExamGradesByStudent(const vector<Exam> &exams, const Student &student)
+{
+    vector<ExamGrade> filtered;
+
+    for (const Exam &exam : exams)
+    {
+        try
+        {
+            ExamGrade examGrade = system.getExamGrade(student, exam);
+            filtered.push_back(examGrade); //if you got here without a NotFoundException, an exam grade for this exam exists for this student
+        }
+        catch (NotFoundException &nf)
+        {
+        }
+    }
+
+    return filtered;
+}
+
+vector<ExamGrade> ModuleHomePage::getExamGradesByExam(const Exam &exam, const std::vector<Student> &students)
+{
+    vector<ExamGrade> filtered;
+
+    for (const Student &student : students)
+    {
+        try
+        {
+            ExamGrade examGrade = system.getExamGrade(student, exam);
+        }
+        catch (NotFoundException &nf)
+        {
+        }
+    }
+
+    return filtered;
+}
+
+void ModuleHomePage::viewExamGrades()
+{
     bool lecturer = isLecturerAccount();
 
     vector<Exam> exams = system.retrieveExamsByModule(*module);
 
-    if (lecturer) {
-        for (const Exam &exam : exams) {
+    if (lecturer)
+    {
+        vector<Student> students = system.getStudentsRegisteredOnModule(*module);
+
+        for (const Exam &exam : exams)
+        {
             cout << exam.getDescription() << ", Total Weight: " << exam.getTotalWeight() << endl;
+
+            vector<ExamGrade> examGrades = getExamGradesByExam(exam, students);
+
             cout << "Student Results: " << endl;
-            for (const Student &student : system.getStudentsRegisteredOnModule(*module)) {
-                try {
-                    ExamGrade examGrade = system.getExamGrade(student, exam);
-                    float grade = examGrade.getGrade();
-                    float totalWeight = exam.getTotalWeight();
-                    cout << "\tStudent ID: " << student.getID() << ", Mark: " << grade << "/" << totalWeight << ", Percentage: " << (grade/totalWeight) * 100 << endl;
-                } catch (NotFoundException &nf) {}
+            if (examGrades.size() > 0)
+            {
+                for (const ExamGrade &examGrade : examGrades)
+                {
+                    try
+                    {
+                        float grade = examGrade.getGrade();
+                        float totalWeight = examGrade.getExam().getTotalWeight();
+                        cout << "\tStudent ID: " << examGrade.getStudent().getID() << ", Mark: " << grade << "/" << totalWeight << ", Percentage: " << (grade / totalWeight) * 100 << endl;
+                    }
+                    catch (NotFoundException &nf)
+                    {
+                    }
+                }
+            } else {
+                cout << "\tNo results available for this exam" << endl;
             }
         }
-    } else {
-        StudentAccount *studentAccount = dynamic_cast<StudentAccount*>(account);
+    }
+    else
+    {
+        StudentAccount *studentAccount = dynamic_cast<StudentAccount *>(account);
         Student student = studentAccount->getStudent();
-        cout << student.getDescription() << endl;
 
-        for (const Exam &exam : exams) {
-            try {
-                ExamGrade examGrade = system.getExamGrade(student, exam);
-                float grade = examGrade.getGrade();
-                float totalWeight = exam.getTotalWeight();
-                cout << "\t" << examGrade.getDescription() << ", Mark: " << grade << "/" << totalWeight << ", Percentage: " << (grade/totalWeight) * 100 << endl;
-            } catch (NotFoundException &nf) {}
+        vector<ExamGrade> examGrades = getExamGradesByStudent(exams, student);
+
+        if (examGrades.size() > 0)
+        {
+            cout << student.getDescription() << endl;
+
+            for (const ExamGrade &examGrade : examGrades)
+            {
+                try
+                {
+                    float grade = examGrade.getGrade();
+                    float totalWeight = examGrade.getExam().getTotalWeight();
+                    cout << "\t" << examGrade.getDescription() << ", Mark: " << grade << "/" << totalWeight << ", Percentage: " << (grade / totalWeight) * 100 << endl;
+                }
+                catch (NotFoundException &nf)
+                {
+                }
+            }
+        }
+        else
+        {
+            cout << "There are no exam grades to view" << endl;
         }
     }
 }
 
-void ModuleHomePage::displayGradesInfo() {
+void ModuleHomePage::displayGradesInfo()
+{
     string prompt = "View: (E)xam grades, (C)ancel, (Q)uit";
-    
-    while (true) {
+
+    while (true)
+    {
         cout << prompt << endl;
 
         string choice = ui::getChoice();
@@ -153,7 +230,7 @@ void ModuleHomePage::show()
         }
         else if (choice == "M" && isLecturerAccount())
         {
-            ModuleSettingsPage *settingsPage = new ModuleSettingsPage(module, dynamic_cast<LecturerAccount*>(account), system);
+            ModuleSettingsPage *settingsPage = new ModuleSettingsPage(module, dynamic_cast<LecturerAccount *>(account), system);
             ui::pageManager.addSharedEntity(settingsPage, module);
             ui::pageManager.addSharedEntity(settingsPage, account);
             ui::pageManager.setNextPage(settingsPage);
