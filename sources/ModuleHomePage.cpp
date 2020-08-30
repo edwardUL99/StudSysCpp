@@ -114,17 +114,13 @@ void ModuleHomePage::viewExamGrades()
             {
                 for (const ExamGrade &examGrade : examGrades)
                 {
-                    try
-                    {
-                        float grade = examGrade.getGrade();
-                        float totalWeight = examGrade.getExam().getTotalWeight();
-                        cout << "\tStudent ID: " << examGrade.getStudent().getID() << ", Mark: " << grade << "/" << totalWeight << ", Percentage: " << (grade / totalWeight) * 100 << endl;
-                    }
-                    catch (NotFoundException &nf)
-                    {
-                    }
+                    float grade = examGrade.getGrade();
+                    float totalWeight = examGrade.getExam().getTotalWeight();
+                    cout << "\tStudent ID: " << examGrade.getStudent().getID() << ", Mark: " << grade << "/" << totalWeight << ", Percentage: " << (grade / totalWeight) * 100 << endl;
                 }
-            } else {
+            }
+            else
+            {
                 cout << "\tNo results available for this exam" << endl;
             }
         }
@@ -142,15 +138,9 @@ void ModuleHomePage::viewExamGrades()
 
             for (const ExamGrade &examGrade : examGrades)
             {
-                try
-                {
-                    float grade = examGrade.getGrade();
-                    float totalWeight = examGrade.getExam().getTotalWeight();
-                    cout << "\t" << examGrade.getDescription() << ", Mark: " << grade << "/" << totalWeight << ", Percentage: " << (grade / totalWeight) * 100 << endl;
-                }
-                catch (NotFoundException &nf)
-                {
-                }
+                float grade = examGrade.getGrade();
+                float totalWeight = examGrade.getExam().getTotalWeight();
+                cout << "\t" << examGrade.getDescription() << ", Mark: " << grade << "/" << totalWeight << ", Percentage: " << (grade / totalWeight) * 100 << endl;
             }
         }
         else
