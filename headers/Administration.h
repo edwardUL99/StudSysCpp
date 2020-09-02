@@ -38,6 +38,11 @@ namespace ui
          * @brief This provides the entry point into the resetXPassword functions
          */
         void resetPassword();
+        /**
+         * This is a method for the workaround requested by issue #85
+         * @see https://github.com/edwardUL99/StudSysCppCLI/issues/85
+         */
+        bool modulesRegisteredToLecturer(std::string email);
 
     public:
         Administration(StudentSystem &system);
