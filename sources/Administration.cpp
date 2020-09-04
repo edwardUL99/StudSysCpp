@@ -328,6 +328,12 @@ void Administration::registerStudent(string module)
         }
 
         Module registeredModule = system.getModule(code);
+
+        if (registeredModule.getLecturer() == Lecturer::NOT_FOUND) {
+            cout << "This module does not have a lecturer associated with it, you cannot register students to it, aborting..." << endl;
+            return;
+        }
+
         containsModule = true; //if above executed without throwing, the module was found in the system
 
         if (this->system.registerStudentModule(student, registeredModule))
