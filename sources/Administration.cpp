@@ -35,14 +35,14 @@ bool Administration::login()
         }
         else
         {
-            cout << "The password does not match" << endl;
+            cout << "The password does not match\n" << endl;
 
             return false;
         }
     }
     else
     {
-        cout << "The username is not correct" << endl;
+        cout << "The username is not correct\n" << endl;
 
         return false;
     }
@@ -412,6 +412,10 @@ void Administration::createLecturer()
 //WORKAROUND CODE ISSUE 85 https://github.com/edwardUL99/StudSysCppCLI/issues/85
 //it's not very performance friendly but it prevents crashing
 bool Administration::modulesRegisteredToLecturer(string email) {
+    if (email == Lecturer::NOT_FOUND.getEmail()) {
+        return false;
+    }
+
     for (const Module &module : system.getModules()) {
         if (module.getLecturer().getEmail() == email) {
             return true;
@@ -436,6 +440,12 @@ void Administration::removeLecturer()
     try
     {
         Lecturer lecturer = system.getLecturer(email);
+
+        if (lecturer == Lecturer::NOT_FOUND) {
+            cout << "This Lecturer cannot be removed from the system, aborting..." << endl;
+            return;
+        }
+
         LecturerAccount account = system.getLecturerAccount(email);
         string name = lecturer.getName();
 
@@ -578,7 +588,8 @@ void Administration::show()
 
     if (!login())
     {
-        cout << "You were not logged in successfully, so will be returned to the previous page" << endl;
+        cout << "You were not logged in successfully, so will be returned to the previous page\n" << endl;
+        ui::pageManager.popCurrentPage();
         return;
     }
 
