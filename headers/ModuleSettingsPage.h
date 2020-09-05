@@ -21,6 +21,7 @@ namespace ui
          * @param id the id of the student
          */
         void deRegisterStudent(int id);
+        void editModule();
 
     public:
         ModuleSettingsPage(Module *module, LecturerAccount *account, StudentSystem &system);

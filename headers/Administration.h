@@ -10,6 +10,7 @@ namespace ui
     class Administration : public Page
     {
     private:
+        bool loggedIn;
         bool login();
         void createCourse();
         void removeCourse();
@@ -43,6 +44,7 @@ namespace ui
          * @see https://github.com/edwardUL99/StudSysCppCLI/issues/85
          */
         bool modulesRegisteredToLecturer(std::string email);
+        bool editModule();
 
     public:
         Administration(StudentSystem &system);

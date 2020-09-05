@@ -1,12 +1,13 @@
 #include "headers/ModuleSettingsPage.h"
 #include "headers/Administration.h"
 #include "headers/studsys/NotFoundException.h"
+#include "headers/ModuleEditPage.h"
 
 using std::string;
 using ui::Administration;
 using ui::ModuleSettingsPage;
 
-ModuleSettingsPage::ModuleSettingsPage(Module *module, LecturerAccount *account, StudentSystem &system) : module(module), account(account), Page(system) {}
+ModuleSettingsPage::ModuleSettingsPage(Module *module, LecturerAccount *account, StudentSystem &system) : Page(system), module(module), account(account) {}
 
 void ModuleSettingsPage::registerStudents()
 {
@@ -60,6 +61,12 @@ void ModuleSettingsPage::deRegisterStudent(int id)
     }
 }
 
+void ModuleSettingsPage::editModule() {
+    ModuleEditPage *editPage = new ModuleEditPage(*module, system);
+    ui::pageManager.setNextPage(editPage);
+
+}
+
 void ModuleSettingsPage::show()
 {
     bool run = true;
@@ -69,13 +76,18 @@ void ModuleSettingsPage::show()
 
     while (run)
     {
-        cout << "Choose: (S)tudent Management, (C)ancel, (Q)uit" << endl;
+        cout << "Choose: (S)tudent Management, (E)dit module details, (C)ancel, (Q)uit" << endl;
 
         string choice = ui::getChoice();
 
         if (choice == "S")
         {
             registerStudents();
+        }
+        else if (choice == "E")
+        {
+            editModule();
+            run = false;
         }
         else if (choice == "C")
         {

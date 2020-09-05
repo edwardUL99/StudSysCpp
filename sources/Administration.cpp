@@ -7,45 +7,50 @@
 #include "headers/studsys/NotFoundException.h"
 #include "headers/studsys/DuplicateException.h"
 #include "headers/UIUtils.h"
+#include "headers/ModuleEditPage.h"
 
 #include <cstring>
 #include <string>
 using std::string;
 using ui::Administration;
+using ui::ModuleEditPage;
 
-Administration::Administration(StudentSystem &studentSystem) : Page(studentSystem) {}
+Administration::Administration(StudentSystem &studentSystem) : Page(studentSystem), loggedIn(false) {}
 
 bool Administration::login()
 {
-    cout << "Please enter the admin username: " << endl;
-
-    string username = ui::getString();
-
-    if (username == "adminITT20")
+    if (!loggedIn)
     {
-        cout << "Please enter the password: " << endl;
+        cout << "Please enter the admin username: " << endl;
 
-        string password = ui::getSecureString();
+        string username = ui::getString();
 
-        if (password == "ittAdminPass20")
+        if (username == "adminITT20")
         {
-            cout << "You are now logged in as admin" << endl;
+            cout << "Please enter the password: " << endl;
 
-            return true;
+            string password = ui::getSecureString();
+
+            if (password == "ittAdminPass20")
+            {
+                cout << "You are now logged in as admin" << endl;
+
+                loggedIn = true;
+            }
+            else
+            {
+                cout << "The password does not match\n"
+                     << endl;
+            }
         }
         else
         {
-            cout << "The password does not match\n" << endl;
-
-            return false;
+            cout << "The username is not correct\n"
+                 << endl;
         }
     }
-    else
-    {
-        cout << "The username is not correct\n" << endl;
 
-        return false;
-    }
+    return loggedIn;
 }
 
 void Administration::createCourse()
@@ -329,7 +334,8 @@ void Administration::registerStudent(string module)
 
         Module registeredModule = system.getModule(code);
 
-        if (registeredModule.getLecturer() == Lecturer::NOT_FOUND) {
+        if (registeredModule.getLecturer() == Lecturer::NOT_FOUND)
+        {
             cout << "This module does not have a lecturer associated with it, you cannot register students to it, aborting..." << endl;
             return;
         }
@@ -353,7 +359,8 @@ void Administration::registerStudent(string module)
             cout << "Module with code " << code << " not found in the system, exiting registration..." << endl;
         return;
     }
-    catch (DuplicateException &dup) {
+    catch (DuplicateException &dup)
+    {
         cout << "Student " << id << " has already been registered on Module " << code << "." << endl;
     }
 }
@@ -411,13 +418,17 @@ void Administration::createLecturer()
 
 //WORKAROUND CODE ISSUE 85 https://github.com/edwardUL99/StudSysCppCLI/issues/85
 //it's not very performance friendly but it prevents crashing
-bool Administration::modulesRegisteredToLecturer(string email) {
-    if (email == Lecturer::NOT_FOUND.getEmail()) {
+bool Administration::modulesRegisteredToLecturer(string email)
+{
+    if (email == Lecturer::NOT_FOUND.getEmail())
+    {
         return false;
     }
 
-    for (const Module &module : system.getModules()) {
-        if (module.getLecturer().getEmail() == email) {
+    for (const Module &module : system.getModules())
+    {
+        if (module.getLecturer().getEmail() == email)
+        {
             return true;
         }
     }
@@ -432,7 +443,8 @@ void Administration::removeLecturer()
     string email = ui::getString(ui::emptystrpred, ui::emptystrretrymsg);
 
     //WORKAROUND CODE ISSUE 85 https://github.com/edwardUL99/StudSysCppCLI/issues/85
-    if (modulesRegisteredToLecturer(email)) {
+    if (modulesRegisteredToLecturer(email))
+    {
         cout << "Lecturer has modules registered to them, cannot remove from system, exiting Lecturer deletion" << endl;
         return;
     }
@@ -441,7 +453,8 @@ void Administration::removeLecturer()
     {
         Lecturer lecturer = system.getLecturer(email);
 
-        if (lecturer == Lecturer::NOT_FOUND) {
+        if (lecturer == Lecturer::NOT_FOUND)
+        {
             cout << "This Lecturer cannot be removed from the system, aborting..." << endl;
             return;
         }
@@ -582,13 +595,34 @@ void Administration::resetPassword()
     }
 }
 
+bool Administration::editModule()
+{
+    cout << "Enter the Code of the module to edit: " << endl;
+
+    string code = ui::getString(ui::mcodepred, ui::mcoderetrymsg);
+
+    try
+    {
+        Module module = system.getModule(code);
+        ModuleEditPage *editPage = new ModuleEditPage(module, system);
+        ui::pageManager.setNextPage(editPage);
+        return true;
+    }
+    catch (NotFoundException &nf)
+    {
+        cout << "Module with code " << code << " not found in system, aborting..." << endl;
+        return false;
+    }
+}
+
 void Administration::show()
 {
     bool run = true;
 
     if (!login())
     {
-        cout << "You were not logged in successfully, so will be returned to the previous page\n" << endl;
+        cout << "You were not logged in successfully, so will be returned to the previous page\n"
+             << endl;
         ui::pageManager.popCurrentPage();
         return;
     }
@@ -598,7 +632,7 @@ void Administration::show()
 
     while (run)
     {
-        cout << "(C)reate course/module/student/lecturer, (R)emove course/module/student/lecturer, Reset student/lecturer (P)assword, Register Student on (M)odule, (L)ogout, (Q)uit" << endl;
+        cout << "(C)reate course/module/student/lecturer, (R)emove course/module/student/lecturer, Reset student/lecturer (P)assword, Register Student on (M)odule, (E)dit Module, (L)ogout, (Q)uit" << endl;
 
         string choice = ui::getChoice();
 
@@ -618,9 +652,14 @@ void Administration::show()
         {
             registerStudent();
         }
+        else if (choice == "E")
+        {
+            run = !editModule();
+        }
         else if (choice == "L")
         {
             run = false;
+            loggedIn = false;
             ui::pageManager.popCurrentPage(); //get out of the administration page
         }
         else if (choice == "Q")
