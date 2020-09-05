@@ -3,12 +3,13 @@
 
 #include "Page.h"
 #include <string>
+#include <vector>
 
 class Lecturer;
+class StudentRegistration;
 
 namespace ui
 {
-
     class Administration : public Page
     {
     private:
@@ -42,10 +43,9 @@ namespace ui
          */
         void resetPassword();
         /**
-         * Finds all modules for a lecturer and then removes all registrations on this module
-         * @param lecturer the lecturer of the modules
-         */
-        void unregisterAllStudentsOnLecturerModules(const Lecturer &lecturer);
+         * Retrieves a list of student registrations on modules taught by the specified lecturer
+        */
+        std::vector<StudentRegistration> studentsRegisteredOnLecturerModules(const Lecturer &lecturer);
         bool editModule();
 
     public:

@@ -8,6 +8,7 @@
 #include "headers/studsys/DuplicateException.h"
 #include "headers/UIUtils.h"
 #include "headers/ModuleEditPage.h"
+#include "headers/studsys/StudentRegistration.h"
 
 #include <cstring>
 #include <string>
@@ -416,14 +417,18 @@ void Administration::createLecturer()
     }
 }
 
-void Administration::unregisterAllStudentsOnLecturerModules(const Lecturer &lecturer) {
+std::vector<StudentRegistration> Administration::studentsRegisteredOnLecturerModules(const Lecturer &lecturer) {
+    std::vector<StudentRegistration> registrations;
+
     for (const Module &module : system.getModules()) {
         if (module.getLecturer() == lecturer) {
             for (const Student &student : system.getStudentsRegisteredOnModule(module)) {
-                system.unregisterStudentModule(student, module);
+                registrations.push_back(StudentRegistration(student, module));
             }
         }
     }
+
+    return registrations;
 }
 
 void Administration::removeLecturer()
@@ -447,10 +452,15 @@ void Administration::removeLecturer()
 
         system.removeAccount(account);
 
-        unregisterAllStudentsOnLecturerModules(lecturer);
+        std::vector<StudentRegistration> registrations = studentsRegisteredOnLecturerModules(lecturer);
 
         if (system.removeLecturer(lecturer))
         {
+            //hold off deleting registrations until the lecturer is confirmed to be removed successfully. Requires extra loop iterations but it's safer than removing registrations and then the lecturer failed to be removed 
+            for (const StudentRegistration &registration : registrations) {
+                system.unregisterStudentModule(registration.getStudent(), registration.getModule());
+            }
+
             cout << "Lecturer " << name << " removed successfully from the system" << endl;
         }
         else
@@ -582,7 +592,7 @@ void Administration::resetPassword()
 
 bool Administration::editModule()
 {
-    cout << "Enter the Code of the module to edit: " << endl;
+    cout << "Enter the code of the module to edit: " << endl;
 
     string code = ui::getString(ui::mcodepred, ui::mcoderetrymsg);
 

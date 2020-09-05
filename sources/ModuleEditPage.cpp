@@ -36,7 +36,9 @@ bool ModuleEditPage::saveUpdates() {
     cout << "\tCode: " << updatedModule.getCode() << endl;
     cout << "\tName: " << updatedModule.getName() << endl;
     cout << "\tCredits: " << updatedModule.getCredits() << endl;
-    cout << "\tLecturer: " << updatedModule.getLecturer().getEmail() << endl;
+    string email = updatedModule.getLecturer().getEmail();
+    email = email == "NOT_FOUND@staff.mail.ie" ? "No Lecturer":email;
+    cout << "\tLecturer: " << email << endl;
 
     while (true) {
         cout << "\nDo you wish to continue? (Y/N)" << endl;
