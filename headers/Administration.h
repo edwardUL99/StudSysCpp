@@ -4,6 +4,8 @@
 #include "Page.h"
 #include <string>
 
+class Lecturer;
+
 namespace ui
 {
 
@@ -40,10 +42,10 @@ namespace ui
          */
         void resetPassword();
         /**
-         * This is a method for the workaround requested by issue #85
-         * @see https://github.com/edwardUL99/StudSysCppCLI/issues/85
+         * Finds all modules for a lecturer and then removes all registrations on this module
+         * @param lecturer the lecturer of the modules
          */
-        bool modulesRegisteredToLecturer(std::string email);
+        void unregisterAllStudentsOnLecturerModules(const Lecturer &lecturer);
         bool editModule();
 
     public:

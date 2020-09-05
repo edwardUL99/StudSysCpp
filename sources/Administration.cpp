@@ -416,24 +416,14 @@ void Administration::createLecturer()
     }
 }
 
-//WORKAROUND CODE ISSUE 85 https://github.com/edwardUL99/StudSysCppCLI/issues/85
-//it's not very performance friendly but it prevents crashing
-bool Administration::modulesRegisteredToLecturer(string email)
-{
-    if (email == Lecturer::NOT_FOUND.getEmail())
-    {
-        return false;
-    }
-
-    for (const Module &module : system.getModules())
-    {
-        if (module.getLecturer().getEmail() == email)
-        {
-            return true;
+void Administration::unregisterAllStudentsOnLecturerModules(const Lecturer &lecturer) {
+    for (const Module &module : system.getModules()) {
+        if (module.getLecturer() == lecturer) {
+            for (const Student &student : system.getStudentsRegisteredOnModule(module)) {
+                system.unregisterStudentModule(student, module);
+            }
         }
     }
-
-    return false;
 }
 
 void Administration::removeLecturer()
@@ -441,13 +431,6 @@ void Administration::removeLecturer()
     cout << "Please enter the Lecturer email you wish to remove: " << endl;
 
     string email = ui::getString(ui::emptystrpred, ui::emptystrretrymsg);
-
-    //WORKAROUND CODE ISSUE 85 https://github.com/edwardUL99/StudSysCppCLI/issues/85
-    if (modulesRegisteredToLecturer(email))
-    {
-        cout << "Lecturer has modules registered to them, cannot remove from system, exiting Lecturer deletion" << endl;
-        return;
-    }
 
     try
     {
@@ -463,6 +446,8 @@ void Administration::removeLecturer()
         string name = lecturer.getName();
 
         system.removeAccount(account);
+
+        unregisterAllStudentsOnLecturerModules(lecturer);
 
         if (system.removeLecturer(lecturer))
         {
