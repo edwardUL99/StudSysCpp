@@ -417,20 +417,6 @@ void Administration::createLecturer()
     }
 }
 
-std::vector<StudentRegistration> Administration::studentsRegisteredOnLecturerModules(const Lecturer &lecturer) {
-    std::vector<StudentRegistration> registrations;
-
-    for (const Module &module : system.getModules()) {
-        if (module.getLecturer() == lecturer) {
-            for (const Student &student : system.getStudentsRegisteredOnModule(module)) {
-                registrations.push_back(StudentRegistration(student, module));
-            }
-        }
-    }
-
-    return registrations;
-}
-
 void Administration::removeLecturer()
 {
     cout << "Please enter the Lecturer email you wish to remove: " << endl;
@@ -452,15 +438,8 @@ void Administration::removeLecturer()
 
         system.removeAccount(account);
 
-        std::vector<StudentRegistration> registrations = studentsRegisteredOnLecturerModules(lecturer);
-
         if (system.removeLecturer(lecturer))
         {
-            //hold off deleting registrations until the lecturer is confirmed to be removed successfully. Requires extra loop iterations but it's safer than removing registrations and then the lecturer failed to be removed 
-            for (const StudentRegistration &registration : registrations) {
-                system.unregisterStudentModule(registration.getStudent(), registration.getModule());
-            }
-
             cout << "Lecturer " << name << " removed successfully from the system" << endl;
         }
         else

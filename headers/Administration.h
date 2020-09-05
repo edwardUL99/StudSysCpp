@@ -42,10 +42,6 @@ namespace ui
          * @brief This provides the entry point into the resetXPassword functions
          */
         void resetPassword();
-        /**
-         * Retrieves a list of student registrations on modules taught by the specified lecturer
-        */
-        std::vector<StudentRegistration> studentsRegisteredOnLecturerModules(const Lecturer &lecturer);
         bool editModule();
 
     public:
