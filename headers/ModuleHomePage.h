@@ -25,6 +25,8 @@ namespace ui
         void displayLecturerDetails();
         void printPrompt() const;
         bool isLecturerAccount() const;
+        void examGradesLecturerView(const std::vector<Exam> &exams);
+        void examGradesStudentView(const std::vector<Exam> &exams);
         void viewExamGrades();
         void displayGradesInfo();
         std::vector<ExamGrade> getExamGradesByStudent(const std::vector<Exam> &exams, const Student &student);

@@ -93,6 +93,57 @@ vector<ExamGrade> ModuleHomePage::getExamGradesByExam(const Exam &exam, const st
     return filtered;
 }
 
+void ModuleHomePage::examGradesLecturerView(const vector<Exam> &exams)
+{
+    vector<Student> students = system.getStudentsRegisteredOnModule(*module);
+
+    for (const Exam &exam : exams)
+    {
+        cout << exam.getDescription() << ", Total Weight: " << exam.getTotalWeight() << endl;
+
+        vector<ExamGrade> examGrades = getExamGradesByExam(exam, students);
+
+        cout << "Student Results: " << endl;
+        if (examGrades.size() > 0)
+        {
+            for (const ExamGrade &examGrade : examGrades)
+            {
+                float grade = examGrade.getGrade();
+                float totalWeight = examGrade.getExam().getTotalWeight();
+                cout << "\tStudent ID: " << examGrade.getStudent().getID() << ", Mark: " << grade << "/" << totalWeight << ", Percentage: " << (grade / totalWeight) * 100 << endl;
+            }
+        }
+        else
+        {
+            cout << "\tNo results available for this exam" << endl;
+        }
+    }
+}
+
+void ModuleHomePage::examGradesStudentView(const vector<Exam> &exams)
+{
+    StudentAccount *studentAccount = dynamic_cast<StudentAccount *>(account);
+    Student student = studentAccount->getStudent();
+
+    vector<ExamGrade> examGrades = getExamGradesByStudent(exams, student);
+
+    if (examGrades.size() > 0)
+    {
+        cout << student.getDescription() << endl;
+
+        for (const ExamGrade &examGrade : examGrades)
+        {
+            float grade = examGrade.getGrade();
+            float totalWeight = examGrade.getExam().getTotalWeight();
+            cout << "\t" << examGrade.getDescription() << ", Mark: " << grade << "/" << totalWeight << ", Percentage: " << (grade / totalWeight) * 100 << endl;
+        }
+    }
+    else
+    {
+        cout << "There are no exam grades to view" << endl;
+    }
+}
+
 void ModuleHomePage::viewExamGrades()
 {
     bool lecturer = isLecturerAccount();
@@ -101,80 +152,48 @@ void ModuleHomePage::viewExamGrades()
 
     if (lecturer)
     {
-        vector<Student> students = system.getStudentsRegisteredOnModule(*module);
-
-        for (const Exam &exam : exams)
-        {
-            cout << exam.getDescription() << ", Total Weight: " << exam.getTotalWeight() << endl;
-
-            vector<ExamGrade> examGrades = getExamGradesByExam(exam, students);
-
-            cout << "Student Results: " << endl;
-            if (examGrades.size() > 0)
-            {
-                for (const ExamGrade &examGrade : examGrades)
-                {
-                    float grade = examGrade.getGrade();
-                    float totalWeight = examGrade.getExam().getTotalWeight();
-                    cout << "\tStudent ID: " << examGrade.getStudent().getID() << ", Mark: " << grade << "/" << totalWeight << ", Percentage: " << (grade / totalWeight) * 100 << endl;
-                }
-            }
-            else
-            {
-                cout << "\tNo results available for this exam" << endl;
-            }
-        }
+        examGradesLecturerView(exams);
     }
     else
     {
-        StudentAccount *studentAccount = dynamic_cast<StudentAccount *>(account);
-        Student student = studentAccount->getStudent();
-
-        vector<ExamGrade> examGrades = getExamGradesByStudent(exams, student);
-
-        if (examGrades.size() > 0)
-        {
-            cout << student.getDescription() << endl;
-
-            for (const ExamGrade &examGrade : examGrades)
-            {
-                float grade = examGrade.getGrade();
-                float totalWeight = examGrade.getExam().getTotalWeight();
-                cout << "\t" << examGrade.getDescription() << ", Mark: " << grade << "/" << totalWeight << ", Percentage: " << (grade / totalWeight) * 100 << endl;
-            }
-        }
-        else
-        {
-            cout << "There are no exam grades to view" << endl;
-        }
+        examGradesStudentView(exams);
     }
 }
 
-void ModuleHomePage::calculateModuleGrades() 
+void ModuleHomePage::calculateModuleGrades()
 {
-    while (true) {
+    while (true)
+    {
         cout << "Do you want to calculate final module grades for (A)ll students, (O)ne student, or (C)ancel?" << endl;
 
         string choice = ui::getChoice();
-        
-        if (choice == "A") {
+
+        if (choice == "A")
+        {
             system.calculateAllModuleGradesForModule(module->getCode());
-            cout << "Calculated final module grades for all students registered to module\n" << endl;
+            cout << "Calculated final module grades for all students registered to module\n"
+                 << endl;
             return;
-        } else if (choice == "O") {
+        }
+        else if (choice == "O")
+        {
             cout << "Please enter the ID of the student to calculate the grade for: " << endl;
 
             int id = ui::getInt(ui::intltezeropred, ui::ltezeroretrymsg);
 
-            try {
+            try
+            {
                 Student student = system.getStudent(id);
                 system.calculateModuleGrade(module->getCode(), student);
-                cout << "Calculated final module grade for student " << id << "\n" << endl;
-            } catch (NotFoundException &nf) {
+                cout << "Calculated final module grade for student " << id << "\n"
+                     << endl;
+            }
+            catch (NotFoundException &nf)
+            {
                 cout << "Student with ID " << id << " not found in system, aborting..." << endl;
             }
             return;
-        } 
+        }
         else if (choice == "C")
         {
             return;
@@ -185,7 +204,7 @@ void ModuleHomePage::calculateModuleGrades()
 void ModuleHomePage::displayGradesInfo()
 {
     bool lecturer = isLecturerAccount();
-    string prompt = lecturer ? "View: (E)xam grades, Calculate (M)odule grades, (C)ancel, (Q)uit":"View: (E)xam grades, (C)ancel, (Q)uit";
+    string prompt = lecturer ? "View: (E)xam grades, Calculate (M)odule grades, (C)ancel, (Q)uit" : "View: (E)xam grades, (C)ancel, (Q)uit";
 
     while (true)
     {
