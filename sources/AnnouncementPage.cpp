@@ -31,7 +31,6 @@ void AnnouncementPage::createAnnouncement()
 
     string text = "";
     bool run = true;
-    bool submit = false;
     bool cancel = false;
 
     while (run)
@@ -44,7 +43,6 @@ void AnnouncementPage::createAnnouncement()
         }
         else if (temp == "<!submit>")
         {
-            submit = true;
             run = false;
         }
         else if (temp == "<!cancel>")
@@ -392,7 +390,7 @@ Announcement AnnouncementPage::chooseAnnouncement(std::vector<Announcement> &ann
         int i = 1;
         for (const Announcement &announcement : announcements)
         {
-            cout << i << ") " << announcement.getSubject() << endl;
+            cout << i << ") " << announcement.getSubject() << " Updated: " << system.getAnnouncementTime(announcement) << endl;
             i++;
         }
         cout << "Choose a number between 1 and " << length << " to choose the announcement (1 being the newest): " << endl;
