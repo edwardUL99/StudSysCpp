@@ -29,6 +29,8 @@ namespace ui
         void displayGradesInfo();
         std::vector<ExamGrade> getExamGradesByStudent(const std::vector<Exam> &exams, const Student &student);
         std::vector<ExamGrade> getExamGradesByExam(const Exam &exam, const std::vector<Student> &students);
+        void calculateModuleGrades();
+
     public:
         /**
          * @param account the account that logged into this ModuleHomePage (i.e. account that is logged in)

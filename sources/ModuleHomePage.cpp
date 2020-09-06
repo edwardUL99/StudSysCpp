@@ -150,9 +150,42 @@ void ModuleHomePage::viewExamGrades()
     }
 }
 
+void ModuleHomePage::calculateModuleGrades() 
+{
+    while (true) {
+        cout << "Do you want to calculate final module grades for (A)ll students, (O)ne student, or (C)ancel?" << endl;
+
+        string choice = ui::getChoice();
+        
+        if (choice == "A") {
+            system.calculateAllModuleGradesForModule(module->getCode());
+            cout << "Calculated final module grades for all students registered to module\n" << endl;
+            return;
+        } else if (choice == "O") {
+            cout << "Please enter the ID of the student to calculate the grade for: " << endl;
+
+            int id = ui::getInt(ui::intltezeropred, ui::ltezeroretrymsg);
+
+            try {
+                Student student = system.getStudent(id);
+                system.calculateModuleGrade(module->getCode(), student);
+                cout << "Calculated final module grade for student " << id << "\n" << endl;
+            } catch (NotFoundException &nf) {
+                cout << "Student with ID " << id << " not found in system, aborting..." << endl;
+            }
+            return;
+        } 
+        else if (choice == "C")
+        {
+            return;
+        }
+    }
+}
+
 void ModuleHomePage::displayGradesInfo()
 {
-    string prompt = "View: (E)xam grades, (C)ancel, (Q)uit";
+    bool lecturer = isLecturerAccount();
+    string prompt = lecturer ? "View: (E)xam grades, Calculate (M)odule grades, (C)ancel, (Q)uit":"View: (E)xam grades, (C)ancel, (Q)uit";
 
     while (true)
     {
@@ -167,6 +200,10 @@ void ModuleHomePage::displayGradesInfo()
         else if (choice == "C")
         {
             break;
+        }
+        else if (choice == "M" && lecturer)
+        {
+            calculateModuleGrades();
         }
         else if (choice == "Q")
         {
