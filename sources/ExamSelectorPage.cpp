@@ -54,7 +54,7 @@ Exam ExamSelectorPage::getExam()
 
         return exams[num - 1];
     }
-    else 
+    else
     {
         cout << "Only 1 exam in module, choosing it";
         return exams[0];
@@ -78,7 +78,7 @@ void ExamSelectorPage::printPrompt(bool lecturer)
     else
     {
         if (lecturer)
-            cout << "(C)reate Exam, (E)dit Exam, (B)ack, (Q)uit" << endl;
+            cout << "(C)reate Exam, (D)elete Exam, (E)dit Exam, (B)ack, (Q)uit" << endl;
         else
             cout << "(T)ake exam, (B)ack, (Q)uit" << endl;
     }
@@ -86,7 +86,7 @@ void ExamSelectorPage::printPrompt(bool lecturer)
 
 bool ExamSelectorPage::takeExam()
 {
-    if (exams.size() != 0 && !isLecturer())
+    if (exams.size() != 0)
     {
         Exam exam = getExam();
         StudentAccount *studentAccount = dynamic_cast<StudentAccount *>(account);
@@ -111,7 +111,7 @@ bool ExamSelectorPage::takeExam()
 
 bool ExamSelectorPage::editExam()
 {
-    if (exams.size() != 0 && isLecturer())
+    if (exams.size() != 0)
     {
         Exam exam = getExam();
 
@@ -125,6 +125,44 @@ bool ExamSelectorPage::editExam()
         {
             cout << "This exam has already been taken by students so you cannot edit it" << endl;
             return false;
+        }
+    }
+
+    return false;
+}
+
+bool ExamSelectorPage::deleteExam()
+{
+    if (exams.size() != 0)
+    {
+        Exam exam = getExam();
+        string examDesc = exam.getName() + " " + std::to_string(exam.getYear());
+
+        while (true)
+        {
+            cout << "Are you sure you want to delete the exam: " << examDesc << "? (Y/N)" << endl;
+
+            string choice = ui::getChoice();
+
+            if (choice == "Y")
+            {
+                if (system.removeExam(exam))
+                {
+                    cout << "Exam " << examDesc << " deleted successfully\n"
+                         << endl;
+                    return true;
+                }
+                else
+                {
+                    cout << "Exam " << examDesc << " not deleted successfully, please try again later\n"
+                         << endl;
+                    return false;
+                }
+            }
+            else if (choice == "N")
+            {
+                return false;
+            }
         }
     }
 
@@ -147,11 +185,11 @@ void ExamSelectorPage::show()
         printPrompt(lecturer);
         string choice = ui::getChoice();
 
-        if (choice == "T")
+        if (choice == "T" && !lecturer)
         {
             run = !takeExam();
         }
-        else if (choice == "E")
+        else if (choice == "E" && lecturer)
         {
             run = !editExam();
         }
@@ -161,6 +199,10 @@ void ExamSelectorPage::show()
             ui::pageManager.addSharedEntity(createPage, module);
             ui::pageManager.setNextPage(createPage);
             break;
+        }
+        else if (choice == "D" && lecturer)
+        {
+            run = !deleteExam();
         }
         else if (choice == "B")
         {

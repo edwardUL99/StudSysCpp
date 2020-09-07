@@ -50,6 +50,11 @@ namespace ui
              * @return true if you want to exit the loop, false otherwise
              */
             bool editExam();
+            /**
+             * @brief Provides functionality for deleting an exam
+             * @return true if you want to exit the main loop, false otherwise
+             */
+            bool deleteExam();
         public:
             ExamSelectorPage(Account *account, Module *module, StudentSystem &system);
             virtual ~ExamSelectorPage() = default;
