@@ -38,7 +38,7 @@ void LoginPage::setPasswordText(string passwordText)
 
 bool LoginPage::processLoginDetails(bool &exists)
 {
-    bool submit;
+    bool submit = false;
     if (this->student)
     {
         try
