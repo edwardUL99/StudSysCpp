@@ -1,7 +1,5 @@
 *.o
-*.so
 workspace.code-workspace
-studsys
 *.login
 studsysdbadmin
 examCreateTest
