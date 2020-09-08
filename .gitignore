@@ -8,4 +8,5 @@ Tests
 Logs
 .vscode
 .VSCodeCounter
-
+studsys
+*.so
