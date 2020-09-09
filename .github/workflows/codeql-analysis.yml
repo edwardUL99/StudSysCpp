@@ -37,9 +37,9 @@ jobs:
           wget https://dev.mysql.com/get/Downloads/Connector-C++/mysql-connector-c++-8.0.21-linux-glibc2.12-x86-64bit.tar.gz
           mkdir mysql-extracted
           tar -xvf mysql-connector-c++-8.0.21-linux-glibc2.12-x86-64bit.tar.gz -C mysql-extracted --strip-components 1
-          cp -r mysql-extracted/include/* /usr/include
-          mkdir /usr/lib/mysqlcpp
-          cp mysql-extracted/lib64/* /usr/lib/mysqlcpp
+          sudo cp -r mysql-extracted/include/* /usr/include
+          sudo mkdir /usr/lib/mysqlcpp
+          sudo cp mysql-extracted/lib64/* /usr/lib/mysqlcpp
           cd StudSysCppLibrary
           make
           cd ..
@@ -64,9 +64,15 @@ jobs:
     #    and modify them (or add more) to build your code if your project
     #    uses a compiled language
 
-    #- run: |
-    #   make bootstrap
-    #   make release
+    - run: |
+       make bootstrap
+       make release
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v1
+    
+    - run: |
+        sudo rm /usr/lib/mysqlcpp
+        sudo rm /usr/include/mysql
+        sudo rm /usr/include/mysqlx
+        sudo rm /usr/include/jdbc
