@@ -32,12 +32,13 @@ jobs:
         fetch-depth: 2
     
     - run: git clone https://github.com/edwardUL99/StudSysCppLibrary
-    - run: mkdir headers/studsys
-    - run: cd StudSysCppLibrary
-    - run: make
-    - run: cd ..
-    - run: cp StudSysCppLibrary/headers/*.h headers/studsys
-    - run: cp StudSysCppLibrary/libstudsys.so lib
+    - run: |
+          mkdir headers/studsys
+          cd StudSysCppLibrary
+          make
+          cd ..
+          cp StudSysCppLibrary/headers/*.h headers/studsys
+          cp StudSysCppLibrary/libstudsys.so lib
        
     # If this run was triggered by a pull request event, then checkout
     # the head of the pull request instead of the merge commit.
