@@ -41,10 +41,12 @@ jobs:
           sudo mkdir /usr/lib/mysqlcpp
           sudo cp mysql-extracted/lib64/* /usr/lib/mysqlcpp
           cd StudSysCppLibrary
+          sudo apt-get install libboost-dev
           make
           cd ..
           cp StudSysCppLibrary/headers/*.h headers/studsys
           cp StudSysCppLibrary/libstudsys.so lib
+
        
     # If this run was triggered by a pull request event, then checkout
     # the head of the pull request instead of the merge commit.
@@ -76,3 +78,4 @@ jobs:
         sudo rm /usr/include/mysql
         sudo rm /usr/include/mysqlx
         sudo rm /usr/include/jdbc
+        sudo apt-get remove --purge libboost-dev
