@@ -77,9 +77,9 @@ jobs:
       uses: github/codeql-action/analyze@v1
     
     - run: |
-        sudo rm /usr/lib/mysqlcpp
-        sudo rm /usr/include/mysql
-        sudo rm /usr/include/mysqlx
-        sudo rm /usr/include/jdbc
+        sudo rm -rf /usr/lib/mysqlcpp
+        sudo rm -rf /usr/include/mysql
+        sudo rm -rf /usr/include/mysqlx
+        sudo rm -rf /usr/include/jdbc
         sudo apt-get remove --purge libboost-dev
         sudo apt-get remove --purge libmysqlcppconn-dev
