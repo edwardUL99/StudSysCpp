@@ -33,7 +33,7 @@ jobs:
     
     - run: git clone https://github.com/edwardUL99/StudSysCppLibrary
     - run: mkdir headers/studsys
-    - run: cp StudSysCppLibrary/headers headers/studsys
+    - run: cp StudSysCppLibrary/headers/*.h headers/studsys
     - run: cp StudSysCppLibrary/libstudsys.so lib
        
     # If this run was triggered by a pull request event, then checkout
