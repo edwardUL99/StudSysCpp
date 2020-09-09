@@ -43,6 +43,7 @@ jobs:
           export LIBRARY_PATH=/usr/lib/mysqlcpp:$LIBRARY_PATH
           cd StudSysCppLibrary
           sudo apt-get install libboost-dev
+          sudo apt-get install libmysqlcppconn-dev
           make
           cd ..
           cp StudSysCppLibrary/headers/*.h headers/studsys
@@ -81,3 +82,4 @@ jobs:
         sudo rm /usr/include/mysqlx
         sudo rm /usr/include/jdbc
         sudo apt-get remove --purge libboost-dev
+        sudo apt-get remove --purge libmysqlcppconn-dev
