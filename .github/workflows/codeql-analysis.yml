@@ -31,15 +31,10 @@ jobs:
         # a pull request then we can checkout the head.
         fetch-depth: 2
     
-    - name: Checkout library headers
-      uses: actions/checkout@master
-      with:
-        name: StudSysCppLibrary
-        ref: refs/heads/release
-    
+    - run: git clone https://github.com/edwardUL00/StudSysCppLibrary
     - run: mkdir headers/studsys
-    - run: cp refs/heads/release/headers headers/studsys
-    - run: cp refs/heads/release/libstudsys.so lib
+    - run: cp StudSysCppLibrary/headers headers/studsys
+    - run: cp StudSysCppLibrary/libstudsys.so lib
        
     # If this run was triggered by a pull request event, then checkout
     # the head of the pull request instead of the merge commit.
