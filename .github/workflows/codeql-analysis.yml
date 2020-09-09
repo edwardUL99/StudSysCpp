@@ -48,6 +48,8 @@ jobs:
           #cd ..
           #cp StudSysCppLibrary/headers/*.h headers/studsys
           LIB_TAGS=$(curl -i https://api.github.com/repos/edwardUL99/StudSysCppLibrary/tags | grep name)
+          IFS=","
+          read -ra TAGS <<< "$LIB_TAGS"
           LATEST_TAG=$(echo "${TAGS[0]}" | awk '{print $2}' | tr -d '"')
           cd lib
           wget https://github.com/edwardUL99/StudSysCppLibrary/releases/download/$LATEST_TAG/libstudsys.so
