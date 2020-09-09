@@ -31,7 +31,7 @@ jobs:
         # a pull request then we can checkout the head.
         fetch-depth: 2
     
-    - run: git clone https://github.com/edwardUL00/StudSysCppLibrary
+    - run: git clone https://github.com/edwardUL99/StudSysCppLibrary
     - run: mkdir headers/studsys
     - run: cp StudSysCppLibrary/headers headers/studsys
     - run: cp StudSysCppLibrary/libstudsys.so lib
