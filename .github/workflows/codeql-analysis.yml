@@ -41,12 +41,8 @@ jobs:
           sudo mkdir /usr/lib/mysqlcpp
           sudo cp mysql-extracted/lib64/* /usr/lib/mysqlcpp
           export LIBRARY_PATH=/usr/lib/mysqlcpp:$LIBRARY_PATH
-          #cd StudSysCppLibrary
           sudo apt-get install libboost-dev
           sudo apt-get install libmysqlcppconn-dev
-          #make
-          #cd ..
-          #cp StudSysCppLibrary/headers/*.h headers/studsys
           LIB_TAGS=$(curl -i https://api.github.com/repos/edwardUL99/StudSysCppLibrary/tags | grep name)
           IFS=","
           read -ra TAGS <<< "$LIB_TAGS"
