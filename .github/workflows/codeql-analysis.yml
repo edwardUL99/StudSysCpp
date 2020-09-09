@@ -33,6 +33,9 @@ jobs:
     
     - run: git clone https://github.com/edwardUL99/StudSysCppLibrary
     - run: mkdir headers/studsys
+    - run: cd StudSysCppLibrary
+    - run: make
+    - run: cd ..
     - run: cp StudSysCppLibrary/headers/*.h headers/studsys
     - run: cp StudSysCppLibrary/libstudsys.so lib
        
