@@ -31,23 +31,31 @@ jobs:
         # a pull request then we can checkout the head.
         fetch-depth: 2
     
-    - run: git clone https://github.com/edwardUL99/StudSysCppLibrary
+    #- run: git clone https://github.com/edwardUL99/StudSysCppLibrary
     - run: |
           mkdir headers/studsys
-          #wget https://dev.mysql.com/get/Downloads/Connector-C++/mysql-connector-c++-8.0.21-linux-glibc2.12-x86-64bit.tar.gz
-          #mkdir mysql-extracted
-          #tar -xvf mysql-connector-c++-8.0.21-linux-glibc2.12-x86-64bit.tar.gz -C mysql-extracted --strip-components 1
-          #sudo cp -r mysql-extracted/include/* /usr/include
-          #sudo mkdir /usr/lib/mysqlcpp
-          #sudo cp mysql-extracted/lib64/* /usr/lib/mysqlcpp
-          #export LIBRARY_PATH=/usr/lib/mysqlcpp:$LIBRARY_PATH
-          cd StudSysCppLibrary
+          wget https://dev.mysql.com/get/Downloads/Connector-C++/mysql-connector-c++-8.0.21-linux-glibc2.12-x86-64bit.tar.gz
+          mkdir mysql-extracted
+          tar -xvf mysql-connector-c++-8.0.21-linux-glibc2.12-x86-64bit.tar.gz -C mysql-extracted --strip-components 1
+          sudo cp -r mysql-extracted/include/* /usr/include
+          sudo mkdir /usr/lib/mysqlcpp
+          sudo cp mysql-extracted/lib64/* /usr/lib/mysqlcpp
+          export LIBRARY_PATH=/usr/lib/mysqlcpp:$LIBRARY_PATH
+          #cd StudSysCppLibrary
           sudo apt-get install libboost-dev
           sudo apt-get install libmysqlcppconn-dev
-          make
+          #make
+          #cd ..
+          #cp StudSysCppLibrary/headers/*.h headers/studsys
+          LIB_TAGS=$(curl -i https://api.github.com/repos/edwardUL99/StudSysCppLibrary/tags | grep name)
+          LATEST_TAG=$(echo "${TAGS[0]}" | awk '{print $2}' | tr -d '"')
+          cd lib
+          wget https://github.com/edwardUL99/StudSysCppLibrary/releases/download/$LATEST_TAG/libstudsys.so
           cd ..
-          cp StudSysCppLibrary/headers/*.h headers/studsys
-          cp StudSysCppLibrary/libstudsys.so lib
+          mkdir librelease-extracted
+          wget https://github.com/edwardUL99/StudSysCppLibrary/archive/$LATEST_TAG.tar.gz
+          tar -xvf $LATEST_TAG.tar.gz -C librelease-extracted --strip-components 1
+          cp librelease-extracted/headers/*.h headers/studsys
 
        
     # If this run was triggered by a pull request event, then checkout
