@@ -75,7 +75,7 @@ jobs:
     #    uses a compiled language
 
     - run: |
-       sudo cp /usr/lib/mysqlcpp/* lib
+       #sudo cp /usr/lib/mysqlcpp/* lib
        make 
        make clean
 
