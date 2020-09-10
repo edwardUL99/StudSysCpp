@@ -33,14 +33,14 @@ jobs:
     
     #- run: git clone https://github.com/edwardUL99/StudSysCppLibrary
     - run: |
-          mkdir headers/studsys
-          wget https://dev.mysql.com/get/Downloads/Connector-C++/mysql-connector-c++-8.0.21-linux-glibc2.12-x86-64bit.tar.gz
-          mkdir mysql-extracted
-          tar -xvf mysql-connector-c++-8.0.21-linux-glibc2.12-x86-64bit.tar.gz -C mysql-extracted --strip-components 1
-          sudo cp -r mysql-extracted/include/* /usr/include
-          sudo mkdir /usr/lib/mysqlcpp
-          sudo cp mysql-extracted/lib64/* /usr/lib/mysqlcpp
-          export LIBRARY_PATH=/usr/lib/mysqlcpp:$LIBRARY_PATH
+          #mkdir headers/studsys
+          #wget https://dev.mysql.com/get/Downloads/Connector-C++/mysql-connector-c++-8.0.21-linux-glibc2.12-x86-64bit.tar.gz
+          #mkdir mysql-extracted
+          #tar -xvf mysql-connector-c++-8.0.21-linux-glibc2.12-x86-64bit.tar.gz -C mysql-extracted --strip-components 1
+          #sudo cp -r mysql-extracted/include/* /usr/include
+          #sudo mkdir /usr/lib/mysqlcpp
+          #sudo cp mysql-extracted/lib64/* /usr/lib/mysqlcpp
+          #export LIBRARY_PATH=/usr/lib/mysqlcpp:$LIBRARY_PATH
           sudo apt-get install libboost-dev
           sudo apt-get install libmysqlcppconn-dev
           LIB_TAGS=$(curl -i https://api.github.com/repos/edwardUL99/StudSysCppLibrary/tags | grep name)
