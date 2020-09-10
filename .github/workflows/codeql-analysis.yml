@@ -33,7 +33,7 @@ jobs:
     
     #- run: git clone https://github.com/edwardUL99/StudSysCppLibrary
     - run: |
-          #mkdir headers/studsys
+          mkdir headers/studsys
           #wget https://dev.mysql.com/get/Downloads/Connector-C++/mysql-connector-c++-8.0.21-linux-glibc2.12-x86-64bit.tar.gz
           #mkdir mysql-extracted
           #tar -xvf mysql-connector-c++-8.0.21-linux-glibc2.12-x86-64bit.tar.gz -C mysql-extracted --strip-components 1
