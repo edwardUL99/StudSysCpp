@@ -391,7 +391,7 @@ Announcement AnnouncementPage::chooseAnnouncement(std::vector<Announcement> &ann
         int i = 1;
         for (const Announcement &announcement : announcements)
         {
-            cout << i << ") " << announcement.getSubject() << " Updated: " << system.getAnnouncementTime(announcement) << endl;
+            cout << i << ") " << announcement.getSubject() << "\tLecturer: " << announcement.getLecturer().getName() << ", Updated: " << system.getAnnouncementTime(announcement) << endl;
             i++;
         }
         cout << "Choose a number between 1 and " << length << " to choose the announcement (1 being the newest): " << endl;
