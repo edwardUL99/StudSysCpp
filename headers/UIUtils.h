@@ -42,8 +42,6 @@ namespace ui
  */
   std::string getString();
 
-  //do the same as this with int and float
-
   /**
     * An overloaded version of getString() but takes a predicate function which returns a bool and takes a string and then passes the string got from getString into the function and iterates through it while the predicate function returns true
     * If retryMessage is passed this is printed each iteration
@@ -52,6 +50,23 @@ namespace ui
     * @param retryMessage an optional message to print each time the predicate returns true
     */
   std::string getString(const Predicate<std::string> &predicate, std::string retryMessage = "");
+
+  /**
+   * A helper function which capitalises the given string
+   */
+  void toUpper(std::string &str);
+
+  /**
+   * Retrieves a course code from stdin using ccodepred and ccoderetrymsg and then capitalises it
+   * @returns a capitalised course code of 5 characters long
+   */
+  std::string getCourseCode();
+
+  /**
+   * Retrieves a module code from stdin using mccodepred and mcoderetry message and then capitalises it
+   * @returns a capitalised module code of 6 characters long
+   */
+  std::string getModuleCode();
 
   /**
     * An std::function object for checking if a string entered as a module code is not 6 characters long

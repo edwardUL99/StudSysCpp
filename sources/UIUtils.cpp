@@ -63,6 +63,25 @@ string ui::getString(const Predicate<string> &predicate, const string retryMessa
     return str;
 }
 
+void ui::toUpper(string &str) {
+    for (int i = 0; i < str.length(); i++) {
+        char &ch = str[i];
+        ch = toupper(ch);
+    }
+}
+
+string ui::getCourseCode() {
+    string code = getString(ccodepred, ccoderetrymsg);
+    toUpper(code);
+    return code;
+}
+
+string ui::getModuleCode() {
+    string code = getString(mcodepred, mcoderetrymsg);
+    toUpper(code);
+    return code;
+}
+
 string ui::getSecureString()
 {
     string secure;

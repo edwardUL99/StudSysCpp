@@ -43,7 +43,9 @@ bool LoginPage::processLoginDetails(bool &exists)
     {
         try
         {
-            StudentAccount studentAccount = this->system.getStudentAccount(this->system.getStudentID(email));
+            string stringId = email.substr(0, email.find('@'));
+            int id = std::atoi(stringId.c_str());
+            StudentAccount studentAccount = this->system.getStudentAccount(id);
 
             submit = studentAccount.getPassword() == password;
         }
@@ -239,7 +241,7 @@ StudentAccount LoginPage::getStudentAccount() const
     }
     else
     {
-        int id = this->system.getStudentID(this->email);
+        int id = std::atoi(email.substr(0, email.find('@')).c_str());
 
         return this->system.getStudentAccount(id);
     }

@@ -58,7 +58,7 @@ void Administration::createCourse()
 {
     cout << "Please enter the course code: " << endl;
 
-    string code = ui::getString(ui::ccodepred, ui::ccoderetrymsg);
+    string code = ui::getCourseCode();
 
     cout << "Please enter the course type: " << endl;
 
@@ -105,7 +105,7 @@ void Administration::removeCourse()
 {
     cout << "Please enter the course code to remove: " << endl;
 
-    string code = ui::getString(ui::emptystrpred, ui::emptystrretrymsg);
+    string code = ui::getCourseCode();
 
     try
     {
@@ -130,7 +130,7 @@ void Administration::createModule()
 {
     cout << "Please enter the module code: " << endl;
 
-    string code = ui::getString(ui::mcodepred, ui::mcoderetrymsg);
+    string code = ui::getModuleCode();
 
     cout << "Please enter the module name: " << endl;
 
@@ -173,7 +173,7 @@ void Administration::removeModule()
 {
     cout << "Please enter the Module code to remove: " << endl;
 
-    string code = ui::getString(ui::mcodepred, ui::mcoderetrymsg);
+    string code = ui::getModuleCode();
 
     try
     {
@@ -212,7 +212,7 @@ void Administration::createStudent()
 
     cout << "Please enter the course code for which this Student will be enrolled in: " << endl;
 
-    string code = ui::getString(ui::ccodepred, ui::ccoderetrymsg);
+    string code = ui::getCourseCode();
 
     try
     {
@@ -326,7 +326,7 @@ void Administration::registerStudent(string module)
         {
             cout << "Enter the code of the module to register the student on: " << endl;
 
-            code = ui::getString(ui::emptystrpred, ui::emptystrretrymsg);
+            code = ui::getModuleCode();
         }
         else
         {
@@ -573,7 +573,7 @@ bool Administration::editModule()
 {
     cout << "Enter the code of the module to edit: " << endl;
 
-    string code = ui::getString(ui::mcodepred, ui::mcoderetrymsg);
+    string code = ui::getModuleCode();
 
     try
     {

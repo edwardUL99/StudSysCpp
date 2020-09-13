@@ -154,7 +154,7 @@ void ExamEditPage::editModule()
 {
     cout << "Please enter the new module code: " << endl;
 
-    string code = ui::getString(ui::emptystrpred, ui::emptystrretrymsg);
+    string code = ui::getModuleCode();
 
     try
     {
