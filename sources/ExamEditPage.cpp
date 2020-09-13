@@ -209,6 +209,7 @@ void ExamEditPage::submitChanges()
         else
         {
             cout << "The changes have not been successfully submitted, try again later" << endl;
+            cout << "This may be because there's no changes to update or an error occurred" << endl;
         }
     }
     catch (KeyMismatch &km)

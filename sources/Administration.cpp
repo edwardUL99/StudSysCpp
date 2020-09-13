@@ -298,6 +298,7 @@ void Administration::resetStudentPassword()
         else
         {
             cout << "The password was not updated successfully, please try again later" << endl;
+            cout << "This may be because there's no changes to update or an error occurred" << endl;
         }
     }
     catch (NotFoundException &nf)
@@ -478,6 +479,7 @@ void Administration::resetLecturerPassword()
         else
         {
             cout << "The password was not updated successfully, please try again later" << endl;
+            cout << "This may be because there's no changes to update or an error occurred" << endl;
         }
     }
     catch (NotFoundException &nf)

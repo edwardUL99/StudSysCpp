@@ -322,6 +322,7 @@ void AnnouncementPage::submitAnnouncement(std::vector<string> &lines, const Anno
     else
     {
         cout << "The announcement has not been updated successfully, please try again later" << endl;
+        cout << "This may be because there's no changes to update or an error occurred" << endl;
     }
 }
 

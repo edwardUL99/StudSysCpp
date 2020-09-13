@@ -53,6 +53,7 @@ bool ModuleEditPage::saveUpdates() {
                 return true;
             } else {
                 cout << "Module " << code << " has not been updated successfully, please try again later" << endl;
+                cout << "This may be because there's no changes to update or an error occurred" << endl;
                 return false;
             }
         } else if (choice == "N") {
