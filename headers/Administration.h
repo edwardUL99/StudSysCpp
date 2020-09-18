@@ -44,6 +44,7 @@ namespace ui
         void resetPassword();
         bool editModule();
         bool editLecturer();
+        bool confirmRemoval(std::string removalMessage, int numberConfirms);
 
     public:
         Administration(StudentSystem &system);

@@ -180,6 +180,14 @@ void Administration::removeModule()
     {
         Module module = system.getModule(code);
 
+        string removalMessage = "Removing a module also removes the following for this module:\n\t-All announcements\n\t-All student registrations\n\t-Exams\n\t-Exam Grades\n\t-Module Grades\n";
+        bool remove = confirmRemoval(removalMessage, 2);
+
+        if (!remove) {
+            cout << "Aborting removal of lecturer..." << endl;
+            return;
+        }
+
         if (system.removeModule(module))
         {
             cout << "Module " << code << " was removed successfully" << endl;
@@ -606,6 +614,36 @@ bool Administration::editLecturer()
     } catch (NotFoundException &nf) {
         cout << "Lecturer with email " << email << " not found in system, aborting..." << endl;
         return false;
+    }
+}
+
+bool Administration::confirmRemoval(string removalMessage, int numberConfirms) {
+    int i = 1;
+    cout << removalMessage << endl;
+    cout << "Are you sure you want to continue removal (Y/N)?" << endl;
+
+    Predicate<string> predicate([](const string &s) -> bool { return (s != "Y" && s != "N") && (s != "y" && s != "n"); });
+    string retry = "Please enter Y or N only";
+    string choice = ui::getString(predicate, retry);
+    choice[0] = toupper(choice[0]);
+
+    if (choice == "N") {
+        return false;
+    } else {
+        while (i < numberConfirms) {
+            cout << "Please confirm " << (numberConfirms - i) << " times more. (Y/N)" << endl;
+
+            choice = ui::getString(predicate, retry);
+            choice[0] = toupper(choice[0]);
+
+            if (choice == "N") {
+                return false;
+            }
+
+            i++;
+        }
+
+        return true; // if you get to here Y must have been pressed enough times to break out of the loop without returning false
     }
 }
 
