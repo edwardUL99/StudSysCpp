@@ -265,6 +265,14 @@ void Administration::removeStudent()
         Student student = system.getStudent(id);
         StudentAccount account = system.getStudentAccount(id);
 
+        string removalMessage = "Removing a student also removes the following information about this student:\n\t-Exam Grades\n\t-Module Grades\n\t-Student account\n";
+        bool remove = confirmRemoval(removalMessage, 2);
+
+        if (!remove) {
+            cout << "Aborting removal of student..." << endl;
+            return;
+        }
+
         system.removeAccount(account);
 
         if (system.removeStudent(student))
