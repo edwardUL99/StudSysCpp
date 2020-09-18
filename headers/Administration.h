@@ -43,6 +43,7 @@ namespace ui
          */
         void resetPassword();
         bool editModule();
+        bool editLecturer();
 
     public:
         Administration(StudentSystem &system);

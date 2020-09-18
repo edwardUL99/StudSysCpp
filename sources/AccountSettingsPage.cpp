@@ -142,15 +142,11 @@ void AccountSettingsPage::show()
 
     while (run)
     {
-        cout << "Do you want to Change (N)ame or (P)assword, (C)ancel, (Q)uit?" << endl;
+        cout << "Do you want to Change (P)assword, (C)ancel, (Q)uit?" << endl;
 
         string choice = ui::getChoice();
 
-        if (choice == "N")
-        {
-            changeName();
-        }
-        else if (choice == "P")
+        if (choice == "P")
         {
             changePassword();
         }

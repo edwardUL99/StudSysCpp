@@ -8,6 +8,7 @@
 #include "headers/studsys/DuplicateException.h"
 #include "headers/UIUtils.h"
 #include "headers/ModuleEditPage.h"
+#include "headers/LecturerEditPage.h"
 #include "headers/studsys/StudentRegistration.h"
 
 #include <cstring>
@@ -591,6 +592,23 @@ bool Administration::editModule()
     }
 }
 
+bool Administration::editLecturer()
+{
+    cout << "Enter the e-mail address of the lecturer to update: " << endl;
+
+    string email = ui::getString(ui::emptystrpred, ui::emptystrretrymsg);
+
+    try {
+        Lecturer lecturer = system.getLecturer(email);
+        LecturerEditPage *editPage = new LecturerEditPage(lecturer, system);
+        ui::pageManager.setNextPage(editPage);
+        return true;
+    } catch (NotFoundException &nf) {
+        cout << "Lecturer with email " << email << " not found in system, aborting..." << endl;
+        return false;
+    }
+}
+
 void Administration::show()
 {
     bool run = true;
@@ -608,7 +626,7 @@ void Administration::show()
 
     while (run)
     {
-        cout << "(C)reate course/module/student/lecturer, (R)emove course/module/student/lecturer, Reset student/lecturer (P)assword, Register Student on (M)odule, (E)dit Module, (L)ogout, (Q)uit" << endl;
+        cout << "(C)reate course/module/student/lecturer, (R)emove course/module/student/lecturer, Reset Student/lecturer (P)assword, Register (S)tudent on Module, Edit (D)etails, (L)ogout, (Q)uit" << endl;
 
         string choice = ui::getChoice();
 
@@ -624,13 +642,21 @@ void Administration::show()
         {
             resetPassword();
         }
-        else if (choice == "M")
+        else if (choice == "S")
         {
             registerStudent();
         }
-        else if (choice == "E")
+        else if (choice == "D")
         {
-            run = !editModule();
+            cout << "Edit (M)odule, (L)ecturer" << endl;
+
+            string choice1 = ui::getChoice();
+
+            if (choice1 == "M") {
+                run = !editModule();
+            } else if (choice1 == "L") {
+                run = !editLecturer();
+            }
         }
         else if (choice == "L")
         {

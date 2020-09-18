@@ -18,6 +18,7 @@ namespace ui
         Account *account;
         boost::optional<LecturerAccount> accToLectAcc();
         boost::optional<StudentAccount> accToStudAcc();
+        [[deprecated("Not called from show() any longer")]]
         void changeName();
         void changePassword();
 
