@@ -138,31 +138,25 @@ bool ExamSelectorPage::deleteExam()
         Exam exam = getExam();
         string examDesc = exam.getName() + " " + std::to_string(exam.getYear());
 
-        while (true)
+        string removalMessage = "Deleting an exam also removes the following:\n\t-All exam questions and answers defined\n\t-All exam grades for that exam\n";
+        bool remove = ui::confirmRemoval(removalMessage, 1);
+
+        if (!remove) {
+            cout << "Aborting removal of exam..." << endl;
+            return false;
+        }
+
+        if (system.removeExam(exam))
         {
-            cout << "Are you sure you want to delete the exam: " << examDesc << "? (Y/N)" << endl;
-
-            string choice = ui::getChoice();
-
-            if (choice == "Y")
-            {
-                if (system.removeExam(exam))
-                {
-                    cout << "Exam " << examDesc << " deleted successfully\n"
-                         << endl;
-                    return true;
-                }
-                else
-                {
-                    cout << "Exam " << examDesc << " not deleted successfully, please try again later\n"
-                         << endl;
-                    return false;
-                }
-            }
-            else if (choice == "N")
-            {
-                return false;
-            }
+            cout << "Exam " << examDesc << " deleted successfully\n"
+                 << endl;
+            return true;
+        }
+        else
+        {
+            cout << "Exam " << examDesc << " not deleted successfully, please try again later\n"
+                 << endl;
+            return false;
         }
     }
 

@@ -197,6 +197,36 @@ void ui::quit() {
     throw ExitSignal();
 }
 
+bool ui::confirmRemoval(string removalMessage, int numberConfirms) {
+    int i = 1;
+    cout << removalMessage << endl;
+    cout << "Are you sure you want to continue removal (Y/N)?" << endl;
+
+    Predicate<string> predicate([](const string &s) -> bool { return (s != "Y" && s != "N") && (s != "y" && s != "n"); });
+    string retry = "Please enter Y or N only";
+    string choice = ui::getString(predicate, retry);
+    choice[0] = toupper(choice[0]);
+
+    if (choice == "N") {
+        return false;
+    } else {
+        while (i < numberConfirms) {
+            cout << "Please confirm " << (numberConfirms - i) << " times more. (Y/N)" << endl;
+
+            choice = ui::getString(predicate, retry);
+            choice[0] = toupper(choice[0]);
+
+            if (choice == "N") {
+                return false;
+            }
+
+            i++;
+        }
+
+        return true; // if you get to here Y must have been pressed enough times to break out of the loop without returning false
+    }
+}
+
 const char * ui::ExitSignal::what() const throw() {
     return "Exit Signal not caught";
 }

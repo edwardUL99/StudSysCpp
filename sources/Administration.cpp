@@ -112,6 +112,14 @@ void Administration::removeCourse()
     {
         Course course = system.getCourse(code);
 
+        string removalMessage = "Removing a course has the following effect:\n\t-All students on this course will no longer be registered on a course\n";
+        bool remove = ui::confirmRemoval(removalMessage, 1);
+
+        if (!remove) {
+            cout << "ABorting removal of course..." << endl;
+            return;
+        }
+
         if (system.removeCourse(course))
         {
             cout << "Course " << code << " was removed successfully" << endl;
@@ -181,7 +189,7 @@ void Administration::removeModule()
         Module module = system.getModule(code);
 
         string removalMessage = "Removing a module also removes the following for this module:\n\t-All announcements\n\t-All student registrations\n\t-Exams\n\t-Exam Grades\n\t-Module Grades\n";
-        bool remove = confirmRemoval(removalMessage, 2);
+        bool remove = ui::confirmRemoval(removalMessage, 2);
 
         if (!remove) {
             cout << "Aborting removal of lecturer..." << endl;
@@ -266,7 +274,7 @@ void Administration::removeStudent()
         StudentAccount account = system.getStudentAccount(id);
 
         string removalMessage = "Removing a student also removes the following information about this student:\n\t-Exam Grades\n\t-Module Grades\n\t-Student account\n";
-        bool remove = confirmRemoval(removalMessage, 2);
+        bool remove = ui::confirmRemoval(removalMessage, 2);
 
         if (!remove) {
             cout << "Aborting removal of student..." << endl;
@@ -451,18 +459,24 @@ void Administration::removeLecturer()
             return;
         }
 
-        LecturerAccount account = system.getLecturerAccount(email);
-        string name = lecturer.getName();
+        string removalMessage = "Removing a lecturer has the following effects:\n\t-All courses being lead by them will no longer have a course leader\n\t-ALl modules being taught by this lecturer will no longer have a lecturer\n\t-Any student registrations on those modules will be removed\n\t-All announcements made by the lecturer will be removed\n\t-The lecturer's account will be removed\n";
+        bool remove = ui::confirmRemoval(removalMessage, 2);
 
+        if (!remove) {
+            cout << "Aborting removal of lecturer..." << endl;
+            return;
+        }
+
+        LecturerAccount account = system.getLecturerAccount(email);
         system.removeAccount(account);
 
         if (system.removeLecturer(lecturer))
         {
-            cout << "Lecturer " << name << " removed successfully from the system" << endl;
+            cout << "Lecturer " << email << " removed successfully from the system" << endl;
         }
         else
         {
-            cout << "Lecturer " << name << " was not removed successfully from the system, please try again later" << endl;
+            cout << "Lecturer " << email << " was not removed successfully from the system, please try again later" << endl;
         }
     }
     catch (NotFoundException &nf)
@@ -622,36 +636,6 @@ bool Administration::editLecturer()
     } catch (NotFoundException &nf) {
         cout << "Lecturer with email " << email << " not found in system, aborting..." << endl;
         return false;
-    }
-}
-
-bool Administration::confirmRemoval(string removalMessage, int numberConfirms) {
-    int i = 1;
-    cout << removalMessage << endl;
-    cout << "Are you sure you want to continue removal (Y/N)?" << endl;
-
-    Predicate<string> predicate([](const string &s) -> bool { return (s != "Y" && s != "N") && (s != "y" && s != "n"); });
-    string retry = "Please enter Y or N only";
-    string choice = ui::getString(predicate, retry);
-    choice[0] = toupper(choice[0]);
-
-    if (choice == "N") {
-        return false;
-    } else {
-        while (i < numberConfirms) {
-            cout << "Please confirm " << (numberConfirms - i) << " times more. (Y/N)" << endl;
-
-            choice = ui::getString(predicate, retry);
-            choice[0] = toupper(choice[0]);
-
-            if (choice == "N") {
-                return false;
-            }
-
-            i++;
-        }
-
-        return true; // if you get to here Y must have been pressed enough times to break out of the loop without returning false
     }
 }
 

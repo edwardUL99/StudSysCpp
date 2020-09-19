@@ -174,6 +174,14 @@ namespace ui
  */
   void quit();
 
+  /**
+   * Prints the removal message and then asks to confirm the number of times specified by number confirms.
+   * @param removalMessage the message to print before asking to confirm removal
+   * @param numberConfirms the number of times to request confirmation
+   * @return true if the caller should continue removal, false if not
+   */
+  bool confirmRemoval(std::string removalMessage, int numberConfirms);
+
 
   class ExitSignal : public std::exception {
     public:
