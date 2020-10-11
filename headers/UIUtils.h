@@ -6,6 +6,7 @@
 #include "studsys/Predicate.h"
 #include "PageManager.h"
 #include <exception>
+#include "studsys/ConfigFileProcessor.h"
 
 namespace ui
 {

@@ -2,6 +2,7 @@
 #define PAGE_H
 
 #include "studsys/StudentSystem.h"
+#include "studsys/ConfigFileProcessor.h"
 #include "UIUtils.h"
 #include <iostream>
 
@@ -16,6 +17,7 @@ namespace ui
     {
     protected:
         StudentSystem &system;
+
 
     public:
         Page(StudentSystem &studentSystem);

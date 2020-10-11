@@ -60,9 +60,11 @@ void PageManager::freeEntities(Page *page) {
     }
 }
 
-void PageManager::initializeSystem(string database, string username, string password, string host)
+void PageManager::initializeSystem(string database, string username, string password, string host, string adminUsername, string adminPass)
 {
     this->system.startSystem(database, username, password, host);
+    this->adminUsername = adminUsername;
+    this->adminPass = adminPass;
 }
 
 StudentSystem &PageManager::getSystem() {
@@ -120,7 +122,7 @@ void PageManager::start(Page *initialPage)
 
 void PageManager::start()
 {
-    WelcomePage *welcome = new WelcomePage(this->system);
+    WelcomePage *welcome = new WelcomePage(this->system, adminUsername, adminPass);
     start(welcome);
 }
 

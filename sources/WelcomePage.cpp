@@ -8,7 +8,10 @@ using ui::WelcomePage;
 
 const string WelcomePage::welcomeText = "Welcome to the Student Management System.\nIf you do not have an account, please contact the administration office.\nOtherwise, login following the commands below\n";
 
-WelcomePage::WelcomePage(StudentSystem &system) : Page(system) {}
+WelcomePage::WelcomePage(StudentSystem &system, string adminUsername, string adminPass) : Page(system) {
+    this->adminUsername = adminUsername;
+    this->adminPass = adminPass;
+}
 
 void WelcomePage::show() {
     cout << WelcomePage::welcomeText << endl;
@@ -25,7 +28,7 @@ void WelcomePage::show() {
         LoginPage *loginPage = NULL;
 
         if (choice == "A") {
-            Administration *admin = new Administration(this->system);
+            Administration *admin = new Administration(this->system, adminUsername, adminPass);
             ui::pageManager.setNextPage(admin);
             break;
         } else if (choice == "L") {

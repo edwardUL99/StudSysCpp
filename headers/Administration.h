@@ -14,6 +14,8 @@ namespace ui
     {
     private:
         bool loggedIn;
+        std::string adminUserName;
+        std::string adminPass;
         bool login();
         void createCourse();
         void removeCourse();
@@ -23,10 +25,10 @@ namespace ui
         void removeStudent();
         /**
          * Registers a student on a module
-         * @param module if this is blank, the method asks for the module from stdin
          */
-        void registerStudent(std::string module="");
+        void registerStudent();
         void resetStudentPassword();
+        void calculateStudentQCA();
         void createLecturer();
         void removeLecturer();
         void resetLecturerPassword();
@@ -46,9 +48,16 @@ namespace ui
         bool editLecturer();
 
     public:
-        Administration(StudentSystem &system);
+        Administration(StudentSystem &system, std::string adminUserName, std::string adminPass);
         virtual ~Administration() = default;
         virtual void show() override;
+        /**
+         * Allows student registration code be shared among multiple classes
+         * This method is also used by the internals.
+         * @param module The module code to register student on
+         * @param system the reference to the student system object
+         */
+        static void registerStudentOnModule(std::string module, StudentSystem &system);
         friend class ModuleSettingsPage;
     };
 

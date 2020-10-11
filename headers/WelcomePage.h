@@ -2,6 +2,7 @@
 #define WELCOME_PAGE_H
 
 #include "Page.h"
+#include "studsys/ConfigFileProcessor.h"
 #include <string>
 
 namespace ui
@@ -11,9 +12,11 @@ namespace ui
     {
     private:
         static const std::string welcomeText;
+        std::string adminUsername;
+        std::string adminPass;
 
     public:
-        WelcomePage(StudentSystem &system);
+        WelcomePage(StudentSystem &system, std::string adminUsername, std::string adminPass);
         virtual ~WelcomePage() = default;
         virtual void show() override;
     };

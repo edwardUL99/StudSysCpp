@@ -19,8 +19,7 @@ void ModuleSettingsPage::registerStudents()
 
         if (choice == "R")
         {
-            Administration admin(this->system);
-            admin.registerStudent(module->getCode());
+            Administration::registerStudentOnModule(module->getCode(), system);
             break;
         }
         else if (choice == "D")

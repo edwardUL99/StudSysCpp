@@ -27,6 +27,8 @@ namespace ui
     class PageManager
     {
         private:
+            std::string adminUsername;
+            std::string adminPass;
             std::stack<Page*> pages;
             std::map<Page*, std::vector<DatabaseItem*>> sharedEntities; //entities stored by Pages 
             std::map<DatabaseItem*, int> timesStored; //keeps track of the amount of times the DatabaseItem is stored by pages
@@ -51,7 +53,7 @@ namespace ui
 
             ~PageManager();
 
-            void initializeSystem(std::string database, std::string username, std::string password, std::string host);
+            void initializeSystem(std::string database, std::string username, std::string password, std::string host, std::string adminUsername, std::string adminPass);
 
             StudentSystem &getSystem();
 

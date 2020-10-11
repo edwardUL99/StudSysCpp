@@ -17,7 +17,11 @@ using std::string;
 using ui::Administration;
 using ui::ModuleEditPage;
 
-Administration::Administration(StudentSystem &studentSystem) : Page(studentSystem), loggedIn(false) {}
+Administration::Administration(StudentSystem &studentSystem, string adminUserName, string adminPass) : Page(studentSystem), loggedIn(false)
+{
+    this->adminUserName = adminUserName;
+    this->adminPass = adminPass;
+}
 
 bool Administration::login()
 {
@@ -27,13 +31,13 @@ bool Administration::login()
 
         string username = ui::getString();
 
-        if (username == "adminITT20")
+        if (username == adminUserName)
         {
             cout << "Please enter the password: " << endl;
 
             string password = ui::getSecureString();
 
-            if (password == "ittAdminPass20")
+            if (password == adminPass)
             {
                 cout << "You are now logged in as admin" << endl;
 
@@ -115,7 +119,8 @@ void Administration::removeCourse()
         string removalMessage = "Removing a course has the following effect:\n\t-All students on this course will no longer be registered on a course\n";
         bool remove = ui::confirmRemoval(removalMessage, 1);
 
-        if (!remove) {
+        if (!remove)
+        {
             cout << "ABorting removal of course..." << endl;
             return;
         }
@@ -191,7 +196,8 @@ void Administration::removeModule()
         string removalMessage = "Removing a module also removes the following for this module:\n\t-All announcements\n\t-All student registrations\n\t-Exams\n\t-Exam Grades\n\t-Module Grades\n";
         bool remove = ui::confirmRemoval(removalMessage, 2);
 
-        if (!remove) {
+        if (!remove)
+        {
             cout << "Aborting removal of lecturer..." << endl;
             return;
         }
@@ -276,7 +282,8 @@ void Administration::removeStudent()
         string removalMessage = "Removing a student also removes the following information about this student:\n\t-Exam Grades\n\t-Module Grades\n\t-Student account\n";
         bool remove = ui::confirmRemoval(removalMessage, 2);
 
-        if (!remove) {
+        if (!remove)
+        {
             cout << "Aborting removal of student..." << endl;
             return;
         }
@@ -332,34 +339,28 @@ void Administration::resetStudentPassword()
     }
 }
 
-void Administration::registerStudent(string module)
+void Administration::registerStudent()
 {
-    cout << "Enter the student ID of the student to register: " << endl;
+    cout << "Enter the code of the module to register the student on: " << endl;
+    string code = ui::getModuleCode();
+    Administration::registerStudentOnModule(code, system);
+}
 
-    int id = ui::getInt(ui::intltezeropred, ui::ltezeroretrymsg);
-
+void Administration::registerStudentOnModule(std::string module, StudentSystem &system)
+{
     bool containsStudent = false;
     bool containsModule = false;
 
-    string code;
+    cout << "Enter the student ID of the student to register: " << endl;
+
+    int id = ui::getInt(ui::intltezeropred, ui::ltezeroretrymsg);
 
     try
     {
         Student student = system.getStudent(id);
         containsStudent = true; //if above executed without throwing, the student was found in the system
 
-        if (module == "")
-        {
-            cout << "Enter the code of the module to register the student on: " << endl;
-
-            code = ui::getModuleCode();
-        }
-        else
-        {
-            code = module;
-        }
-
-        Module registeredModule = system.getModule(code);
+        Module registeredModule = system.getModule(module);
 
         if (registeredModule.getLecturer() == Lecturer::NOT_FOUND)
         {
@@ -369,9 +370,9 @@ void Administration::registerStudent(string module)
 
         containsModule = true; //if above executed without throwing, the module was found in the system
 
-        if (this->system.registerStudentModule(student, registeredModule))
+        if (system.registerStudentModule(student, registeredModule))
         {
-            cout << "Student " << id << " has been registered on Module " << code << "." << endl;
+            cout << "Student " << id << " has been registered on Module " << module << "." << endl;
         }
         else
         {
@@ -382,13 +383,39 @@ void Administration::registerStudent(string module)
     {
         if (!containsStudent)
             cout << "Student with ID " << id << " not found in the system, exiting registration..." << endl;
-        if (!containsModule && code != "")
-            cout << "Module with code " << code << " not found in the system, exiting registration..." << endl;
+        if (!containsModule)
+            cout << "Module with code " << module << " not found in the system, exiting registration..." << endl;
         return;
     }
     catch (DuplicateException &dup)
     {
-        cout << "Student " << id << " has already been registered on Module " << code << "." << endl;
+        cout << "Student " << id << " has already been registered on Module " << module << "." << endl;
+    }
+}
+
+void Administration::calculateStudentQCA()
+{
+    cout << "Enter the ID of the student to calculate the QCA for: " << endl;
+
+    int id = ui::getInt(ui::intltezeropred, ui::ltezeroretrymsg);
+
+    try
+    {
+        Student student = system.getStudent(id);
+
+        if (system.calculateStudentQCA(student))
+        {
+            student = system.getStudent(id); // make a call to the database again to get the QCA
+            cout << "The QCA for student with ID " << id << " has been calculated successfully as " << student.getQCA() << endl;
+        }
+        else
+        {
+            cout << "The QCA for student with ID " << id << " could not be calculated at the moment, please try again later" << endl;
+        }
+    }
+    catch (NotFoundException &nf)
+    {
+        cout << "The student with ID " << id << " was not found in the system, aborting...";
     }
 }
 
@@ -462,7 +489,8 @@ void Administration::removeLecturer()
         string removalMessage = "Removing a lecturer has the following effects:\n\t-All courses being lead by them will no longer have a course leader\n\t-ALl modules being taught by this lecturer will no longer have a lecturer\n\t-Any student registrations on those modules will be removed\n\t-All announcements made by the lecturer will be removed\n\t-The lecturer's account will be removed\n";
         bool remove = ui::confirmRemoval(removalMessage, 2);
 
-        if (!remove) {
+        if (!remove)
+        {
             cout << "Aborting removal of lecturer..." << endl;
             return;
         }
@@ -628,12 +656,15 @@ bool Administration::editLecturer()
 
     string email = ui::getString(ui::emptystrpred, ui::emptystrretrymsg);
 
-    try {
+    try
+    {
         Lecturer lecturer = system.getLecturer(email);
         LecturerEditPage *editPage = new LecturerEditPage(lecturer, system);
         ui::pageManager.setNextPage(editPage);
         return true;
-    } catch (NotFoundException &nf) {
+    }
+    catch (NotFoundException &nf)
+    {
         cout << "Lecturer with email " << email << " not found in system, aborting..." << endl;
         return false;
     }
@@ -656,7 +687,7 @@ void Administration::show()
 
     while (run)
     {
-        cout << "(C)reate course/module/student/lecturer, (R)emove course/module/student/lecturer, Reset Student/lecturer (P)assword, Register (S)tudent on Module, Edit (D)etails, (L)ogout, (Q)uit" << endl;
+        cout << "(C)reate course/module/student/lecturer, (R)emove course/module/student/lecturer, Reset Student/lecturer (P)assword, Register (S)tudent on Module, Calculate Student QC(A), Edit (D)etails, (L)ogout, (Q)uit" << endl;
 
         string choice = ui::getChoice();
 
@@ -676,15 +707,22 @@ void Administration::show()
         {
             registerStudent();
         }
+        else if (choice == "A")
+        {
+            calculateStudentQCA();
+        }
         else if (choice == "D")
         {
             cout << "Edit (M)odule, (L)ecturer" << endl;
 
             string choice1 = ui::getChoice();
 
-            if (choice1 == "M") {
+            if (choice1 == "M")
+            {
                 run = !editModule();
-            } else if (choice1 == "L") {
+            }
+            else if (choice1 == "L")
+            {
                 run = !editLecturer();
             }
         }

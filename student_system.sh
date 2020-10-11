@@ -11,8 +11,10 @@ pass=""
 host=""
 file=""
 separator=""
+adminUsername=""
+adminPass=""
 
-usage_str="student_system [-d] [database_name] (if not specified, default is student_sys) -u <user_name> -p <password> [-h] [host] (if host not specified, default is localhost)"
+usage_str="student_system [-d] [database_name] (if not specified, default is student_sys) -u <user_name> -p <password> [-h] [host] (if host not specified, default is localhost) -au <admin_username> -ap <admin_password>"
 
 usage_str_file="student_system -f <file_name>"
 
@@ -28,6 +30,12 @@ if [ "$COUNT" -eq "0" ]; then
 
     echo "Enter the host: "
     read host
+
+	echo "Enter the admin username: "
+	read adminUsername
+
+	echo "Enter the admin password: "
+	read -s adminPass
 fi
 
 if [ "$COUNT" -eq "2" ]; then
@@ -58,6 +66,14 @@ if [ -z $file ]; then #if file is empty, it means there were the actual paramete
 	     		shift 2
 	     		COUNT=$(expr $COUNT - 2)
 	     		;;
+		 	-au ) adminUsername="$2"
+			 	  shift 2
+				  COUNT=$(expr $COUNT - 2)
+				  ;;
+			-ap ) adminPass="$2"
+				  shift 2
+				  COUNT=$(expr $COUNT - 2)
+				  ;;
 			* ) echo $usage_str
 				exit 1
 	    	esac
@@ -99,7 +115,7 @@ fi
 
 if [ "$COUNT" -eq "0" ]; then
 	#If the count is equals to 0, it means that more than 2 arguments were passed in, as the case statement was executed	
-	$PROGRAM_LOCATION$PROGRAM -d $database -u $user -p $pass -h $host
+	$PROGRAM_LOCATION$PROGRAM -d $database -u $user -p $pass -h $host -au $adminUsername -ap $adminPass
 else
 	$PROGRAM_LOCATION$PROGRAM $file
 fi
