@@ -83,8 +83,10 @@ The admin will then be able to give you the IP address to the database server to
 
 ## Administration:
    Use hidden command A from the WelcomeScreen
-   Username is adminITT20
-   Password is ittAdminPass20
+   If using a config file, the property admin_enabled = true must be present. The default value if false if this is missing.
+   Using command line arguments instead of config file, admin is always enabled. (However, command line arguments other than config file will be removed soon, as a config file gives greater flexibility)
+   Username can be defined in the config file passed in with -f with the parameter admin_user or with the -au flag
+   Password can be defined in the config file passed in with -f with the parameter admin_pass or with the -ap flag
    
 ## Logging:
 Errors can be logged if the STUD_LOGS environment variable is set to the directory of where to store the logs. If this is not set, no logging of errors will take place

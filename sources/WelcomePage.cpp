@@ -27,7 +27,7 @@ void WelcomePage::show() {
 
         LoginPage *loginPage = NULL;
 
-        if (choice == "A") {
+        if (choice == "A" && ui::pageManager.adminEnabled) {
             Administration *admin = new Administration(this->system, adminUsername, adminPass);
             ui::pageManager.setNextPage(admin);
             break;

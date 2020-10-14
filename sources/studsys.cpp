@@ -35,8 +35,10 @@ int main(int argc, char **argv)
     string username;
     string password;
     string host;
+    bool adminEnabled;
     string adminUsername;
     string adminPass;
+
 
     if (argc > 1) {
         if (strcmp(argv[1], "-h") == 0) {
@@ -53,9 +55,18 @@ int main(int argc, char **argv)
                 username = processor.getValue("user");
                 password = processor.getValue("pass");
                 host = processor.getValue("host");
+                string adminUsernameStr = processor.getValue("admin_enabled");
+                
+                if (adminUsernameStr == "") {
+                    adminEnabled = false;
+                } else if (strcasecmp(adminUsernameStr.c_str(), "true") == 0) {
+                    adminEnabled = true;
+                } else {
+                    adminEnabled = false;
+                }
                 adminUsername = processor.getValue("admin_user");
                 adminPass = processor.getValue("admin_pass");
-                if (adminUsername == "" || adminPass == "") 
+                if ((adminUsername == "" || adminPass == "") && adminEnabled) 
                     throw ConfigException("Admin details are not configured");
             } else {
                 cout << "Error: " << argv[1] << " does not exist" << endl;
@@ -67,6 +78,7 @@ int main(int argc, char **argv)
                 username = argv[4];
                 password = argv[6];
                 host = argv[8];
+                adminEnabled = true;
                 adminUsername = argv[10];
                 adminPass = argv[12];
             } else {
@@ -84,6 +96,7 @@ int main(int argc, char **argv)
 
     try {
         ui::pageManager.initializeSystem(dbname, username, password, host, adminUsername, adminPass);
+        ui::pageManager.adminEnabled = adminEnabled;
         ui::pageManager.start();
     } catch (SQLException &sq) {
         exit(1);
