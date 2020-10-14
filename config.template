@@ -1,0 +1,42 @@
+#This file is a template for possible config options.
+#Any line starting in the hash symbol indicates a comment and will be ignored
+
+#All values here should be typed without <>
+
+#database config parameter is the name of the database to connect to
+#It is assumed that this database is set up with all the tables, triggers and procedures required by the system
+
+database = <database-name>
+
+#user flag is the name of the user to connect to the database as
+#This user needs to be granted all privileges to all tables in the database specified by database property
+
+user = <database-user>
+
+#pass flag is the password for the database user
+#This is sensitive information so maybe in a future release there will be encryption that you will have to follow with some tool that the system will unencrypt
+#For now keep this file away from prying eyes!
+
+password = <database-password>
+
+#host flag specifies the host of the server running the database
+#If not specified it defaults to localhost
+#An i.p address of the server can be defined in /etc/hosts with a given alias and that alias can be used here
+
+host = <database-host>
+
+#admin_enabled flag is an optional flag that specifies a hidden A option on the WelcomeScreen is enabled 
+#If not specified, the default is false. If not specified and admin_user and admin_pass are provided they are ignored
+#If false, the A option does nothing
+
+admin_enabled = <true/false>
+
+#admin_user value specifies the username of the administration user
+#This will be used for login to the Administration Page
+
+admin_user = <admin-username>
+
+#admin_pass value specifies the password of the administration password
+#See the same warning as the database password!
+
+admin_pass = <admin-password>

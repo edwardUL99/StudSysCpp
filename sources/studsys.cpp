@@ -55,15 +55,23 @@ int main(int argc, char **argv)
                 username = processor.getValue("user");
                 password = processor.getValue("pass");
                 host = processor.getValue("host");
-                string adminUsernameStr = processor.getValue("admin_enabled");
-                
-                if (adminUsernameStr == "") {
-                    adminEnabled = false;
-                } else if (strcasecmp(adminUsernameStr.c_str(), "true") == 0) {
-                    adminEnabled = true;
-                } else {
-                    adminEnabled = false;
+
+                if (host == "") {
+                    host = "localhost";
                 }
+
+                string adminEnabledStr = processor.getValue("admin_enabled");
+                
+                if (adminEnabledStr == "") {
+                    adminEnabled = false;
+                } else if (strcasecmp(adminEnabledStr.c_str(), "true") == 0) {
+                    adminEnabled = true;
+                } else if (strcasecmp(adminEnabledStr.c_str(), "false") == 0) {
+                    adminEnabled = false;
+                } else {
+                    throw ConfigException("Invalid value given for admin_enabled: " + adminEnabledStr);
+                }
+
                 adminUsername = processor.getValue("admin_user");
                 adminPass = processor.getValue("admin_pass");
                 if ((adminUsername == "" || adminPass == "") && adminEnabled) 
