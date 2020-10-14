@@ -17,7 +17,7 @@ user = <database-user>
 #This is sensitive information so maybe in a future release there will be encryption that you will have to follow with some tool that the system will unencrypt
 #For now keep this file away from prying eyes!
 
-password = <database-password>
+pass = <database-password>
 
 #host flag specifies the host of the server running the database
 #If not specified it defaults to localhost
