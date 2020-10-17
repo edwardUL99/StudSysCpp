@@ -43,7 +43,6 @@ namespace ui
             void freeEntities(Page *page);
 
         public:
-            bool adminEnabled;
             /**
              * DOES NOTHING JUST USED WHEN NEEDED, I.E. DECLARING AS GLOBAL VARIABLE
              * CALL initializeSystem METHOD or else the system will not work. This can be left to the driver main function

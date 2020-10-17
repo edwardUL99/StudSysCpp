@@ -117,5 +117,5 @@ if [ "$COUNT" -eq "0" ]; then
 	#If the count is equals to 0, it means that more than 2 arguments were passed in, as the case statement was executed	
 	$PROGRAM_LOCATION$PROGRAM -d $database -u $user -p $pass -h $host -au $adminUsername -ap $adminPass
 else
-	$PROGRAM_LOCATION$PROGRAM $file
+	$PROGRAM_LOCATION$PROGRAM -f $file
 fi

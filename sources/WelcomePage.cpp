@@ -2,6 +2,7 @@
 #include "headers/LoginPage.h"
 #include "headers/Administration.h"
 #include "headers/UIUtils.h"
+#include "headers/Configuration.h"
 
 using std::string;
 using ui::WelcomePage;
@@ -27,7 +28,12 @@ void WelcomePage::show() {
 
         LoginPage *loginPage = NULL;
 
-        if (choice == "A" && ui::pageManager.adminEnabled) {
+        ui::Configuration &config = ui::Configuration::getInstance();
+        string adminEnabledStr = config.getProperty("admin_enabled");
+
+        bool adminEnabled = adminEnabledStr == "true" ? true:false;
+
+        if (choice == "A" && adminEnabled) {
             Administration *admin = new Administration(this->system, adminUsername, adminPass);
             ui::pageManager.setNextPage(admin);
             break;
