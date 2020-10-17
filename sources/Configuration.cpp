@@ -46,13 +46,14 @@ void Configuration::initialise(string configurationFile) {
 void Configuration::initialise(char **argv) {
     if (propertyMap == NULL) {
         propertyMap = new map<string, string>();
-        (*propertyMap)["database"] = argv[2];
-        (*propertyMap)["user"] = argv[4];
-        (*propertyMap)["pass"] = argv[6];
-        (*propertyMap)["host"] = argv[8];
-        (*propertyMap)["admin_enabled"] = "true"; // with command line arguments admin_enabled is always true
-        (*propertyMap)["admin_user"] = argv[10];
-        (*propertyMap)["admin_pass"] = argv[12];
+        map<string, string> &mapRef = *propertyMap;
+        mapRef["database"] = argv[2];
+        mapRef["user"] = argv[4];
+        mapRef["pass"] = argv[6];
+        mapRef["host"] = argv[8];
+        mapRef["admin_enabled"] = "true"; // with command line arguments admin_enabled is always true
+        mapRef["admin_user"] = argv[10];
+        mapRef["admin_pass"] = argv[12];
     }
 }
 
