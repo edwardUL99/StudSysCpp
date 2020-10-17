@@ -84,6 +84,7 @@ vector<ExamGrade> ModuleHomePage::getExamGradesByExam(const Exam &exam, const st
         try
         {
             ExamGrade examGrade = system.getExamGrade(student, exam);
+            filtered.push_back(examGrade);
         }
         catch (NotFoundException &nf)
         {
