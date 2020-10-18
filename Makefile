@@ -1,5 +1,5 @@
 CXX=g++
-CXXFLAGS=-g -Wall -D_GLIBCXX_ASSERTIONS -L$(shell pwd)/lib
+CXXFLAGS=-g -Wall -D_GLIBCXX_ASSERTIONS -L$(shell pwd)/lib -I$(shell pwd)
 
 LIBS=-lstudsys
 
