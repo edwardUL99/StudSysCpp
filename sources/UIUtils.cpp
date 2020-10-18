@@ -192,6 +192,16 @@ float ui::getFloat(const Predicate<float> &predicate, const string retryMessage)
     return num;
 }
 
+void ui::setCoutPrecision(int decimalPlaces) {
+    cout << std::fixed;
+    cout.precision(decimalPlaces);
+}
+
+void ui::unsetCoutPrecision(int originalDecimalPlaces) {
+    cout.unsetf(std::ios::fixed);
+    cout.precision(originalDecimalPlaces);
+}
+
 void ui::quit() {
     std::cout << "Goodbye, quitting..." << std::endl;
     throw ExitSignal();

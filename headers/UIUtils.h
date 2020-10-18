@@ -170,6 +170,18 @@ namespace ui
   const Predicate<float> floatltezeropred([](const float &x) -> bool { return x <= 0; });
 
   /**
+   * Sets the amount to set precision for cout to
+   * @param decimalPlaces the number of decimal places to display
+   */
+  void setCoutPrecision(int decimalPlaces);
+
+  /**
+   * Unsets the ficed cout precision.
+   * @param originalDecimalPlaces the original precision to set
+   */
+  void unsetCoutPrecision(int originalDecimalPlaces);
+
+  /**
  * Quits from the UI, throwing an instance of ui::ExitSignal
  * This exception must be caught in main to exit gracefully
  */

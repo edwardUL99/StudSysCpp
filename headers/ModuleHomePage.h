@@ -28,6 +28,7 @@ namespace ui
         void examGradesLecturerView(const std::vector<Exam> &exams);
         void examGradesStudentView(const std::vector<Exam> &exams);
         void viewExamGrades();
+        void viewModuleGrades();
         void displayGradesInfo();
         std::vector<ExamGrade> getExamGradesByStudent(const std::vector<Exam> &exams, const Student &student);
         std::vector<ExamGrade> getExamGradesByExam(const Exam &exam, const std::vector<Student> &students);

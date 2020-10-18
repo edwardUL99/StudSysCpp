@@ -111,7 +111,10 @@ void ModuleHomePage::examGradesLecturerView(const vector<Exam> &exams)
             {
                 float grade = examGrade.getGrade();
                 float totalWeight = examGrade.getExam().getTotalWeight();
+                std::streamsize origPrecision = cout.precision();
+                ui::setCoutPrecision(2);
                 cout << "\tStudent ID: " << examGrade.getStudent().getID() << ", Mark: " << grade << "/" << totalWeight << ", Percentage: " << (grade / totalWeight) * 100 << endl;
+                ui::unsetCoutPrecision(origPrecision);
             }
         }
         else
@@ -134,9 +137,12 @@ void ModuleHomePage::examGradesStudentView(const vector<Exam> &exams)
 
         for (const ExamGrade &examGrade : examGrades)
         {
+            std::streamsize origPrecision = cout.precision();
+            ui::setCoutPrecision(2);
             float grade = examGrade.getGrade();
             float totalWeight = examGrade.getExam().getTotalWeight();
             cout << "\t" << examGrade.getDescription() << ", Mark: " << grade << "/" << totalWeight << ", Percentage: " << (grade / totalWeight) * 100 << endl;
+            ui::unsetCoutPrecision(origPrecision);
         }
     }
     else
@@ -202,10 +208,54 @@ void ModuleHomePage::calculateModuleGrades()
     }
 }
 
+void ModuleHomePage::viewModuleGrades()
+{
+    bool lecturer = isLecturerAccount();
+
+    std::streamsize origPrecision = cout.precision();
+    ui::setCoutPrecision(2);
+
+    if (lecturer)
+    {
+        vector<Student> students = system.getStudentsRegisteredOnModule(*module);
+
+        for (const Student &student : students)
+        {
+            cout << "\tStudent ID: " << student.getID() << ", Name: " << student.getName() << ", Module Grade: ";
+            try
+            {
+                ModuleGrade moduleGrade = system.getModuleGrade(*module, student);
+                cout << moduleGrade.getMark() << endl;
+            }
+            catch (NotFoundException &nf)
+            {
+                cout << "N/A" << endl;
+            }
+        }
+    }
+    else
+    {
+        try
+        {
+            StudentAccount *studentAccount = dynamic_cast<StudentAccount *>(account);
+            Student student = studentAccount->getStudent();
+            ModuleGrade moduleGrade = system.getModuleGrade(*module, student);
+
+            cout << "Module Grade for module " << module->getCode() << " for student with ID " << student.getID() << " is: " << moduleGrade.getMark() << endl;
+        }
+        catch (NotFoundException &nf)
+        {
+            cout << "No Module Grade available, contact your lecturer to see if there is a grade to calculate" << endl;
+        }
+    }
+
+    ui::unsetCoutPrecision(origPrecision);
+}
+
 void ModuleHomePage::displayGradesInfo()
 {
     bool lecturer = isLecturerAccount();
-    string prompt = lecturer ? "View: (E)xam grades, Calculate (M)odule grades, (C)ancel, (Q)uit" : "View: (E)xam grades, (C)ancel, (Q)uit";
+    string prompt = lecturer ? "View: (E)xam grades, Module (G)rades; Calculate (M)odule grades, (C)ancel, (Q)uit" : "View: (E)xam grades, (M)odule Grades, (C)ancel, (Q)uit";
 
     while (true)
     {
@@ -224,6 +274,10 @@ void ModuleHomePage::displayGradesInfo()
         else if (choice == "M" && lecturer)
         {
             calculateModuleGrades();
+        }
+        else if (choice == "G" || (choice == "M" && !lecturer))
+        {
+            viewModuleGrades();
         }
         else if (choice == "Q")
         {
