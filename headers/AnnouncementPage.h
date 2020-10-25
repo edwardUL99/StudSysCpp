@@ -97,6 +97,14 @@ namespace ui
          * @param subject the new updated subject
          */
         void submitAnnouncement(std::vector<std::string> &lines, const Announcement &oldAnnouncement, const std::string &subject);
+        /**
+         * @brief this subroutine is used for the initial <!goto> command after viewing the announcement which will be edited
+         * @return the line number to start from, -1 indicates user wants to cancel
+         */
+        int getInitialEditLineNumber();
+        /**
+         * @brief edits the specified announcment
+         */
         void editAnnouncement(const Announcement &announcement);
         /**
          * @brief this subroutine removes the selected announcement from the system

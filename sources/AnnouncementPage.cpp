@@ -176,9 +176,9 @@ bool AnnouncementPage::processNormalEditing(std::vector<string> &lines, int &lin
 {
     string line = lines[lineNumber - 1];
 
-    cout << line << endl;
-
-    cout << lineNumber << " ";
+    cout << lineNumber << ") " << line << endl;
+ 
+    cout << "~ ";
     string input = ui::getString();
 
     if (input == "<!submit>")
@@ -219,6 +219,7 @@ bool AnnouncementPage::processNormalEditing(std::vector<string> &lines, int &lin
 bool AnnouncementPage::processEndOfAnnouncement(std::vector<string> &lines, int &lineNumber, int &numberOfLines, bool &submit, bool &cancel)
 {
     cout << "You are at the end of the original announcement, type <!insert> to insert another line, or <!submit>/<!cancel>" << endl;
+    cout << "~ ";
     string input = ui::getString();
 
     if (input == "<!insert>")
@@ -305,7 +306,6 @@ void AnnouncementPage::editSubject(string &subject, const string &oldSubject)
 
 std::vector<string> AnnouncementPage::beginEditing(const Announcement &announcement)
 {
-    cout << "\nNow you are editing the text. To leave a line the same, press enter, to edit a line, type a new line (you can use <!append> or <!prepend> at the start of the line to append or prepend the existing line onto the new line, <!goto>line to change line) to change it, <!clear> to make a line blank or <!delete> to delete the current line, or to submit now and exit edit, type <!submit>, to cancel edits, type <!cancel>" << endl;
     return ui::splitString(announcement.getAnnouncementText());
 }
 
@@ -326,6 +326,31 @@ void AnnouncementPage::submitAnnouncement(std::vector<string> &lines, const Anno
     }
 }
 
+int AnnouncementPage::getInitialEditLineNumber() {
+    cout << "~ ";
+    string input = ui::getString();
+    string command = extractCommand(input);
+
+    while (command != "<!goto>" && command != "<!cancel>") {
+        cout << "Only command allowed presently is <!goto> or <!cancel>" << endl;
+        cout << "~ ";
+        input = ui::getString();
+        command = extractCommand(input);
+    }
+
+    if (command == "<!cancel>") {
+        return -1;
+    }
+
+    try {
+        int lineNumber = stoi(input);
+        return lineNumber;
+    } catch (std::invalid_argument &inv) {
+        cout << "Invalid value given for <!goto> command. Value must be a number" << endl;
+        return getInitialEditLineNumber();
+    }
+}
+
 void AnnouncementPage::editAnnouncement(const Announcement &announcement)
 {
     if (!canEditAnnouncement(announcement))
@@ -338,11 +363,25 @@ void AnnouncementPage::editAnnouncement(const Announcement &announcement)
 
     std::vector<string> lines = beginEditing(announcement);
 
+    cout << "\nNow you are editing the text. Use command <!goto> line-number to go to a line to edit. When at the line, type <!append> or <!prepend> text to append/prepend that text on, leave blank to leave the same, <!clear> to make it blank, <!delete> to delete it. Type <!insert> to insert new line or <!submit> to save and submit, <!cancel> to cancel" << endl;
+
+    int lineNumber = 1;
+
+    for (string s : lines) {
+        cout << lineNumber++ << ") " << s << endl;
+    }
+
+    lineNumber = getInitialEditLineNumber();
+
+    if (lineNumber == -1) {
+        cout << "Cancelling edit of announcement..." << endl;
+        return;
+    }
+
     string line;
     string text;
 
     bool run = true;
-    int lineNumber = 1;
     int numLines = lines.size();
 
     while (run)
