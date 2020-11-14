@@ -10,12 +10,14 @@
 #include "headers/ModuleEditPage.h"
 #include "headers/LecturerEditPage.h"
 #include "headers/studsys/StudentRegistration.h"
+#include "headers/SearchPage.h"
 
 #include <cstring>
 #include <string>
 using std::string;
 using ui::Administration;
 using ui::ModuleEditPage;
+using ui::SearchPage;
 
 Administration::Administration(StudentSystem &studentSystem, string adminUserName, string adminPass) : Page(studentSystem), loggedIn(false)
 {
@@ -670,6 +672,11 @@ bool Administration::editLecturer()
     }
 }
 
+void Administration::search() {
+    SearchPage *searchPage = new SearchPage(system);
+    ui::pageManager.setNextPage(searchPage);
+}
+
 void Administration::show()
 {
     bool run = true;
@@ -687,7 +694,7 @@ void Administration::show()
 
     while (run)
     {
-        cout << "(C)reate course/module/student/lecturer, (R)emove course/module/student/lecturer, Reset Student/lecturer (P)assword, Register (S)tudent on Module, Calculate Student QC(A), Edit (D)etails, (L)ogout, (Q)uit" << endl;
+        cout << "(C)reate course/module/student/lecturer, (R)emove course/module/student/lecturer, Reset Student/lecturer (P)assword, Register (S)tudent on Module, Perform searc(h), Calculate Student QC(A), Edit (D)etails, (L)ogout, (Q)uit" << endl;
 
         string choice = ui::getChoice();
 
@@ -731,6 +738,11 @@ void Administration::show()
             run = false;
             loggedIn = false;
             ui::pageManager.popCurrentPage(); //get out of the administration page
+        }
+        else if (choice == "H")
+        {
+            search();
+            run = false;
         }
         else if (choice == "Q")
         {

@@ -18,7 +18,6 @@ namespace ui
     protected:
         StudentSystem &system;
 
-
     public:
         Page(StudentSystem &studentSystem);
         virtual ~Page() = default;

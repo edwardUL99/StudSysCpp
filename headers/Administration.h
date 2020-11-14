@@ -46,6 +46,7 @@ namespace ui
         void resetPassword();
         bool editModule();
         bool editLecturer();
+        void search();
 
     public:
         Administration(StudentSystem &system, std::string adminUserName, std::string adminPass);
