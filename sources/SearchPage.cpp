@@ -9,6 +9,52 @@ using std::string;
 using ui::SearchableType;
 using ui::SearchPage;
 
+/**
+ * PROCESS OF DEFINING A NEW SEARCHABLE TYPE
+ * 
+ * In SearchPage.h, add an enum value for the type to SearchType enum, e.g. if the type was Exam, you could add an enum value EXAM
+ * In the createMap function, then define a vector of the fields you want to search of that type.
+ * A field is defined as follows: Field Name (optional-hint, Type: String/Numeric). If hint is missing, it would be just (Type: String/Numeric)
+ * These fields must be able to be logically mapped to a field (and accessor method) in the type, i.e. does not make sense to have a field Phone Number if the type does not have a Phone Number field)
+ * Add that vector with the enum value to the returned initializer list.
+ * 
+ * You should then create a method vector<Type> (where type is a class, like Exam) getMatchingXXX(Predicate<Type> &predicate). E.g vector<Exam> getMatchingExams(Predicate<Exam> &predicate)
+ * This method should get all instances of that type from the database. Those objects should then be iterated to and, if predicate(object) returns true, add it to the returned list
+ * 
+ * Add a human readable name for the type to the predicate in processChosenType, i.e. add another && clause with s != type, e.g. s != "Exams" and in the rtry message, add the same name on the RHS of !=.
+ * The name on RHS of != and the enum type defined should also be added to displaySearchableTypes following the existing format
+ * 
+ * A method called processXXXSearch(string field, string value) should be created. XXX is the type name, e.g. Exam
+ * This method should check which field is being searched and depending on the field, e.g. Id means you should have a predicate XXX.getID() == value and then display the results of the getMatchingXXX with that predicate
+ * See existing methods, for how this predicate and field checks should be created and carried out
+ * 
+ * You then need to add in the processChosenType and processChosenField if statements for the new type. In processChosenType you should check for the new string type, e.g. Exams and if so, assign EXAM to the searchable type value.
+ * Call processChosenField with this type then. processChosenField should have an if statement for the type to call processXXXSearch, e.g. processExamSearch
+ *
+ * If you want to change how the new type is displayed, create a template specialization for it and define how it is displayed there. See the below specialization for StudentRegistration for reference.
+ * This specialization must be directly before or after the StudentRegistration specialization to avoid compilation errors
+ * 
+ * See the existing examples
+ */
+
+/**
+ * PROCESS OF DEFINING A NEW SEARCHABLE FIELD
+ * 
+ * Assuming you have a SearchableType already defined and the logic for it defined as following the above process, if you want to add an extra field to search, do the follows.
+ * In the createMap method, find the vector defined for that type and add the new field following the field definition syntax and add it to the list.
+ * In the appropriate processXXXSearch method for that type, add an if statement as follows:
+ *      else if (chosenField == <new-field-name without brackets>)
+ *      {
+ *      }
+ * In that if block, you will want to define a Predicate for that type on matching the new field with the given search value.
+ * Call getMatchingXXX method with that predicate and assign the result to results
+ * 
+ * The associated type must have a field and an accessing method related to the field name in order to map logically. E.g. if you have a field Code, it is assumed the type should have a field called something like code and then getCode(), e.g with module
+ * While you could map any field name to an associated method name in the predicate, it may not make logical sense. Why search for a field called phone number and match it to the field Id in Student? Make sure the fields you define make sense
+ * 
+ * See existing code for reference
+ */
+
 map<SearchableType, vector<string>> SearchPage::createMap()
 {
     vector<string> moduleFields = {"Code (Type: String)", "Name (Type: String)", "Lecturer (Name, Type: String)",};
