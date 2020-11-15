@@ -12,8 +12,8 @@ using std::string;
 map<SearchableType, vector<string>> SearchPage::createMap() {
     vector<string> moduleFields = {"Code", "Name"};
     vector<string> lecturerFields = {"E-mail", "Name", "Department"};
-    vector<string> studentFields = {"Id", "Name", "Course"};
-    vector<string> registrationFields = {"Student", "Module"};
+    vector<string> studentFields = {"Id", "Name", "Course (Code)"};
+    vector<string> registrationFields = {"Student (Id)", "Module (Code)"};
 
     return {{MODULE, moduleFields},
             {LECTURER, lecturerFields},
@@ -93,7 +93,7 @@ void SearchPage::displayPossibleFieldOptions(SearchableType searchable) {
                             break;
     }
 
-    cout << "You can search the following " << type << " fields: " << endl;
+    cout << "Choose one of the following " << type << " fields to search:" << endl;
 
     for (const string &field : searchableFields.at(searchable)) {
         cout << "~ " << field << endl;
@@ -101,7 +101,7 @@ void SearchPage::displayPossibleFieldOptions(SearchableType searchable) {
 }
 
 void SearchPage::displaySearchableTypes() {
-    cout << "You can search the following:\n~ Modules\n~ Lecturers\n~ Students\n~ StudentRegistrations" << endl;
+    cout << "Choose from the following to search:\n~ Modules\n~ Lecturers\n~ Students\n~ StudentRegistrations" << endl;
 }
 
 void SearchPage::processModuleSearch(string chosenField, string value) {
@@ -167,6 +167,12 @@ void SearchPage::processChosenField(SearchableType searchableType) {
     Predicate<string> choicePredicate([fields](const string &s) -> bool {  // for a predicate for getting user input, you must return false if matches to exit the while loop
         for (int i = 0; i < fields.size(); i++) {
             string str = fields.at(i);
+            std::size_t bracket_pos = str.find("(");
+
+            if (bracket_pos != std::string::npos) {
+                str = str.substr(0, bracket_pos - 1); // if there is a hint (i.e. in brackets like Course (Code), strip it off)
+            }
+
             if (str == s) 
                 return false;
         }
@@ -208,6 +214,7 @@ void SearchPage::processChosenType() {
 }
 
 void SearchPage::doSearch() {
+    cout << "For all input, after each list, input the field (case-sensitive) (without any terms in brackets)" << endl;
     displaySearchableTypes();
     processChosenType();
 }
