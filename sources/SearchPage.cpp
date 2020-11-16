@@ -55,9 +55,23 @@ using ui::SearchPage;
  * See existing code for reference
  */
 
+/**
+ * As a result of these processes, you should have the following mappings:
+ * Each SearchableType should map to a getMatchingXXX and processXXXSearch method and be added to the possible types in displaySearchableTypes, processChosenType and displayPossibleFieldOptions
+ * After these methods are defined, you are left with a mapping of 1 SearchableType to many Predicates for that type. Each Predicate represents a field to be matched
+ * 
+ * Each searchable field of that SearchableType should map to one and only one Predicate for matching that field with the provided value.
+ * 
+ * If you want to allow an OR relationship for a field, e.g. could be a name or an email, in the one predicate for that field, add the comparison of the two fields with || operator
+ * See example with module field Lecturer Name or E-mail, it checks if the value matches a name or the email.
+ * 
+ * If you want one field to be checked before the other in this OR relationship, place the higher precedence one(s) to the left of the || operator as the first one to return true will terminate the evaluation of the expression.
+ * E.g. if an object was to be searched by name or some other field that may also resemble a name, i.e. an ambiguity may occur (i.e. names and emails can never be confused as the same because of the @address part) but you want to check by name first before the other field, have the name check on the LHS
+ */ 
+
 map<SearchableType, vector<string>> SearchPage::createMap()
 {
-    vector<string> moduleFields = {"Code (Type: String)", "Name (Type: String)", "Lecturer (Name, Type: String)",};
+    vector<string> moduleFields = {"Code (Type: String)", "Name (Type: String)", "Lecturer (Name or E-mail, Type: String)",};
     vector<string> lecturerFields = {"E-mail (Type: String)", "Name (Type: String)", "Department (Type: String)"};
     vector<string> studentFields = {"Id (Type: Numeric)", "Name (Type: String)", "Course (Code, Type: String)"};
     vector<string> registrationFields = {"Student (Id, Type: Numeric)", "Module (Code, Type: String)"};
@@ -92,7 +106,8 @@ void SearchPage::displayResults<StudentRegistration>(vector<StudentRegistration>
             cout << i++ << ") Student ID: " << student.getID() << " Name: " << student.getName() << " ; Module Code: " << module.getCode() << " Name: " << module.getName() << endl;
         }
 
-        cout << (i - 1) << " Search Results" << endl;
+        string resultString = --i == 1 ? " Search Result":" Search Results";
+        cout << i << resultString << endl;
     }
     else
     {
@@ -216,7 +231,10 @@ void SearchPage::processModuleSearch(string chosenField, string value)
     }
     else if (chosenField == "Lecturer")
     {
-        Predicate<Module> predicate([value](const Module &module) -> bool { return module.getLecturer().getName() == value; });
+        Predicate<Module> predicate([value](const Module &module) -> bool { 
+            Lecturer lecturer = module.getLecturer();
+            return lecturer.getName() == value || lecturer.getEmail() == value;
+        });
         results = getMatchingModules(predicate);
     } else if (chosenField == "All")
     {
