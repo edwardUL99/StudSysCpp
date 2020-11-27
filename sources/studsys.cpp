@@ -48,7 +48,7 @@ int main(int argc, char **argv)
         if (strcmp(argv[1], "-h") == 0)
         {
             cout << "Usage 1: ./studsys -d database_name -u username -p password -h host -au admin_username -ap admin_password" << endl;
-            cout << "Usage 2: ./studsys login_file" << endl;
+            cout << "Usage 2: ./studsys -f login_file" << endl;
 
             exit(0);
         }
