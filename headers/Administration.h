@@ -46,6 +46,7 @@ namespace ui
         void resetPassword();
         bool editModule();
         bool editLecturer();
+        bool editStudent();
         void search();
 
     public:

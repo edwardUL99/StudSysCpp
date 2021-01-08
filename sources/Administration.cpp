@@ -11,6 +11,7 @@
 #include "headers/LecturerEditPage.h"
 #include "headers/studsys/StudentRegistration.h"
 #include "headers/SearchPage.h"
+#include "headers/StudentEditPage.h"
 
 #include <cstring>
 #include <string>
@@ -18,6 +19,7 @@ using std::string;
 using ui::Administration;
 using ui::ModuleEditPage;
 using ui::SearchPage;
+using ui::StudentEditPage;
 
 Administration::Administration(StudentSystem &studentSystem, string adminUserName, string adminPass) : Page(studentSystem), loggedIn(false)
 {
@@ -672,7 +674,27 @@ bool Administration::editLecturer()
     }
 }
 
-void Administration::search() {
+bool Administration::editStudent()
+{
+    cout << "Enter the ID of the student you wish to update: " << endl;
+
+    int id = ui::getInt(ui::intltezeropred, ui::ltezeroretrymsg);
+
+    try
+    {
+        Student student = system.getStudent(id);
+        StudentEditPage *editPage = new StudentEditPage(student, system);
+        ui::pageManager.setNextPage(editPage);
+        return true;
+    }
+    catch (NotFoundException &nf)
+    {
+        cout << "Student with ID " << id << " not found in sytem, aborting..." << endl;
+    }
+}
+
+void Administration::search()
+{
     SearchPage *searchPage = new SearchPage(system);
     ui::pageManager.setNextPage(searchPage);
 }
@@ -720,7 +742,7 @@ void Administration::show()
         }
         else if (choice == "D")
         {
-            cout << "Edit (M)odule, (L)ecturer" << endl;
+            cout << "Edit (M)odule, (L)ecturer, (S)tudent" << endl;
 
             string choice1 = ui::getChoice();
 
@@ -731,6 +753,10 @@ void Administration::show()
             else if (choice1 == "L")
             {
                 run = !editLecturer();
+            }
+            else if (choice1 == "S")
+            {
+                run = !editStudent();
             }
         }
         else if (choice == "L")

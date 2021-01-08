@@ -24,8 +24,7 @@ namespace ui {
         public:
             LecturerEditPage(const Lecturer &lecturer, StudentSystem &system);
             virtual ~LecturerEditPage() = default;
-            virtual void show() override;
-            
+            virtual void show() override;     
     };
 }
 
